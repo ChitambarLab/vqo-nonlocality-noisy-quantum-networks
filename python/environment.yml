@@ -1,0 +1,13 @@
+name: pennylane-nonlocality-dev
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - black
+  - sphinx
+  - pytest
+  - notebook
+  - matplotlib
+  - pip
+  - pip:
+    - -r requirements.txt
