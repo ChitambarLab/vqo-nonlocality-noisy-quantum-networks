@@ -35,7 +35,7 @@ def chsh_noise_optimization(prep_nodes, meas_nodes, **opt_kwargs):
             ),
             QNopt.NoiseNode(
                 [1], lambda settings, wires: qml.AmplitudeDamping(arg2, wires=wires[0])
-            )
+            ),
         ]
 
         chsh_ansatz = QNopt.NetworkAnsatz(prep_nodes, meas_nodes, noise_nodes)
@@ -64,7 +64,7 @@ def chsh_noise_optimization(prep_nodes, meas_nodes, **opt_kwargs):
 
 
 def save_optimization_results(ansatz_name, x_range, y_range, opt_dicts):
-    json_data = {"x_mesh" : [[]], "y_mesh" : [[]], "max_scores": [], "opt_settings": []}
+    json_data = {"x_mesh": [[]], "y_mesh": [[]], "max_scores": [], "opt_settings": []}
 
     x_mesh, y_mesh = np.meshgrid(x_range, y_range)
     json_data["x_mesh"] = x_mesh.tolist()
@@ -74,7 +74,7 @@ def save_optimization_results(ansatz_name, x_range, y_range, opt_dicts):
         json_data["max_scores"].append([])
         json_data["opt_settings"].append([])
         for col_id in range(x_mesh.shape[1]):
-            opt_id = col_id*x_mesh.shape[0] + row_id
+            opt_id = col_id * x_mesh.shape[0] + row_id
 
             max_score = max(opt_dicts[opt_id]["scores"])
             max_id = opt_dicts[opt_id]["scores"].index(max_score)
@@ -84,17 +84,16 @@ def save_optimization_results(ansatz_name, x_range, y_range, opt_dicts):
             json_data["max_scores"][row_id] += [max_score]
             json_data["opt_settings"][row_id] += [QNopt.settings_to_list(opt_settings)]
 
-            plt.plot(
-            opt_dicts[opt_id]["samples"],
-            opt_dicts[opt_id]["scores"], "--.")
+            plt.plot(opt_dicts[opt_id]["samples"], opt_dicts[opt_id]["scores"], "--.")
             plt.plot([max_sample], [max_score], "r*")
-
 
     print(json_data["max_scores"])
 
     datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
 
-    filename = "script/data/chsh-breaking_two-sided_amplitude_damping/" + ansatz_name + "/" + datetime_ext
+    filename = (
+        "script/data/chsh-breaking_two-sided_amplitude_damping/" + ansatz_name + "/" + datetime_ext
+    )
     with open(filename + ".json", "w") as file:
         file.write(json.dumps(json_data, indent=2))
 
@@ -127,13 +126,13 @@ if __name__ == "__main__":
         QNopt.MeasureNode(2, 2, [1], Rot_meas_ansatz, 3),
     ]
 
-    x_range = np.arange(0, 1.01, 1/10)
-    y_range = np.arange(0, 1.01, 1/10)
+    x_range = np.arange(0, 1.01, 1 / 10)
+    y_range = np.arange(0, 1.01, 1 / 10)
 
-    params_range = np.zeros((2,len(x_range)*len(y_range)))
+    params_range = np.zeros((2, len(x_range) * len(y_range)))
     for x_id in range(len(x_range)):
         for y_id in range(len(y_range)):
-            params_range[:, x_id*len(y_range) + y_id] = [x_range[x_id], y_range[y_id]]
+            params_range[:, x_id * len(y_range) + y_id] = [x_range[x_id], y_range[y_id]]
 
     max_entangled_optimization = chsh_noise_optimization(
         max_entangled_prep, meas_nodes, sample_width=5, step_size=0.2, num_steps=35, verbose=False
@@ -148,10 +147,10 @@ if __name__ == "__main__":
         arb_prep, meas_nodes, sample_width=5, step_size=0.2, num_steps=35, verbose=False
     )
 
-    params_range = np.zeros((2,len(x_range)*len(y_range)))
+    params_range = np.zeros((2, len(x_range) * len(y_range)))
     for x_id in range(len(x_range)):
         for y_id in range(len(y_range)):
-            params_range[:, x_id*len(y_range) + y_id] = [x_range[x_id], y_range[y_id]]
+            params_range[:, x_id * len(y_range) + y_id] = [x_range[x_id], y_range[y_id]]
 
     arb_jobs = client.map(arb_optimization, *params_range)
     arb_opts = client.gather(arb_jobs)

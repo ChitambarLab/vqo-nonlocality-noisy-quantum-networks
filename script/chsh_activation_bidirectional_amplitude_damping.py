@@ -10,6 +10,7 @@ with broken nonlocality can be used to violate the CHSH inequality.
 Unfortunately, we are unable to find a positive case demonstrating the result.
 """
 
+
 def chsh_noise_optimization(noise_args):
     def prep_ansatz(settings, wires):
         QNopt.max_entangled_state(settings[0:3], wires=[wires[0], wires[2]])
@@ -85,8 +86,8 @@ def chsh_noise_optimization(noise_args):
 
     # analytic device approach
     chsh_ansatz1 = QNopt.NetworkAnsatz(prep_nodes, meas_nodes, noise_nodes)
-   
-   	# stochastic gradient approach
+
+    # stochastic gradient approach
     chsh_ansatz2 = QNopt.NetworkAnsatz(
         prep_nodes,
         meas_nodes,
