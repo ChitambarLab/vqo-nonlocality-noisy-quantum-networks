@@ -3,6 +3,7 @@ import time
 from pennylane import numpy as np
 import pennylane as qml
 from context import QNetOptimizer as QNopt
+import sys
 
 import utilities
 import network_ansatzes as ansatzes
@@ -16,7 +17,11 @@ Chains of length n = 2 and 3 are considered.
 
 An arbitrary maximally entangled state is prepared and measured
 with local qubit rotations and a arbitrary two-qubit unitary on the central
-measurement node. 
+measurement node.
+
+The script accepts the command line argument "inside" to specify that the
+noisy qubit acts upon wires=[1] (the interior measurement node).
+Otherwise, the noisy qubit acts upon wires=[0] (the end node measurement).
 """
 
 def single_qubit_depolarizing_nodes_fn(n, wires=[0]):
@@ -31,7 +36,13 @@ def single_qubit_depolarizing_nodes_fn(n, wires=[0]):
 
 if __name__ == "__main__":
 
-    client = Client(processes=True)
+    noisy_wire = [0]
+    dir_ext = "outside/"
+    if len(sys.argv) > 0 and sys.argv[1] == "inside":
+        noisy_wire = [1]
+        dir_ext = "inside/"
+
+    client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
     for n in [2, 3]:
         print("n = ", n)
@@ -43,7 +54,7 @@ if __name__ == "__main__":
         local_rot_optimization = utilities.noisy_net_opt_fn(
             ansatzes.nlocal_max_entangled_prep_nodes(n),
             ansatzes.chain_local_rot_meas_nodes(n),
-            single_qubit_depolarizing_nodes_fn(n),
+            single_qubit_depolarizing_nodes_fn(n, wires=noisy_wire),
             QNopt.nlocal_chain_cost_22,
             opt_kwargs = {
                 "sample_width" : 5,
@@ -56,7 +67,7 @@ if __name__ == "__main__":
         local_rot_opt_dicts = client.gather(local_rot_jobs)
 
         utilities.save_optimizations_one_param_scan(
-            "script/data/chain_n-local_1-qubit_depolarizing/",
+            "script/data/chain_n-local_1-qubit_depolarizing/" + dir_ext,
             "max_entangled_local_rot_n-" + str(n) + "_",
             param_range,
             local_rot_opt_dicts,
@@ -74,7 +85,7 @@ if __name__ == "__main__":
         bell_optimization = utilities.noisy_net_opt_fn(
             ansatzes.nlocal_max_entangled_prep_nodes(n),
             ansatzes.chain_bell_meas_nodes(n),
-            single_qubit_depolarizing_nodes_fn(n),
+            single_qubit_depolarizing_nodes_fn(n, wires=noisy_wire),
             QNopt.nlocal_chain_cost_22,
             opt_kwargs = {
                 "sample_width" : 5,
@@ -87,7 +98,7 @@ if __name__ == "__main__":
         bell_opt_dicts = client.gather(bell_jobs)
 
         utilities.save_optimizations_one_param_scan(
-            "script/data/chain_n-local_1-qubit_depolarizing/",
+            "script/data/chain_n-local_1-qubit_depolarizing/" + dir_ext,
             "max_entangled_bell_n-" + str(n) + "_",
             param_range,
             bell_opt_dicts,
@@ -105,7 +116,7 @@ if __name__ == "__main__":
         arb_optimization = utilities.noisy_net_opt_fn(
             ansatzes.nlocal_max_entangled_prep_nodes(n),
             ansatzes.chain_arb_meas_nodes(n),
-            single_qubit_depolarizing_nodes_fn(n),
+            single_qubit_depolarizing_nodes_fn(n, wires=noisy_wire),
             QNopt.nlocal_chain_cost_22,
             opt_kwargs = {
                 "sample_width" : 5,
@@ -118,7 +129,7 @@ if __name__ == "__main__":
         arb_opt_dicts = client.gather(arb_jobs)
 
         utilities.save_optimizations_one_param_scan(
-            "script/data/chain_n-local_1-qubit_depolarizing/",
+            "script/data/chain_n-local_1-qubit_depolarizing/" + dir_ext,
             "max_entangled_arb_n-" + str(n) + "_",
             param_range,
             arb_opt_dicts,
