@@ -2,6 +2,10 @@ from context import QNetOptimizer as QNopt
 from datetime import datetime
 from pennylane import numpy as np
 import matplotlib.pyplot as plt
+
+from os import listdir
+from os.path import isfile, join
+import re
 import json
 
 
@@ -129,3 +133,72 @@ def save_optimizations_one_param_scan(
     plt.legend(ncol=3)
     plt.savefig(filename)
     plt.clf()
+
+def analyze_data_one_param_scan(data_files):
+    """Analyzes the set of data files in aggregate.
+    
+    Each file should be in the format produced by the function
+    ``save_optimizations_one_param_scan``.
+
+    The data analysis returns a dictionary with the following keys:
+
+    * ``"noise_params"``: The noise parameters in the scan range sorted
+        from least to greatest.
+    * ``"max_scores"``: The maximum score for each noise parameter over
+        all optimizations.
+    * ``"mean_scores"``: The average score for each noise parameter over
+        all optimizations.
+    * ``"std_errs"``: The standard error for each noise parameter over
+        all optimizations.
+    """
+    data_dicts = []
+    for filepath in data_files:
+        with open(filepath) as file:
+            data_dicts.append(json.load(file))
+    
+    results = {}
+    noise_params = []
+    for data_dict in data_dicts:
+        for i in range(len(data_dict["noise_params"])):
+            if np.isnan(data_dict["max_scores"][i]):
+                continue
+            
+            noise_key = "{:.2f}".format(data_dict["noise_params"][i])
+            
+            if noise_key in results:
+                results[noise_key].append(data_dict["max_scores"][i])
+            else:
+                results[noise_key] = [data_dict["max_scores"][i]]
+                noise_params.append(np.round(data_dict["noise_params"][i],5))
+    
+    sorted_noise_params = np.sort(noise_params)
+    max_scores = [
+        max(results["{:.2f}".format(noise_param)])
+        for noise_param in sorted_noise_params
+    ]
+    mean_scores = [
+        np.mean(results["{:.2f}".format(noise_param)], axis=0)
+        for noise_param in sorted_noise_params
+    ]
+    std_errs = [
+        np.std(results[noise_key], axis=0) / np.sqrt(len(results[noise_key]))
+        for noise_key in ["{:.2f}".format(noise_param) for noise_param in sorted_noise_params]
+    ]
+    
+    
+    return {
+        "noise_params" : sorted_noise_params,
+        "max_scores" : max_scores,
+        "mean_scores" : mean_scores,
+        "std_errs" : std_errs,
+    }
+
+def get_data_files(path, regex):
+    """Retrieves all data files that match the ``regex`` in the
+    directory specified by ``path``.
+    """
+    return [
+        join(path, f) for f in listdir(path) if (
+            f.endswith(".json") and isfile(join(path, f)) and bool(re.match(regex, f))
+        )
+    ]

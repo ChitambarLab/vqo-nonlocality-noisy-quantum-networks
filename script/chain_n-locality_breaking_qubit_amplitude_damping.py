@@ -55,7 +55,7 @@ if __name__ == "__main__":
         time_start = time.time()
 
         local_rot_optimization = utilities.noisy_net_opt_fn(
-            ansatzes.nlocal_max_entangled_prep_nodes(n),
+            ansatzes.chain_nlocal_max_entangled_prep_nodes(n),
             ansatzes.chain_local_rot_meas_nodes(n),
             single_qubit_amplitude_damping_nodes_fn(n, wires=noisy_wire),
             QNopt.nlocal_chain_cost_22,
@@ -86,7 +86,7 @@ if __name__ == "__main__":
         # Bell basis measurements
         time_start = time.time()
         bell_optimization = utilities.noisy_net_opt_fn(
-            ansatzes.nlocal_max_entangled_prep_nodes(n),
+            ansatzes.chain_nlocal_max_entangled_prep_nodes(n),
             ansatzes.chain_bell_meas_nodes(n),
             single_qubit_amplitude_damping_nodes_fn(n, wires=noisy_wire),
             QNopt.nlocal_chain_cost_22,
@@ -117,7 +117,7 @@ if __name__ == "__main__":
         # arbitrary measurements
         time_start = time.time()
         arb_optimization = utilities.noisy_net_opt_fn(
-            ansatzes.nlocal_max_entangled_prep_nodes(n),
+            ansatzes.chain_nlocal_max_entangled_prep_nodes(n),
             ansatzes.chain_arb_meas_nodes(n),
             single_qubit_amplitude_damping_nodes_fn(n, wires=noisy_wire),
             QNopt.nlocal_chain_cost_22,
