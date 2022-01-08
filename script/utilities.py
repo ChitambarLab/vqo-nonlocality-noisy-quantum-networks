@@ -9,6 +9,46 @@ import re
 import json
 
 
+def hardware_opt(
+    cost,
+    init_settings,
+    num_steps = 16,
+    step_size = 0.2,
+    grad_fn = None,
+    tmp_filepath="./",
+):
+    opt_dict = {}
+    for i in range(num_steps):
+        tmp_opt_dict = QNopt.gradient_descent(
+            cost,
+            init_settings,
+            step_size=step_size,
+            num_steps=1,
+            sample_width=1,
+            grad_fn=grad_fn,
+        )
+
+        # aggregate data into optimization dictionary
+        if i == 0:
+            opt_dict = tmp_opt_dict
+        else:
+            opt_dict["settings_history"].append(tmp_opt_dict["settings_history"][-1])
+            opt_dict["scores"].append(tmp_opt_dict["scores"][-1])
+            opt_dict["samples"].append(i + 1)
+            opt_dict["step_times"].append(tmp_opt_dict["step_times"][-1])
+
+        # saving data after each optimization step
+        tmp_datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
+        tmp_filename = tmp_filepath + tmp_datetime_ext
+
+        QNopt.write_optimization_json(opt_dict, tmp_filename)
+
+        # update initial settings
+        init_settings = opt_dict["settings_history"][-1]
+
+    return opt_dict
+
+
 def noisy_net_opt_fn(
     prep_nodes,
     meas_nodes,
