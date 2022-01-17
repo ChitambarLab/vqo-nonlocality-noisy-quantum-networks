@@ -5,7 +5,24 @@ from pennylane import numpy as np
 from datetime import datetime
 from qiskit import IBMQ
 import matplotlib.pyplot as plt
+import sys
 
+
+"""
+
+Performs an optimization of the Bilocal inequality on the IBM
+Belem quantum computer.
+The ansatz prepares maximally entangled states and optimizes
+local RY rotations on each measurement qubit.
+
+Positional Command Line Arguments:
+
+    * [1] tmp_file_name: the file name of the tmp file to iterate
+        upon, e.g., "2022-01-09T16-06-44Z.json".
+    * [2] num_steps: The number of steps to iterate upon the passed
+        in file. This parameter is only used if a file is passed in too.
+
+"""
 
 provider = IBMQ.load_account()
 
@@ -37,13 +54,23 @@ par_grad = QNopt.parallel_nlocal_chain_grad_fn(ibm_ansatz, diff_method="paramete
 
 data_filepath = "script/data/ibm_belem_simple_bilocal_opt_parameter_shift/"
 
+
+init_opt_dict = QNopt.read_optimization_json(data_filepath + "tmp/" + sys.argv[1]) if len(sys.argv) > 1 else {}
+
+num_steps = 10 if len(sys.argv) <= 2 else int(sys.argv[2])
+
+print("init_opt_dict : ", init_opt_dict)
+print("num_steps : ", num_steps)
+
+
 opt_dict = utilities.hardware_opt(
     cost,
     ibm_ansatz.rand_scenario_settings(),
-    num_steps=10,
-    step_size=1.5,
+    num_steps=num_steps,
+    step_size=1.4,
     grad_fn=par_grad,
     tmp_filepath=data_filepath + "tmp/",
+    init_opt_dict = init_opt_dict,
 )
 
 print(opt_dict)

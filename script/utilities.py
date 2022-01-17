@@ -16,12 +16,42 @@ def hardware_opt(
     step_size = 0.2,
     grad_fn = None,
     tmp_filepath="./",
+    init_opt_dict = {},
 ):
-    opt_dict = {}
+    """Performs a gradient descent optimization on quantum hardware.
+    Each epoch of the gradient descent is saved as a tmp file in case
+    the optimization fails.
+
+    :param cost: The cost function to optimize with respect to.
+    :type cost: Function
+
+    :param init_settings: initial settings to seed the optimization with.
+    :type init_settings: scenario settings
+
+    :param num_steps: The number of epochs to iterate over.
+    :type num_steps: optional, Int, default ``16``
+
+    :param step_size: The distance to travel in the direction of steepest descent.
+    :type step_size: optional, Float, default ``0.2``
+
+    :param grad_fn: A custom gradient function for the optimization.
+    :type grad_fn: optional, Function, default ``None``
+
+    :param tmp_filepath: A filepath to a tmp directory to save intermediate results. 
+    :type tmp_file_path: optional, String, default ``"./"``
+
+    :param init_opt_dict: The optimization dictionary used as a warm start.
+    :type init_opt_dict: optional, Dictionary, default ``{}``
+    """
+    warm_start = False if init_opt_dict == {} else True
+    opt_dict = init_opt_dict
+
+    settings = opt_dict["settings_history"][-1] if warm_start else init_settings
+
     for i in range(num_steps):
         tmp_opt_dict = QNopt.gradient_descent(
             cost,
-            init_settings,
+            settings,
             step_size=step_size,
             num_steps=1,
             sample_width=1,
@@ -29,7 +59,7 @@ def hardware_opt(
         )
 
         # aggregate data into optimization dictionary
-        if i == 0:
+        if i == 0 and not(warm_start):
             opt_dict = tmp_opt_dict
         else:
             opt_dict["settings_history"].append(tmp_opt_dict["settings_history"][-1])
@@ -44,7 +74,7 @@ def hardware_opt(
         QNopt.write_optimization_json(opt_dict, tmp_filename)
 
         # update initial settings
-        init_settings = opt_dict["settings_history"][-1]
+        settings = opt_dict["settings_history"][-1]
 
     return opt_dict
 

@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../../../pennylane-nonlocality-optimization"))
+sys.path.insert(0, os.path.abspath("../../../qNetVO"))
 
 import QNetOptimizer
 
