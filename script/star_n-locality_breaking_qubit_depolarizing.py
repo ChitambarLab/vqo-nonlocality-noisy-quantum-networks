@@ -25,6 +25,7 @@ noisy qubit acts upon wires=[1] (the interior measurement node).
 Otherwise, the noisy qubit acts upon wires=[0] (the end node measurement).
 """
 
+
 def single_qubit_depolarizing_nodes_fn(n, wires=[0]):
     def noise_nodes(noise_args):
         return [
@@ -35,11 +36,12 @@ def single_qubit_depolarizing_nodes_fn(n, wires=[0]):
 
     return noise_nodes
 
+
 if __name__ == "__main__":
 
     n = 3
 
-    for noisy_wire in [[0],[3]]:
+    for noisy_wire in [[0], [3]]:
         dir_ext = "outside/"
         if noisy_wire[0] == 3:
             dir_ext = "inside/"
@@ -56,12 +58,12 @@ if __name__ == "__main__":
             ansatzes.star_22_local_ry_meas_nodes(n),
             single_qubit_depolarizing_nodes_fn(n, wires=noisy_wire),
             QNopt.nlocal_star_22_cost_fn,
-            opt_kwargs = {
-                "sample_width" : 5,
-                "step_size" : 1.2,
-                "num_steps" : 30,
-                "verbose" : False,
-            }
+            opt_kwargs={
+                "sample_width": 5,
+                "step_size": 1.2,
+                "num_steps": 30,
+                "verbose": False,
+            },
         )
         local_ry_jobs = client.map(local_ry_optimization, param_range)
         local_ry_opt_dicts = client.gather(local_ry_jobs)
@@ -71,8 +73,8 @@ if __name__ == "__main__":
             "max_entangled_local_ry_n-" + str(n) + "_",
             param_range,
             local_ry_opt_dicts,
-            quantum_bound = np.sqrt(2),
-            classical_bound = 1,
+            quantum_bound=np.sqrt(2),
+            classical_bound=1,
         )
 
         time_elapsed = time.time() - time_start
@@ -88,12 +90,12 @@ if __name__ == "__main__":
             ansatzes.star_22_local_rot_meas_nodes(n),
             single_qubit_depolarizing_nodes_fn(n, wires=noisy_wire),
             QNopt.nlocal_star_22_cost_fn,
-            opt_kwargs = {
-                "sample_width" : 5,
-                "step_size" : 1.2,
-                "num_steps" : 30,
-                "verbose" : False,
-            }
+            opt_kwargs={
+                "sample_width": 5,
+                "step_size": 1.2,
+                "num_steps": 30,
+                "verbose": False,
+            },
         )
         local_ry_jobs = client.map(local_ry_optimization, param_range)
         local_ry_opt_dicts = client.gather(local_ry_jobs)
@@ -103,8 +105,8 @@ if __name__ == "__main__":
             "max_entangled_local_rot_n-" + str(n) + "_",
             param_range,
             local_ry_opt_dicts,
-            quantum_bound = np.sqrt(2),
-            classical_bound = 1,
+            quantum_bound=np.sqrt(2),
+            classical_bound=1,
         )
 
         time_elapsed = time.time() - time_start
@@ -120,12 +122,12 @@ if __name__ == "__main__":
             ansatzes.star_22_ghz_rot_meas_nodes(n),
             single_qubit_depolarizing_nodes_fn(n, wires=noisy_wire),
             QNopt.nlocal_star_22_cost_fn,
-            opt_kwargs = {
-                "sample_width" : 5,
-                "step_size" : 1.2,
-                "num_steps" : 30,
-                "verbose" : False,
-            }
+            opt_kwargs={
+                "sample_width": 5,
+                "step_size": 1.2,
+                "num_steps": 30,
+                "verbose": False,
+            },
         )
         arb_jobs = client.map(arb_optimization, param_range)
         arb_opt_dicts = client.gather(arb_jobs)
@@ -135,8 +137,8 @@ if __name__ == "__main__":
             "max_entangled_ghz_rot_n-" + str(n) + "_",
             param_range,
             arb_opt_dicts,
-            quantum_bound = np.sqrt(2),
-            classical_bound = 1,
+            quantum_bound=np.sqrt(2),
+            classical_bound=1,
         )
 
         time_elapsed = time.time() - time_start

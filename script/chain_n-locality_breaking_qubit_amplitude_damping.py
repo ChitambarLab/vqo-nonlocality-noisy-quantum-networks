@@ -26,26 +26,29 @@ noisy qubit acts upon wires=[1] (the interior measurement node).
 Otherwise, the noisy qubit acts upon wires=[0] (the end node measurement).
 """
 
+
 def single_qubit_amplitude_damping_nodes_fn(n, wires=[0]):
     def noise_nodes(noise_args):
         return [
             QNopt.NoiseNode(
                 # wires, lambda settings, wires: qml.AmplitudeDamping(noise_args, wires=wires[0])
-                [wires[0], 2*n], lambda settings, wires: QNopt.pure_amplitude_damping([noise_args], wires=wires)
+                [wires[0], 2 * n],
+                lambda settings, wires: QNopt.pure_amplitude_damping([noise_args], wires=wires),
             ),
         ]
 
     return noise_nodes
 
+
 if __name__ == "__main__":
 
     client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
-    for n in [2,3,4,5,6,7]:
+    for n in [2, 3, 4, 5, 6, 7]:
         print("n = ", n)
         param_range = np.arange(0, 1.01, 0.05)
 
-        for noisy_wire in [[0],[1]]:
+        for noisy_wire in [[0], [1]]:
             dir_ext = "outside/" if noisy_wire == [0] else "inside/"
 
             # local qubit rotation measurements
@@ -56,17 +59,17 @@ if __name__ == "__main__":
                 ansatzes.chain_local_rot_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wires=noisy_wire),
                 QNopt.nlocal_chain_cost_22,
-                ansatz_kwargs = {
-                    "dev_kwargs" : {
-                        "name" : "default.qubit",
+                ansatz_kwargs={
+                    "dev_kwargs": {
+                        "name": "default.qubit",
                     },
                 },
-                opt_kwargs = {
-                    "sample_width" : 5,
-                    "step_size" : 0.7,
-                    "num_steps" : 30,
-                    "verbose" : False,
-                }
+                opt_kwargs={
+                    "sample_width": 5,
+                    "step_size": 0.7,
+                    "num_steps": 30,
+                    "verbose": False,
+                },
             )
             local_rot_jobs = client.map(local_rot_optimization, param_range)
             local_rot_opt_dicts = client.gather(local_rot_jobs)
@@ -92,17 +95,17 @@ if __name__ == "__main__":
                 ansatzes.chain_bell_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wires=noisy_wire),
                 QNopt.nlocal_chain_cost_22,
-                ansatz_kwargs = {
-                    "dev_kwargs" : {
-                        "name" : "default.qubit",
+                ansatz_kwargs={
+                    "dev_kwargs": {
+                        "name": "default.qubit",
                     },
                 },
-                opt_kwargs = {
-                    "sample_width" : 5,
-                    "step_size" : 0.6,
-                    "num_steps" : 35,
-                    "verbose" : False,
-                }
+                opt_kwargs={
+                    "sample_width": 5,
+                    "step_size": 0.6,
+                    "num_steps": 35,
+                    "verbose": False,
+                },
             )
             bell_jobs = client.map(bell_optimization, param_range)
             bell_opt_dicts = client.gather(bell_jobs)
@@ -128,17 +131,17 @@ if __name__ == "__main__":
                 ansatzes.chain_arb_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wires=noisy_wire),
                 QNopt.nlocal_chain_cost_22,
-                ansatz_kwargs = {
-                    "dev_kwargs" : {
-                        "name" : "default.qubit",
+                ansatz_kwargs={
+                    "dev_kwargs": {
+                        "name": "default.qubit",
                     },
                 },
-                opt_kwargs = {
-                    "sample_width" : 5,
-                    "step_size" : 0.6,
-                    "num_steps" : 40,
-                    "verbose" : False,
-                }
+                opt_kwargs={
+                    "sample_width": 5,
+                    "step_size": 0.6,
+                    "num_steps": 40,
+                    "verbose": False,
+                },
             )
             arb_jobs = client.map(arb_optimization, param_range)
             arb_opt_dicts = client.gather(arb_jobs)

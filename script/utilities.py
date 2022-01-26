@@ -12,11 +12,12 @@ import json
 def hardware_opt(
     cost,
     init_settings,
-    num_steps = 16,
-    step_size = 0.2,
-    grad_fn = None,
+    num_steps=16,
+    current_step=0,
+    step_size=0.2,
+    grad_fn=None,
     tmp_filepath="./",
-    init_opt_dict = {},
+    init_opt_dict={},
 ):
     """Performs a gradient descent optimization on quantum hardware.
     Each epoch of the gradient descent is saved as a tmp file in case
@@ -31,13 +32,17 @@ def hardware_opt(
     :param num_steps: The number of epochs to iterate over.
     :type num_steps: optional, Int, default ``16``
 
+    :param current_step: The starting step of the optimization. This should
+                         only be nonzero if an ``init_opt_dict`` is supplied.
+    :type current_step: optional, Int, default ``0``
+
     :param step_size: The distance to travel in the direction of steepest descent.
     :type step_size: optional, Float, default ``0.2``
 
     :param grad_fn: A custom gradient function for the optimization.
     :type grad_fn: optional, Function, default ``None``
 
-    :param tmp_filepath: A filepath to a tmp directory to save intermediate results. 
+    :param tmp_filepath: A filepath to a tmp directory to save intermediate results.
     :type tmp_file_path: optional, String, default ``"./"``
 
     :param init_opt_dict: The optimization dictionary used as a warm start.
@@ -48,7 +53,7 @@ def hardware_opt(
 
     settings = opt_dict["settings_history"][-1] if warm_start else init_settings
 
-    for i in range(num_steps):
+    for i in range(current_step, num_steps):
         tmp_opt_dict = QNopt.gradient_descent(
             cost,
             settings,
@@ -59,7 +64,7 @@ def hardware_opt(
         )
 
         # aggregate data into optimization dictionary
-        if i == 0 and not(warm_start):
+        if i == 0 and not (warm_start):
             opt_dict = tmp_opt_dict
         else:
             opt_dict["settings_history"].append(tmp_opt_dict["settings_history"][-1])
@@ -204,9 +209,10 @@ def save_optimizations_one_param_scan(
     plt.savefig(filename)
     plt.clf()
 
+
 def analyze_data_one_param_scan(data_files):
     """Analyzes the set of data files in aggregate.
-    
+
     Each file should be in the format produced by the function
     ``save_optimizations_one_param_scan``.
 
@@ -225,27 +231,24 @@ def analyze_data_one_param_scan(data_files):
     for filepath in data_files:
         with open(filepath) as file:
             data_dicts.append(json.load(file))
-    
+
     results = {}
     noise_params = []
     for data_dict in data_dicts:
         for i in range(len(data_dict["noise_params"])):
             if np.isnan(data_dict["max_scores"][i]):
                 continue
-            
+
             noise_key = "{:.2f}".format(data_dict["noise_params"][i])
-            
+
             if noise_key in results:
                 results[noise_key].append(data_dict["max_scores"][i])
             else:
                 results[noise_key] = [data_dict["max_scores"][i]]
-                noise_params.append(np.round(data_dict["noise_params"][i],5))
-    
+                noise_params.append(np.round(data_dict["noise_params"][i], 5))
+
     sorted_noise_params = np.sort(noise_params)
-    max_scores = [
-        max(results["{:.2f}".format(noise_param)])
-        for noise_param in sorted_noise_params
-    ]
+    max_scores = [max(results["{:.2f}".format(noise_param)]) for noise_param in sorted_noise_params]
     mean_scores = [
         np.mean(results["{:.2f}".format(noise_param)], axis=0)
         for noise_param in sorted_noise_params
@@ -254,21 +257,21 @@ def analyze_data_one_param_scan(data_files):
         np.std(results[noise_key], axis=0) / np.sqrt(len(results[noise_key]))
         for noise_key in ["{:.2f}".format(noise_param) for noise_param in sorted_noise_params]
     ]
-    
-    
+
     return {
-        "noise_params" : sorted_noise_params,
-        "max_scores" : max_scores,
-        "mean_scores" : mean_scores,
-        "std_errs" : std_errs,
+        "noise_params": sorted_noise_params,
+        "max_scores": max_scores,
+        "mean_scores": mean_scores,
+        "std_errs": std_errs,
     }
+
 
 def get_data_files(path, regex):
     """Retrieves all data files that match the ``regex`` in the
     directory specified by ``path``.
     """
     return [
-        join(path, f) for f in listdir(path) if (
-            f.endswith(".json") and isfile(join(path, f)) and bool(re.match(regex, f))
-        )
+        join(path, f)
+        for f in listdir(path)
+        if (f.endswith(".json") and isfile(join(path, f)) and bool(re.match(regex, f)))
     ]

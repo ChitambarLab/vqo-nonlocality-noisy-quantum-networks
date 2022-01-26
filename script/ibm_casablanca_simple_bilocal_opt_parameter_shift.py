@@ -25,6 +25,8 @@ Positional Command Line Arguments:
 """
 
 provider = IBMQ.load_account()
+provider = IBMQ.get_provider(hub="ibm-q-startup", group="xanadu", project="reservations")
+
 
 prep_nodes = [
     QNopt.PrepareNode(1, [0, 1], QNopt.ghz_state, 0),
@@ -32,7 +34,7 @@ prep_nodes = [
 ]
 meas_nodes = [
     QNopt.MeasureNode(2, 2, [0], QNopt.local_RY, 1),
-    QNopt.MeasureNode(2, 2, [1,2], QNopt.local_RY, 2),
+    QNopt.MeasureNode(2, 2, [1, 2], QNopt.local_RY, 2),
     QNopt.MeasureNode(2, 2, [3], QNopt.local_RY, 1),
 ]
 
@@ -43,21 +45,26 @@ dev_ibm_belem = {
     # "name" : "default.qubit",
     "shots": 6000,
     # "backend": "ibmq_qasm_simulator",
-    "backend": "ibmq_belem",
+    # "backend": "ibmq_belem",
+    "backend": "ibmq_casablanca",
     "provider": provider,
 }
 
 ibm_ansatz = QNopt.NetworkAnsatz(prep_nodes, meas_nodes, dev_kwargs=dev_ibm_belem)
 cost = QNopt.nlocal_chain_cost_22(ibm_ansatz, parallel=True, diff_method="parameter-shift")
-par_grad = QNopt.parallel_nlocal_chain_grad_fn(ibm_ansatz, diff_method="parameter-shift") 
+par_grad = QNopt.parallel_nlocal_chain_grad_fn(ibm_ansatz, diff_method="parameter-shift")
 
 
-data_filepath = "script/data/ibm_belem_simple_bilocal_opt_parameter_shift/"
+data_filepath = "script/data/ibm_casablanca_simple_bilocal_opt_parameter_shift/"
 
 
-init_opt_dict = QNopt.read_optimization_json(data_filepath + "tmp/" + sys.argv[1]) if len(sys.argv) > 1 else {}
+init_opt_dict = (
+    QNopt.read_optimization_json(data_filepath + "tmp/" + sys.argv[1]) if len(sys.argv) > 1 else {}
+)
 
-num_steps = 10 if len(sys.argv) <= 2 else int(sys.argv[2])
+
+num_steps = 10
+curr_step = 0 if len(sys.argv) <= 2 else int(sys.argv[2])
 
 print("init_opt_dict : ", init_opt_dict)
 print("num_steps : ", num_steps)
@@ -67,10 +74,11 @@ opt_dict = utilities.hardware_opt(
     cost,
     ibm_ansatz.rand_scenario_settings(),
     num_steps=num_steps,
+    current_step=curr_step,
     step_size=1.4,
     grad_fn=par_grad,
     tmp_filepath=data_filepath + "tmp/",
-    init_opt_dict = init_opt_dict,
+    init_opt_dict=init_opt_dict,
 )
 
 print(opt_dict)
@@ -78,10 +86,10 @@ print(opt_dict)
 
 # evaluating the score for the "theoretical" optimal settings
 opt_settings = [
-    [np.array([[]]),np.array([[]])],  # prep settings
+    [np.array([[]]), np.array([[]])],  # prep settings
     [
         np.array([[0], [-np.pi / 2]]),
-        np.array([[-np.pi / 4,-np.pi / 4], [np.pi / 4,np.pi / 4]]),
+        np.array([[-np.pi / 4, -np.pi / 4], [np.pi / 4, np.pi / 4]]),
         np.array([[0], [-np.pi / 2]]),
     ],  # meas settings
 ]
