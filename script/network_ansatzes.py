@@ -23,6 +23,18 @@ def max_entangled(settings, wires):
     qml.Rot(*settings[0:3], wires=wires[0])
 
 
+def ghz_prep_node(n):
+    return [QNopt.PrepareNode(1, range(n), QNopt.ghz_state, 0)]
+
+
+def arb_prep_node(n):
+    return [QNopt.PrepareNode(1, range(n), qml.ArbitraryStatePreparation, 2 ** (n + 1) - 2)]
+
+
+def local_rot_meas_nodes(n):
+    return [QNopt.MeasureNode(2, 2, [i], local_rot, 3) for i in range(n)]
+
+
 # Chain Network Ansatz Helpers
 def chain_nlocal_max_entangled_prep_nodes(n):
     return [
