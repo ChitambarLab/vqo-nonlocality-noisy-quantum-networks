@@ -44,8 +44,8 @@ if __name__ == "__main__":
 
     client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
-    step_sizes = [0.1, 0.03, 0.009]
-    num_steps = [45, 65, 90]
+    step_sizes = [0.1, 0.03, 0.0075]
+    num_steps = [45, 65, 100]
 
     for i, n in enumerate([3, 4, 5]):
         print("n = ", n)
