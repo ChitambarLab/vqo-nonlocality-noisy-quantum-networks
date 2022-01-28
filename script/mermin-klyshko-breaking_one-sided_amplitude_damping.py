@@ -45,7 +45,7 @@ if __name__ == "__main__":
     client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
     step_sizes = [0.1, 0.03, 0.0075]
-    num_steps = [45, 65, 100]
+    num_steps = [45, 65, 105]
 
     for i, n in enumerate([3, 4, 5]):
         print("n = ", n)
@@ -53,42 +53,42 @@ if __name__ == "__main__":
 
         step_size = step_sizes[i]
 
-        # # ghz state preparations
-        # time_start = time.time()
+        # ghz state preparations
+        time_start = time.time()
 
-        # ghz_optimization = utilities.noisy_net_opt_fn(
-        #     ansatzes.ghz_prep_node(n),
-        #     ansatzes.local_rot_meas_nodes(n),
-        #     single_qubit_amplitude_damping_nodes_fn(n, wires=[0]),
-        #     QNopt.mermin_klyshko_cost_fn,
-        #     ansatz_kwargs={
-        #         "dev_kwargs": {
-        #             "name": "default.qubit",
-        #         },
-        #     },
-        #     opt_kwargs={
-        #         "sample_width": 5,
-        #         "step_size": step_size,
-        #         "num_steps": num_steps[i],
-        #         "verbose": False,
-        #     },
-        # )
-        # ghz_jobs = client.map(ghz_optimization, param_range)
-        # ghz_opt_dicts = client.gather(ghz_jobs)
+        ghz_optimization = utilities.noisy_net_opt_fn(
+            ansatzes.ghz_prep_node(n),
+            ansatzes.local_rot_meas_nodes(n),
+            single_qubit_amplitude_damping_nodes_fn(n, wires=[0]),
+            QNopt.mermin_klyshko_cost_fn,
+            ansatz_kwargs={
+                "dev_kwargs": {
+                    "name": "default.qubit",
+                },
+            },
+            opt_kwargs={
+                "sample_width": 5,
+                "step_size": step_size,
+                "num_steps": num_steps[i],
+                "verbose": False,
+            },
+        )
+        ghz_jobs = client.map(ghz_optimization, param_range)
+        ghz_opt_dicts = client.gather(ghz_jobs)
 
-        # utilities.save_optimizations_one_param_scan(
-        #     "script/data/mermin-klyshko-breaking_one-sided_amplitude_damping/",
-        #     "ghz_n-" + str(n) + "_",
-        #     param_range,
-        #     ghz_opt_dicts,
-        #     quantum_bound=QNopt.mermin_klyshko_quantum_bound(n),
-        #     classical_bound=QNopt.mermin_klyshko_classical_bound(n),
-        # )
+        utilities.save_optimizations_one_param_scan(
+            "script/data/mermin-klyshko-breaking_one-sided_amplitude_damping/",
+            "ghz_n-" + str(n) + "_",
+            param_range,
+            ghz_opt_dicts,
+            quantum_bound=QNopt.mermin_klyshko_quantum_bound(n),
+            classical_bound=QNopt.mermin_klyshko_classical_bound(n),
+        )
 
-        # time_elapsed = time.time() - time_start
-        # print("\nelapsed time : ", time_elapsed, "\n")
+        time_elapsed = time.time() - time_start
+        print("\nelapsed time : ", time_elapsed, "\n")
 
-        # client.restart()
+        client.restart()
 
         # arb state preparations
         time_start = time.time()
