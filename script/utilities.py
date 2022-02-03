@@ -515,6 +515,54 @@ def analyze_data_two_param_scan(data_files):
     }
 
 
+def opt_dicts_mean_stderr(opt_dicts, num_samples=None):
+    """Performs an aggregate analysis on a set of optimization dictionaries.
+
+    :param opt_dicts: A set of optimization dictionaries to analyze. These dictionaries
+                      are output directly from ``qnetvo.gradient_descent`` function.
+                      Each dictionary should contain data for a different run of the
+                      same optimization problem.
+    :type opt_dicts: List[Dictionary]
+
+    :param num_samples: The number of sampled steps in the optimization. Each sample
+                        consists of the score and settings in that particule optimization
+                        epoch. If no argument is passed, then all available samples are used.
+    :type num_samples: Int, default ``None``
+
+    :returns: A dictionary with the following Keys:
+        * ``"max_scores"``: The maximum score in each sampled step.
+        * ``"mean_scores"``: The average score in each sampled step.
+        * ``"stderr_scores"``: The standard error in each sampled step.
+        * ``"opt_settings"``: The optimal settings used to achieve the maximium 
+                              score in each step.
+        * ``"mean_theoretical_score"``: The average theoretically optimal score.
+    :rtype: Dictionary
+    """
+    if num_samples == None:
+        num_samples = opt_dicts[0]["samples"]
+
+    scores_array = np.array([opt_dict["scores"][0:num_samples] for opt_dict in opt_dicts])    
+    settings_array = [opt_dict["settings_history"][0:num_samples] for opt_dict in opt_dicts]
+    theoretical_max_array = np.array([opt_dict["theoretical_score"] for opt_dict in opt_dicts])
+    mean_theoretical_score = np.mean(theoretical_max_array)
+
+    scores_mean = np.mean(scores_array, axis=0)   
+    scores_stderr = np.std(scores_array, axis=0, ddof=1) / np.sqrt(scores_array.shape[1])
+    scores_max = np.max(scores_array, axis=0)
+    max_ids = np.argmax(scores_array, axis=0)
+    max_settings = [
+        settings_array[max_ids[i]][i] for i in range(num_samples) 
+    ]
+
+    return {
+        "max_scores": scores_max,
+        "mean_scores": scores_mean,
+        "stderr_scores": scores_stderr,
+        "opt_settings": max_settings,
+        "mean_theoretical_score": mean_theoretical_score,
+    }
+
+
 def get_data_files(path, regex):
     """Retrieves all data files that match the ``regex`` in the
     directory specified by ``path``.

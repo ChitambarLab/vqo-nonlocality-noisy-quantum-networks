@@ -48,8 +48,8 @@ dev_ibm = {
     "shots": 6000,
     # "backend": "ibmq_qasm_simulator",
     # "backend": "ibmq_belem",
-    # "backend": "ibmq_casablanca",
-    "backend": "ibmq_jakarta",
+    "backend": "ibmq_casablanca",
+    # "backend": "ibmq_jakarta",
     "provider": provider,
 }
 
