@@ -4,7 +4,7 @@ from pennylane import numpy as np
 import pennylane as qml
 
 import math
-from context import QNetOptimizer as QNopt
+from context import qnetvo as qnet
 
 import utilities
 import network_ansatzes as ansatzes
@@ -21,9 +21,9 @@ preparations.
 def pure_amplitude_damping_nodes_fn(n):
     def noise_nodes(noise_args):
         return [
-            QNopt.NoiseNode(
+            qnet.NoiseNode(
                 [i, n + i],
-                lambda settings, wires: QNopt.pure_amplitude_damping([noise_args], wires=wires),
+                lambda settings, wires: qnet.pure_amplitude_damping([noise_args], wires=wires),
             )
             for i in range(n)
         ]
@@ -32,11 +32,10 @@ def pure_amplitude_damping_nodes_fn(n):
 
 if __name__ == "__main__":
 
-
     data_dir = "script/data/mermin-klyshko-breaking_uniform_amplitude_damping/"
 
-    step_sizes = [0.1, 0.03, 0.0075]
-    num_steps = [50, 85, 125]
+    step_sizes = [0.1, 0.04, 0.01]
+    num_steps = [80, 150, 300]
 
     for i, n in enumerate([3, 4, 5]):
         client = Client(processes=True, n_workers=5, threads_per_worker=1)
@@ -53,7 +52,7 @@ if __name__ == "__main__":
             ansatzes.ghz_prep_node(n),
             ansatzes.local_rot_meas_nodes(n),
             pure_amplitude_damping_nodes_fn(n),
-            QNopt.mermin_klyshko_cost_fn,
+            qnet.mermin_klyshko_cost_fn,
             ansatz_kwargs={
                 "dev_kwargs": {
                     "name": "default.qubit",
@@ -76,8 +75,8 @@ if __name__ == "__main__":
             "ghz_n-" + str(n) + "_",
             param_range,
             ghz_opt_dicts,
-            quantum_bound=QNopt.mermin_klyshko_quantum_bound(n),
-            classical_bound=QNopt.mermin_klyshko_classical_bound(n),
+            quantum_bound=qnet.mermin_klyshko_quantum_bound(n),
+            classical_bound=qnet.mermin_klyshko_classical_bound(n),
         )
 
         time_elapsed = time.time() - time_start
@@ -91,7 +90,7 @@ if __name__ == "__main__":
             ansatzes.arb_prep_node(n),
             ansatzes.local_rot_meas_nodes(n),
             pure_amplitude_damping_nodes_fn(n),
-            QNopt.mermin_klyshko_cost_fn,
+            qnet.mermin_klyshko_cost_fn,
             ansatz_kwargs={
                 "dev_kwargs": {
                     "name": "default.qubit",
@@ -112,8 +111,8 @@ if __name__ == "__main__":
             "arb_n-" + str(n) + "_",
             param_range,
             arb_opt_dicts,
-            quantum_bound=QNopt.mermin_klyshko_quantum_bound(n),
-            classical_bound=QNopt.mermin_klyshko_classical_bound(n),
+            quantum_bound=qnet.mermin_klyshko_quantum_bound(n),
+            classical_bound=qnet.mermin_klyshko_classical_bound(n),
         )
 
         time_elapsed = time.time() - time_start

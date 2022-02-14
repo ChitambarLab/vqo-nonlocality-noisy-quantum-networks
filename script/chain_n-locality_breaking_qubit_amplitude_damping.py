@@ -2,7 +2,7 @@ from dask.distributed import Client
 import time
 from pennylane import numpy as np
 import pennylane as qml
-from context import QNetOptimizer as QNopt
+from context import qnetvo as qnet
 import sys
 
 import utilities
@@ -30,10 +30,10 @@ Otherwise, the noisy qubit acts upon wires=[0] (the end node measurement).
 def single_qubit_amplitude_damping_nodes_fn(n, wires=[0]):
     def noise_nodes(noise_args):
         return [
-            QNopt.NoiseNode(
+            qnet.NoiseNode(
                 # wires, lambda settings, wires: qml.AmplitudeDamping(noise_args, wires=wires[0])
                 [wires[0], 2 * n],
-                lambda settings, wires: QNopt.pure_amplitude_damping([noise_args], wires=wires),
+                lambda settings, wires: qnet.pure_amplitude_damping([noise_args], wires=wires),
             ),
         ]
 
@@ -58,7 +58,7 @@ if __name__ == "__main__":
                 ansatzes.chain_nlocal_max_entangled_prep_nodes(n),
                 ansatzes.chain_local_rot_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wires=noisy_wire),
-                QNopt.nlocal_chain_cost_22,
+                qnet.nlocal_chain_cost_22,
                 ansatz_kwargs={
                     "dev_kwargs": {
                         "name": "default.qubit",
@@ -94,7 +94,7 @@ if __name__ == "__main__":
                 ansatzes.chain_nlocal_max_entangled_prep_nodes(n),
                 ansatzes.chain_bell_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wires=noisy_wire),
-                QNopt.nlocal_chain_cost_22,
+                qnet.nlocal_chain_cost_22,
                 ansatz_kwargs={
                     "dev_kwargs": {
                         "name": "default.qubit",
@@ -130,7 +130,7 @@ if __name__ == "__main__":
                 ansatzes.chain_nlocal_max_entangled_prep_nodes(n),
                 ansatzes.chain_arb_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wires=noisy_wire),
-                QNopt.nlocal_chain_cost_22,
+                qnet.nlocal_chain_cost_22,
                 ansatz_kwargs={
                     "dev_kwargs": {
                         "name": "default.qubit",

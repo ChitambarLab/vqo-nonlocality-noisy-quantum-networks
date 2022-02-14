@@ -1,4 +1,4 @@
-from context import QNetOptimizer as QNopt
+from context import qnetvo as qnet
 from datetime import datetime
 from pennylane import numpy as np
 import matplotlib.pyplot as plt
@@ -54,7 +54,7 @@ def hardware_opt(
     settings = opt_dict["settings_history"][-1] if warm_start else init_settings
 
     for i in range(current_step, num_steps):
-        tmp_opt_dict = QNopt.gradient_descent(
+        tmp_opt_dict = qnet.gradient_descent(
             cost,
             settings,
             step_size=step_size,
@@ -76,7 +76,7 @@ def hardware_opt(
         tmp_datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
         tmp_filename = tmp_filepath + tmp_datetime_ext
 
-        QNopt.write_optimization_json(opt_dict, tmp_filename)
+        qnet.write_optimization_json(opt_dict, tmp_filename)
 
         # update initial settings
         settings = opt_dict["settings_history"][-1]
@@ -153,10 +153,10 @@ def noisy_net_opt_fn(
     """Constructs an ``optimize`` function parameterized by the ``noise_args``, a list
     of arguments describing the amount of noise.
 
-    :param prep_nodes: A list of QNopt.PrepareNode classes for the network ansatz.
+    :param prep_nodes: A list of qnet.PrepareNode classes for the network ansatz.
     :type prep_nodes: list[PrepareNode]
 
-    :param meas_nodes: A list of QNopt.MeasureNode classes for the network ansatz.
+    :param meas_nodes: A list of qnet.MeasureNode classes for the network ansatz.
     :type meas_nodes: list[MeasureNode]
 
     :param noise_nodes_fn: A function for constructing the noise nodes for the ansatz.
@@ -166,7 +166,7 @@ def noisy_net_opt_fn(
     :param cost_fn: A cost function factory used to construct an ansatz-specific cost function.
     :type cost_fn: function
 
-    :param ansatz_kwargs: Keyword arguments for the ``QNopt.NetworkAnsatz`` class.
+    :param ansatz_kwargs: Keyword arguments for the ``qnet.NetworkAnsatz`` class.
     :type ansatz_kwargs: optional, dictionary
 
     :param cost_kwargs: Keyword arguments for the ``cost_fn`` factory function.
@@ -175,7 +175,7 @@ def noisy_net_opt_fn(
     :param qnode_kwargs: Keyword arguments passed to the QNode constructors.
     :type qnode_kwargs: optional, dictionary
 
-    :param opt_kwargs: Keyword arguments for the ``QNopt.gradient_descent`` function.
+    :param opt_kwargs: Keyword arguments for the ``qnet.gradient_descent`` function.
     :type opt_kwargs: optional, dictionary
 
     :param verbose: If ``True`` prints out progress.
@@ -192,7 +192,7 @@ def noisy_net_opt_fn(
         """
         noise_nodes = noise_nodes_fn(noise_args)
 
-        ansatz = QNopt.NetworkAnsatz(prep_nodes, meas_nodes, noise_nodes, **ansatz_kwargs)
+        ansatz = qnet.NetworkAnsatz(prep_nodes, meas_nodes, noise_nodes, **ansatz_kwargs)
         cost = cost_fn(ansatz, **cost_kwargs, **qnode_kwargs)
         init_settings = ansatz.rand_scenario_settings()
 
@@ -215,7 +215,7 @@ def _gradient_descent_wrapper(*opt_args, **opt_kwargs):
     Optimization errors will result in an empty optimization dictionary.
     """
     try:
-        opt_dict = QNopt.gradient_descent(*opt_args, **opt_kwargs)
+        opt_dict = qnet.gradient_descent(*opt_args, **opt_kwargs)
     except Exception as err:
         print("An error occurred during gradient descent.")
         print(err)
@@ -268,7 +268,7 @@ def save_optimizations_one_param_scan(
         opt_settings = opt_dicts[i]["settings_history"][max_id]
 
         json_data["max_scores"] += [float(max_score)]
-        json_data["opt_settings"] += [QNopt.settings_to_list(opt_settings)]
+        json_data["opt_settings"] += [qnet.settings_to_list(opt_settings)]
 
         plt.plot(
             opt_dicts[i]["samples"],
@@ -361,7 +361,7 @@ def save_optimizations_two_param_scan(
             opt_settings = opt_dicts[opt_id]["settings_history"][max_id]
 
             json_data["max_scores"][row_id] += [float(max_score)]
-            json_data["opt_settings"][row_id] += [QNopt.settings_to_list(opt_settings)]
+            json_data["opt_settings"][row_id] += [qnet.settings_to_list(opt_settings)]
 
             plt.plot(
                 opt_dicts[opt_id]["samples"],

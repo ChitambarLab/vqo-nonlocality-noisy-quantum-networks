@@ -1,5 +1,5 @@
 from pennylane import numpy as np
-from context import QNetOptimizer as QNopt
+from context import qnetvo as qnet
 
 
 def detector_error_chsh_cost_fn(
@@ -36,7 +36,7 @@ def detector_error_chsh_cost_fn(
 
     detectors_error = np.kron(error_map1, error_map2)
 
-    chsh_probs = QNopt.joint_probs_qnode(chsh_ansatz, **qnode_kwargs)
+    chsh_probs = qnet.joint_probs_qnode(chsh_ansatz, **qnode_kwargs)
 
     def cost(network_settings):
 

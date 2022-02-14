@@ -1,4 +1,4 @@
-from context import QNetOptimizer as QNopt
+from context import qnetvo as qnet
 import utilities
 
 from pennylane import numpy as np
@@ -29,16 +29,16 @@ provider = IBMQ.get_provider(hub="ibm-q-startup", group="xanadu", project="reser
 
 
 prep_nodes = [
-    QNopt.PrepareNode(1, [0, 1], QNopt.ghz_state, 0),
-    QNopt.PrepareNode(1, [2, 3], QNopt.ghz_state, 0),
+    qnet.PrepareNode(1, [0, 1], qnet.ghz_state, 0),
+    qnet.PrepareNode(1, [2, 3], qnet.ghz_state, 0),
 ]
 meas_nodes = [
-    QNopt.MeasureNode(2, 2, [0], QNopt.local_RY, 1),
-    QNopt.MeasureNode(2, 2, [1, 2], QNopt.local_RY, 2),
-    QNopt.MeasureNode(2, 2, [3], QNopt.local_RY, 1),
+    qnet.MeasureNode(2, 2, [0], qnet.local_RY, 1),
+    qnet.MeasureNode(2, 2, [1, 2], qnet.local_RY, 2),
+    qnet.MeasureNode(2, 2, [3], qnet.local_RY, 1),
 ]
 
-bilocal_ansatz = QNopt.NetworkAnsatz(prep_nodes, meas_nodes)
+bilocal_ansatz = qnet.NetworkAnsatz(prep_nodes, meas_nodes)
 
 dev_ibm_belem = {
     "name": "qiskit.ibmq",
@@ -50,16 +50,16 @@ dev_ibm_belem = {
     "provider": provider,
 }
 
-ibm_ansatz = QNopt.NetworkAnsatz(prep_nodes, meas_nodes, dev_kwargs=dev_ibm_belem)
-cost = QNopt.nlocal_chain_cost_22(ibm_ansatz, parallel=True, diff_method="parameter-shift")
-par_grad = QNopt.parallel_nlocal_chain_grad_fn(ibm_ansatz, diff_method="parameter-shift")
+ibm_ansatz = qnet.NetworkAnsatz(prep_nodes, meas_nodes, dev_kwargs=dev_ibm_belem)
+cost = qnet.nlocal_chain_cost_22(ibm_ansatz, parallel=True, diff_method="parameter-shift")
+par_grad = qnet.parallel_nlocal_chain_grad_fn(ibm_ansatz, diff_method="parameter-shift")
 
 
 data_filepath = "script/data/ibm_casablanca_simple_bilocal_opt_parameter_shift/"
 
 
 init_opt_dict = (
-    QNopt.read_optimization_json(data_filepath + "tmp/" + sys.argv[1]) if len(sys.argv) > 1 else {}
+    qnet.read_optimization_json(data_filepath + "tmp/" + sys.argv[1]) if len(sys.argv) > 1 else {}
 )
 
 
@@ -111,4 +111,4 @@ plt.xlabel("Epoch")
 plt.legend()
 plt.savefig(filename)
 
-QNopt.write_optimization_json(opt_dict, filename)
+qnet.write_optimization_json(opt_dict, filename)

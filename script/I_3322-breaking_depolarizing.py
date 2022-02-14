@@ -6,7 +6,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import json
 
-from context import QNetOptimizer as QNopt
+from context import qnetvo as qnet
 
 """
 This script collects data about the noise robustness of the I_3322 Bell inequality
@@ -22,17 +22,17 @@ def Rot_meas_ansatz(settings, wires):
 def I_3322_noise_optimization(prep_nodes, meas_nodes, **opt_kwargs):
     def _optimization_fn(noise_args):
         noise_nodes = [
-            QNopt.NoiseNode(
+            qnet.NoiseNode(
                 [1], lambda settings, wires: qml.DepolarizingChannel(noise_args, wires=wires[0])
             ),
         ]
 
-        I_3322_ansatz = QNopt.NetworkAnsatz(prep_nodes, meas_nodes, noise_nodes)
-        I_3322_cost = QNopt.I_3322_bell_inequality_cost(I_3322_ansatz)
+        I_3322_ansatz = qnet.NetworkAnsatz(prep_nodes, meas_nodes, noise_nodes)
+        I_3322_cost = qnet.I_3322_bell_inequality_cost(I_3322_ansatz)
         init_settings = I_3322_ansatz.rand_scenario_settings()
 
         try:
-            opt_dict = QNopt.gradient_descent(I_3322_cost, init_settings, **opt_kwargs)
+            opt_dict = qnet.gradient_descent(I_3322_cost, init_settings, **opt_kwargs)
         except Exception as err:
             print("An error occurred during gradient descent.")
             print(err)
@@ -65,7 +65,7 @@ def save_optimization_results(ansatz_name, param_range, opt_dicts):
         opt_settings = opt_dicts[i]["settings_history"][max_id]
 
         json_data["max_scores"] += [float(max_score)]
-        json_data["opt_settings"] += [QNopt.settings_to_list(opt_settings)]
+        json_data["opt_settings"] += [qnet.settings_to_list(opt_settings)]
 
         plt.plot(
             opt_dicts[i]["samples"],
@@ -98,12 +98,12 @@ if __name__ == "__main__":
     client = Client(processes=True)
 
     max_entangled_prep = [
-        QNopt.PrepareNode(1, [0, 1], QNopt.max_entangled_state, 3),
+        qnet.PrepareNode(1, [0, 1], qnet.max_entangled_state, 3),
     ]
-    arb_prep = [QNopt.PrepareNode(1, [0, 1], qml.templates.subroutines.ArbitraryUnitary, 15)]
+    arb_prep = [qnet.PrepareNode(1, [0, 1], qml.templates.subroutines.ArbitraryUnitary, 15)]
     meas_nodes = [
-        QNopt.MeasureNode(3, 2, [0], Rot_meas_ansatz, 3),
-        QNopt.MeasureNode(3, 2, [1], Rot_meas_ansatz, 3),
+        qnet.MeasureNode(3, 2, [0], Rot_meas_ansatz, 3),
+        qnet.MeasureNode(3, 2, [1], Rot_meas_ansatz, 3),
     ]
 
     param_range = np.arange(0, 1.01, 0.05)

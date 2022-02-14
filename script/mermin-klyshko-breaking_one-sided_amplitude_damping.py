@@ -4,7 +4,7 @@ from pennylane import numpy as np
 import pennylane as qml
 
 import math
-from context import QNetOptimizer as QNopt
+from context import qnetvo as qnet
 import sys
 
 import utilities
@@ -30,9 +30,9 @@ def pure_amplitude_damping(noise_params, wires):
 def single_qubit_amplitude_damping_nodes_fn(n, wires=[0]):
     def noise_nodes(noise_args):
         return [
-            QNopt.NoiseNode(
+            qnet.NoiseNode(
                 [wires[0], n],
-                # lambda settings, wires: QNopt.pure_amplitude_damping([noise_args], wires=wires),
+                # lambda settings, wires: qnet.pure_amplitude_damping([noise_args], wires=wires),
                 lambda settings, wires: pure_amplitude_damping([noise_args], wires=wires),
             ),
         ]
@@ -60,7 +60,7 @@ if __name__ == "__main__":
             ansatzes.ghz_prep_node(n),
             ansatzes.local_rot_meas_nodes(n),
             single_qubit_amplitude_damping_nodes_fn(n, wires=[0]),
-            QNopt.mermin_klyshko_cost_fn,
+            qnet.mermin_klyshko_cost_fn,
             ansatz_kwargs={
                 "dev_kwargs": {
                     "name": "default.qubit",
@@ -81,8 +81,8 @@ if __name__ == "__main__":
             "ghz_n-" + str(n) + "_",
             param_range,
             ghz_opt_dicts,
-            quantum_bound=QNopt.mermin_klyshko_quantum_bound(n),
-            classical_bound=QNopt.mermin_klyshko_classical_bound(n),
+            quantum_bound=qnet.mermin_klyshko_quantum_bound(n),
+            classical_bound=qnet.mermin_klyshko_classical_bound(n),
         )
 
         time_elapsed = time.time() - time_start
@@ -96,7 +96,7 @@ if __name__ == "__main__":
             ansatzes.arb_prep_node(n),
             ansatzes.local_rot_meas_nodes(n),
             single_qubit_amplitude_damping_nodes_fn(n, wires=[0]),
-            QNopt.mermin_klyshko_cost_fn,
+            qnet.mermin_klyshko_cost_fn,
             ansatz_kwargs={
                 "dev_kwargs": {
                     "name": "default.qubit",
@@ -117,8 +117,8 @@ if __name__ == "__main__":
             "arb_n-" + str(n) + "_",
             param_range,
             arb_opt_dicts,
-            quantum_bound=QNopt.mermin_klyshko_quantum_bound(n),
-            classical_bound=QNopt.mermin_klyshko_classical_bound(n),
+            quantum_bound=qnet.mermin_klyshko_quantum_bound(n),
+            classical_bound=qnet.mermin_klyshko_classical_bound(n),
         )
 
         time_elapsed = time.time() - time_start

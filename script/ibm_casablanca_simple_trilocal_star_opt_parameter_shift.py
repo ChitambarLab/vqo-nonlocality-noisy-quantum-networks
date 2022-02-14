@@ -1,4 +1,4 @@
-from context import QNetOptimizer as QNopt
+from context import qnetvo as qnet
 import utilities
 
 from pennylane import numpy as np
@@ -29,18 +29,18 @@ provider = IBMQ.get_provider(hub="ibm-q-startup", group="xanadu", project="reser
 
 
 prep_nodes = [
-    QNopt.PrepareNode(1, [0, 3], QNopt.ghz_state, 0),
-    QNopt.PrepareNode(1, [1, 4], QNopt.ghz_state, 0),
-    QNopt.PrepareNode(1, [2, 5], QNopt.ghz_state, 0),
+    qnet.PrepareNode(1, [0, 3], qnet.ghz_state, 0),
+    qnet.PrepareNode(1, [1, 4], qnet.ghz_state, 0),
+    qnet.PrepareNode(1, [2, 5], qnet.ghz_state, 0),
 ]
 meas_nodes = [
-    QNopt.MeasureNode(2, 2, [0], QNopt.local_RY, 1),
-    QNopt.MeasureNode(2, 2, [1], QNopt.local_RY, 1),
-    QNopt.MeasureNode(2, 2, [2], QNopt.local_RY, 1),
-    QNopt.MeasureNode(2, 2, [3, 4, 5], QNopt.local_RY, 3),
+    qnet.MeasureNode(2, 2, [0], qnet.local_RY, 1),
+    qnet.MeasureNode(2, 2, [1], qnet.local_RY, 1),
+    qnet.MeasureNode(2, 2, [2], qnet.local_RY, 1),
+    qnet.MeasureNode(2, 2, [3, 4, 5], qnet.local_RY, 3),
 ]
 
-trilocal_ansatz = QNopt.NetworkAnsatz(prep_nodes, meas_nodes)
+trilocal_ansatz = qnet.NetworkAnsatz(prep_nodes, meas_nodes)
 
 dev_ibm = {
     "name": "qiskit.ibmq",
@@ -53,14 +53,14 @@ dev_ibm = {
     "provider": provider,
 }
 
-ibm_ansatz = QNopt.NetworkAnsatz(prep_nodes, meas_nodes, dev_kwargs=dev_ibm)
-cost = QNopt.nlocal_star_22_cost_fn(ibm_ansatz, parallel=True, diff_method="parameter-shift")
-par_grad = QNopt.parallel_nlocal_star_grad_fn(ibm_ansatz, diff_method="parameter-shift")
+ibm_ansatz = qnet.NetworkAnsatz(prep_nodes, meas_nodes, dev_kwargs=dev_ibm)
+cost = qnet.nlocal_star_22_cost_fn(ibm_ansatz, parallel=True, nthreads=5, diff_method="parameter-shift")
+par_grad = qnet.parallel_nlocal_star_grad_fn(ibm_ansatz, nthreads=5, diff_method="parameter-shift")
 
 data_filepath = "script/data/ibm_casablanca_simple_trilocal_star_opt_parameter_shift/"
 
 init_opt_dict = (
-    QNopt.read_optimization_json(data_filepath + "tmp/" + sys.argv[1]) if len(sys.argv) > 1 else {}
+    qnet.read_optimization_json(data_filepath + "tmp/" + sys.argv[1]) if len(sys.argv) > 1 else {}
 )
 
 num_steps = 10
@@ -111,4 +111,4 @@ plt.xlabel("Epoch")
 plt.legend()
 plt.savefig(filename)
 
-QNopt.write_optimization_json(opt_dict, filename)
+qnet.write_optimization_json(opt_dict, filename)

@@ -5,7 +5,7 @@ import pennylane as qml
 from datetime import datetime
 import matplotlib.pyplot as plt
 import json
-from context import QNetOptimizer as QNopt
+from context import qnetvo as qnet
 
 """
 This script collects data about the noise robustness of the CHSH Bell inequality
@@ -29,20 +29,20 @@ def Rot_meas_ansatz(settings, wires):
 def chsh_noise_optimization(prep_nodes, meas_nodes, **opt_kwargs):
     def _optimization_fn(arg1, arg2):
         noise_nodes = [
-            QNopt.NoiseNode(
+            qnet.NoiseNode(
                 [0], lambda settings, wires: qml.DepolarizingChannel(arg1, wires=wires[0])
             ),
-            QNopt.NoiseNode(
+            qnet.NoiseNode(
                 [1], lambda settings, wires: qml.DepolarizingChannel(arg2, wires=wires[0])
             ),
         ]
 
-        chsh_ansatz = QNopt.NetworkAnsatz(prep_nodes, meas_nodes, noise_nodes)
-        chsh_cost = QNopt.chsh_inequality_cost(chsh_ansatz)
+        chsh_ansatz = qnet.NetworkAnsatz(prep_nodes, meas_nodes, noise_nodes)
+        chsh_cost = qnet.chsh_inequality_cost(chsh_ansatz)
         init_settings = chsh_ansatz.rand_scenario_settings()
 
         try:
-            opt_dict = QNopt.gradient_descent(chsh_cost, init_settings, **opt_kwargs)
+            opt_dict = qnet.gradient_descent(chsh_cost, init_settings, **opt_kwargs)
         except Exception as err:
             print("An error occurred during gradient descent.")
             print(err)
@@ -81,7 +81,7 @@ def save_optimization_results(ansatz_name, x_range, y_range, opt_dicts):
             opt_settings = opt_dicts[opt_id]["settings_history"][max_id]
 
             json_data["max_scores"][row_id] += [max_score]
-            json_data["opt_settings"][row_id] += [QNopt.settings_to_list(opt_settings)]
+            json_data["opt_settings"][row_id] += [qnet.settings_to_list(opt_settings)]
 
             plt.plot(opt_dicts[opt_id]["samples"], opt_dicts[opt_id]["scores"], "--.")
             plt.plot([max_sample], [max_score], "r*")
@@ -114,15 +114,15 @@ if __name__ == "__main__":
     client = Client(processes=True)
 
     max_entangled_prep = [
-        QNopt.PrepareNode(1, [0, 1], QNopt.max_entangled_state, 3),
+        qnet.PrepareNode(1, [0, 1], qnet.max_entangled_state, 3),
     ]
     Rot_CNOT_Rot_prep = [
-        QNopt.PrepareNode(1, [0, 1], Rot_CNOT_Rot_prep, 12),
+        qnet.PrepareNode(1, [0, 1], Rot_CNOT_Rot_prep, 12),
     ]
-    arb_prep = [QNopt.PrepareNode(1, [0, 1], qml.templates.subroutines.ArbitraryUnitary, 15)]
+    arb_prep = [qnet.PrepareNode(1, [0, 1], qml.templates.subroutines.ArbitraryUnitary, 15)]
     meas_nodes = [
-        QNopt.MeasureNode(2, 2, [0], Rot_meas_ansatz, 3),
-        QNopt.MeasureNode(2, 2, [1], Rot_meas_ansatz, 3),
+        qnet.MeasureNode(2, 2, [0], Rot_meas_ansatz, 3),
+        qnet.MeasureNode(2, 2, [1], Rot_meas_ansatz, 3),
     ]
 
     x_range = np.arange(0, 1.01, 1 / 10)

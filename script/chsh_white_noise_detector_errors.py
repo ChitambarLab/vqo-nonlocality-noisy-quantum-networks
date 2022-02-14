@@ -2,7 +2,7 @@ from dask.distributed import Client
 import time
 from pennylane import numpy as np
 import pennylane as qml
-from context import QNetOptimizer as QNopt
+from context import qnetvo as qnet
 
 # local imports
 import utilities
@@ -25,13 +25,13 @@ We consider Bell state preparations and arbitrary state preparations.
 if __name__ == "__main__":
 
     bell_prep_nodes = [
-        QNopt.PrepareNode(1, [0, 1], QNopt.ghz_state, 0),
+        qnet.PrepareNode(1, [0, 1], qnet.ghz_state, 0),
     ]
 
-    arb_prep_nodes = [QNopt.PrepareNode(1, [0, 1], qml.ArbitraryStatePreparation, 6)]
+    arb_prep_nodes = [qnet.PrepareNode(1, [0, 1], qml.ArbitraryStatePreparation, 6)]
 
     meas_nodes = [
-        QNopt.MeasureNode(2, 2, [i], lambda settings, wires: qml.Rot(*settings, wires=wires), 3)
+        qnet.MeasureNode(2, 2, [i], lambda settings, wires: qml.Rot(*settings, wires=wires), 3)
         for i in range(2)
     ]
 
@@ -51,7 +51,7 @@ if __name__ == "__main__":
     # bell state preparations
     time_start = time.time()
     bell_state_optimization = utilities.detector_error_opt_fn(
-        QNopt.NetworkAnsatz(bell_prep_nodes, meas_nodes),
+        qnet.NetworkAnsatz(bell_prep_nodes, meas_nodes),
         detector_error_chsh_cost_fn,
         cost_kwargs = {
             "error_map": white_noise_error_map,
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     # arbitrary state preparations
     time_start = time.time()
     arb_state_optimization = utilities.detector_error_opt_fn(
-        QNopt.NetworkAnsatz(arb_prep_nodes, meas_nodes),
+        qnet.NetworkAnsatz(arb_prep_nodes, meas_nodes),
         detector_error_chsh_cost_fn,
         cost_kwargs = {
             "error_map": white_noise_error_map,

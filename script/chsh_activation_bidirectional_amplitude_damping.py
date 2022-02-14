@@ -1,6 +1,6 @@
 from dask.distributed import Client
 import time
-from context import QNetOptimizer as QNopt
+from context import qnetvo as qnet
 from pennylane import numpy as np
 import pennylane as qml
 
@@ -13,8 +13,8 @@ Unfortunately, we are unable to find a positive case demonstrating the result.
 
 def chsh_noise_optimization(noise_args):
     def prep_ansatz(settings, wires):
-        QNopt.max_entangled_state(settings[0:3], wires=[wires[0], wires[2]])
-        QNopt.max_entangled_state(settings[3:6], wires=[wires[1], wires[3]])
+        qnet.max_entangled_state(settings[0:3], wires=[wires[0], wires[2]])
+        qnet.max_entangled_state(settings[3:6], wires=[wires[1], wires[3]])
 
     def state_ansatz(settings, wires):
         # qml.templates.subroutines.ArbitraryUnitary(settings[0:15],wires=wires[0:2])
@@ -68,27 +68,27 @@ def chsh_noise_optimization(noise_args):
         qml.RY(settings[4], wires=wires[1])
 
     prep_nodes = [
-        QNopt.PrepareNode(1, [0, 1, 2, 3], state_ansatz2, 30),
+        qnet.PrepareNode(1, [0, 1, 2, 3], state_ansatz2, 30),
     ]
     meas_nodes = [
-        QNopt.MeasureNode(2, 2, [0, 2], qml.templates.subroutines.ArbitraryUnitary, 15),
-        QNopt.MeasureNode(2, 2, [1, 3], qml.templates.subroutines.ArbitraryUnitary, 15),
+        qnet.MeasureNode(2, 2, [0, 2], qml.templates.subroutines.ArbitraryUnitary, 15),
+        qnet.MeasureNode(2, 2, [1, 3], qml.templates.subroutines.ArbitraryUnitary, 15),
     ]
 
     noise_nodes = [
-        QNopt.NoiseNode(
+        qnet.NoiseNode(
             [0], lambda settings, wires: qml.AmplitudeDamping(noise_args[0], wires=wires[0])
         ),
-        QNopt.NoiseNode(
+        qnet.NoiseNode(
             [3], lambda settings, wires: qml.AmplitudeDamping(noise_args[1], wires=wires[0])
         ),
     ]
 
     # analytic device approach
-    chsh_ansatz1 = QNopt.NetworkAnsatz(prep_nodes, meas_nodes, noise_nodes)
+    chsh_ansatz1 = qnet.NetworkAnsatz(prep_nodes, meas_nodes, noise_nodes)
 
     # stochastic gradient approach
-    chsh_ansatz2 = QNopt.NetworkAnsatz(
+    chsh_ansatz2 = qnet.NetworkAnsatz(
         prep_nodes,
         meas_nodes,
         noise_nodes,
@@ -98,11 +98,11 @@ def chsh_noise_optimization(noise_args):
         },
     )
 
-    chsh_cost = QNopt.chsh_inequality_cost(chsh_ansatz1)
-    grad = QNopt.parallel_chsh_grad(chsh_ansatz2, diff_method="parameter-shift")
-    # grad = QNopt.chsh_natural_grad(chsh_ansatz2, diff_method="parameter-shift")
+    chsh_cost = qnet.chsh_inequality_cost(chsh_ansatz1)
+    grad = qnet.parallel_chsh_grad(chsh_ansatz2, diff_method="parameter-shift")
+    # grad = qnet.chsh_natural_grad(chsh_ansatz2, diff_method="parameter-shift")
 
-    opt_dict = QNopt.gradient_descent(
+    opt_dict = qnet.gradient_descent(
         chsh_cost,
         chsh_ansatz1.rand_scenario_settings(),
         sample_width=5,

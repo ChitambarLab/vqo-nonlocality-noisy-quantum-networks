@@ -1,4 +1,4 @@
-from context import QNetOptimizer as QNopt
+from context import qnetvo as qnet
 from pennylane import numpy as np
 from datetime import datetime
 from qiskit import IBMQ
@@ -7,13 +7,13 @@ import matplotlib.pyplot as plt
 
 provider = IBMQ.load_account()
 
-prep_nodes = [QNopt.PrepareNode(1, [0, 1], QNopt.ghz_state, 0)]
+prep_nodes = [qnet.PrepareNode(1, [0, 1], qnet.ghz_state, 0)]
 meas_nodes = [
-    QNopt.MeasureNode(2, 2, [0], QNopt.local_RY, 1),
-    QNopt.MeasureNode(2, 2, [1], QNopt.local_RY, 1),
+    qnet.MeasureNode(2, 2, [0], qnet.local_RY, 1),
+    qnet.MeasureNode(2, 2, [1], qnet.local_RY, 1),
 ]
 
-local_chsh_ansatz = QNopt.NetworkAnsatz(prep_nodes, meas_nodes)
+local_chsh_ansatz = qnet.NetworkAnsatz(prep_nodes, meas_nodes)
 
 dev_ibm_belem = {
     "name": "qiskit.ibmq",
@@ -23,23 +23,23 @@ dev_ibm_belem = {
     "provider": provider,
 }
 
-ibm_belem_chsh_ansatz = QNopt.NetworkAnsatz(prep_nodes, meas_nodes, dev_kwargs=dev_ibm_belem)
+ibm_belem_chsh_ansatz = qnet.NetworkAnsatz(prep_nodes, meas_nodes, dev_kwargs=dev_ibm_belem)
 
 init_settings = local_chsh_ansatz.rand_scenario_settings()
 
-local_chsh_cost = QNopt.chsh_inequality_cost(local_chsh_ansatz)
-ibm_chsh_cost = QNopt.chsh_inequality_cost(
+local_chsh_cost = qnet.chsh_inequality_cost(local_chsh_ansatz)
+ibm_chsh_cost = qnet.chsh_inequality_cost(
     ibm_belem_chsh_ansatz, parallel=True, diff_method="parameter-shift"
 )
 
-par_grad = QNopt.parallel_chsh_grad(ibm_belem_chsh_ansatz, diff_method="parameter-shift")
+par_grad = qnet.parallel_chsh_grad(ibm_belem_chsh_ansatz, diff_method="parameter-shift")
 
 
 data_filepath = "script/data/ibm_belem_simple_chsh_opt_parameter_shift/"
 
 opt_dict = {}
 for i in range(16):
-    tmp_opt_dict = QNopt.gradient_descent(
+    tmp_opt_dict = qnet.gradient_descent(
         ibm_chsh_cost, init_settings, step_size=0.12, num_steps=1, sample_width=1, grad_fn=par_grad
     )
 
@@ -56,7 +56,7 @@ for i in range(16):
     tmp_datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
     tmp_filename = data_filepath + "tmp/" + tmp_datetime_ext
 
-    QNopt.write_optimization_json(opt_dict, tmp_filename)
+    qnet.write_optimization_json(opt_dict, tmp_filename)
 
     # update initial settings
     init_settings = opt_dict["settings_history"][-1]
@@ -83,4 +83,4 @@ plt.xlabel("Epoch")
 plt.legend()
 plt.savefig(filename)
 
-QNopt.write_optimization_json(opt_dict, filename)
+qnet.write_optimization_json(opt_dict, filename)
