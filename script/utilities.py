@@ -195,6 +195,8 @@ def noisy_net_opt_fn(
         ansatz = qnet.NetworkAnsatz(prep_nodes, meas_nodes, noise_nodes, **ansatz_kwargs)
         cost = cost_fn(ansatz, **cost_kwargs, **qnode_kwargs)
         init_settings = ansatz.rand_scenario_settings()
+        # init_settings = ansatz.tf_rand_scenario_settings()
+
 
         opt_dict = _gradient_descent_wrapper(cost, init_settings, **opt_kwargs)
 

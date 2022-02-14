@@ -23,6 +23,12 @@ def max_entangled(settings, wires):
     qml.Rot(*settings[0:3], wires=wires[0])
 
 
+def ry_cnot(settings, wires):
+    qml.RY(settings[0], wires=wires[0])
+    qml.RY(settings[0], wires=wires[0])
+    qml.CNOT(wires=wires[0:2])
+
+
 def ghz_prep_node(n):
     return [qnet.PrepareNode(1, range(n), qnet.ghz_state, 0)]
 
@@ -114,7 +120,11 @@ def chain_arb_meas_nodes(n):
 
 # Star Network Ansatz Helper
 def star_nlocal_max_entangled_prep_nodes(n):
-    return [qnet.PrepareNode(1, [i, n + i], max_entangled, 3) for i in range(n)]
+    return [qnet.PrepareNode(1, [i, n + i], qnet.max_entangled_state, 3) for i in range(n)]
+
+
+def star_nlocal_arb_prep_nodes(n):
+    return [qnet.PrepareNode(1, [i, n + i], qml.ArbitraryStatePreparation, 6) for i in range(n)]
 
 
 def star_22_local_ry_meas_nodes(n):
