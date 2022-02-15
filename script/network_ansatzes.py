@@ -9,7 +9,9 @@ def local_rot(settings, wires):
 
 
 def ghz_rot(settings, wires):
-    qml.Hadamard(wires=wires[0])
+    for i in range(len(wires)):
+        qml.Rot(*settings[3 * i : 3 * i + 3], wires=wires[i])
+
     for i in range(1, len(wires)):
         qml.CNOT(wires=[wires[0], wires[i]])
 

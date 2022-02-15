@@ -25,7 +25,9 @@ dev_ibm = {
     "name": "qiskit.ibmq",
     "shots": 6000,
     # "backend": "ibmq_qasm_simulator",
-    "backend": "ibmq_belem",
+    # "backend": "ibmq_belem",
+    # "backend": "ibmq_lima",
+    "backend": "ibmq_quito",
     "provider": provider,
 }
 
@@ -55,7 +57,7 @@ opt_dict = utilities.hardware_opt(
     ibm_chsh_ansatz.rand_scenario_settings(),
     num_steps=num_steps,
     current_step=curr_step,
-    step_size=0.12,
+    step_size=0.2,
     grad_fn=par_grad,
     tmp_filepath=data_filepath + "tmp/",
     init_opt_dict=init_opt_dict,
@@ -74,6 +76,7 @@ opt_dict["theoretical_score"] = -(ibm_chsh_cost(opt_settings))
 
 opt_dict["device_name"] = dev_ibm["name"]
 opt_dict["device_shots"] = dev_ibm["shots"]
+opt_dict["device_backend"] = dev_ibm["backend"] if "backend" in dev_ibm.keys() else "local"
 
 print(opt_dict)
 

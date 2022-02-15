@@ -64,8 +64,8 @@ if __name__ == "__main__":
             },
             opt_kwargs={
                 "sample_width": 5,
-                "step_size": 1.5,
-                "num_steps": 30,
+                "step_size": 1.8,
+                "num_steps": 40,
                 "verbose": True,
             },
         )
@@ -101,8 +101,8 @@ if __name__ == "__main__":
             },
             opt_kwargs={
                 "sample_width": 5,
-                "step_size": 1.5,
-                "num_steps": 30,
+                "step_size": 1.8,
+                "num_steps": 40,
                 "verbose": True,
             },
         )
@@ -138,8 +138,8 @@ if __name__ == "__main__":
             },
             opt_kwargs={
                 "sample_width": 5,
-                "step_size": 1.5,
-                "num_steps": 30,
+                "step_size": 1.8,
+                "num_steps": 40,
                 "verbose": True,
             },
         )
@@ -175,8 +175,8 @@ if __name__ == "__main__":
             },
             opt_kwargs={
                 "sample_width": 5,
-                "step_size": 1.5,
-                "num_steps": 30,
+                "step_size": 1.8,
+                "num_steps": 40,
                 "verbose": True,
             },
         )
