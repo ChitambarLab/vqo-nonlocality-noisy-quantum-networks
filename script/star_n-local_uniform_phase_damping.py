@@ -9,15 +9,20 @@ import network_ansatzes as ansatzes
 
 
 """
-This script collects data from noisy n-local chain optimizations.
-The considered noise model is a phase damping channel applied
-equally to each qubit in the chain.
+This script collects data from noisy n-local star optimizations.
+The considered noise model is an phase damping channel on a
+single qubit in the star.
 
 The scan range is gamma in [0,1] with an interval of 0.05.
-Chains with n = 3, 4 are considered.
+Stars with n = 3 are considered.
 
-Arbitrary state preparations and measurements are considered along with
-local qubit measurements and maximally entangled state preparations.
+An arbitrary maximally entangled state is prepared and measured
+with local qubit rotations and a arbitrary two-qubit unitary on the central
+measurement node. 
+
+The script accepts the command line argument "inside" to specify that the
+noisy qubit acts upon wires=[1] (the interior measurement node).
+Otherwise, the noisy qubit acts upon wires=[0] (the end node measurement).
 """
 
 
@@ -35,21 +40,22 @@ def uniform_phase_damping_nodes_fn(n):
 
 if __name__ == "__main__":
 
-    data_dir = "script/data/chain_n-local_uniform_phase_damping/"
     param_range = np.arange(0, 1.01, 0.05)
+
+    data_dir = "script/data/star_n-local_uniform_phase_damping/"
 
     for n in [3,4]:
 
-        client = Client(processes=True, n_workers=5, threads_per_worker=1)
+        client = Client(processes=True, n_workers=3, threads_per_worker=1)
 
         # local qubit rotation measurements and max entangled states
         time_start = time.time()
 
         max_ent_local_rot_opt = utilities.noisy_net_opt_fn(
-            ansatzes.chain_nlocal_max_entangled_prep_nodes(n),
-            ansatzes.chain_local_rot_meas_nodes(n),
+            ansatzes.star_nlocal_max_entangled_prep_nodes(n),
+            ansatzes.star_22_local_rot_meas_nodes(n),
             uniform_phase_damping_nodes_fn(n),
-            qnet.nlocal_chain_cost_22,
+            qnet.nlocal_star_22_cost_fn,
             ansatz_kwargs={
                 "dev_kwargs": {
                     "name": "default.qubit",
@@ -57,7 +63,7 @@ if __name__ == "__main__":
             },
             opt_kwargs={
                 "sample_width": 5,
-                "step_size": 1.3,
+                "step_size": 1.8,
                 "num_steps": 60,
                 "verbose": True,
             },
@@ -82,11 +88,11 @@ if __name__ == "__main__":
         # local qubit rotation measurements and arb states
         time_start = time.time()
 
-        arb_local_rot_opt = utilities.noisy_net_opt_fn(
-            ansatzes.chain_nlocal_arbitrary_prep_nodes(n),
-            ansatzes.chain_local_rot_meas_nodes(n),
+        max_ent_ghz_opt = utilities.noisy_net_opt_fn(
+            ansatzes.star_nlocal_max_entangled_prep_nodes(n),
+            ansatzes.star_22_ghz_rot_meas_nodes(n),
             uniform_phase_damping_nodes_fn(n),
-            qnet.nlocal_chain_cost_22,
+            qnet.nlocal_star_22_cost_fn,
             ansatz_kwargs={
                 "dev_kwargs": {
                     "name": "default.qubit",
@@ -94,19 +100,19 @@ if __name__ == "__main__":
             },
             opt_kwargs={
                 "sample_width": 5,
-                "step_size": 1.4,
-                "num_steps": 80,
+                "step_size": 1.6,
+                "num_steps": 60,
                 "verbose": True,
             },
         )
-        arb_local_rot_jobs = client.map(arb_local_rot_opt, param_range)
-        arb_local_rot_opt_dicts = client.gather(arb_local_rot_jobs)
+        max_ent_ghz_jobs = client.map(max_ent_ghz_opt, param_range)
+        max_ent_ghz_opt_dicts = client.gather(max_ent_ghz_jobs)
 
         utilities.save_optimizations_one_param_scan(
-            data_dir,
-            "arb_local_rot_n-" + str(n) + "_",
+            data_dir,    
+            "max_entangled_ghz_rot_n-" + str(n) + "_",
             param_range,
-            arb_local_rot_opt_dicts,
+            max_ent_ghz_opt_dicts,
             quantum_bound=np.sqrt(2),
             classical_bound=1,
         )
@@ -120,10 +126,10 @@ if __name__ == "__main__":
         time_start = time.time()
 
         arb_opt = utilities.noisy_net_opt_fn(
-            ansatzes.chain_nlocal_arbitrary_prep_nodes(n),
-            ansatzes.chain_arb_meas_nodes(n),
+            ansatzes.star_nlocal_arb_prep_nodes(n),
+            ansatzes.star_22_local_rot_meas_nodes(n),
             uniform_phase_damping_nodes_fn(n),
-            qnet.nlocal_chain_cost_22,
+            qnet.nlocal_star_22_cost_fn,
             ansatz_kwargs={
                 "dev_kwargs": {
                     "name": "default.qubit",
@@ -131,8 +137,8 @@ if __name__ == "__main__":
             },
             opt_kwargs={
                 "sample_width": 5,
-                "step_size": 1,
-                "num_steps": 80,
+                "step_size": 1.8,
+                "num_steps": 60,
                 "verbose": True,
             },
         )
@@ -141,7 +147,7 @@ if __name__ == "__main__":
 
         utilities.save_optimizations_one_param_scan(
             data_dir,
-            "arb_arb_n-" + str(n) + "_",
+            "arb_local_rot_n-" + str(n) + "_",
             param_range,
             arb_opt_dicts,
             quantum_bound=np.sqrt(2),
@@ -156,11 +162,11 @@ if __name__ == "__main__":
         # ghz rotation measurements and arb states
         time_start = time.time()
 
-        max_entangled_opt = utilities.noisy_net_opt_fn(
-            ansatzes.chain_nlocal_max_entangled_prep_nodes(n),
-            ansatzes.chain_arb_meas_nodes(n),
+        arb_ghz_opt = utilities.noisy_net_opt_fn(
+            ansatzes.star_nlocal_arb_prep_nodes(n),
+            ansatzes.star_22_ghz_rot_meas_nodes(n),
             uniform_phase_damping_nodes_fn(n),
-            qnet.nlocal_chain_cost_22,
+            qnet.nlocal_star_22_cost_fn,
             ansatz_kwargs={
                 "dev_kwargs": {
                     "name": "default.qubit",
@@ -168,19 +174,19 @@ if __name__ == "__main__":
             },
             opt_kwargs={
                 "sample_width": 5,
-                "step_size": 1,
-                "num_steps": 80,
+                "step_size": 1.8,
+                "num_steps": 60,
                 "verbose": True,
             },
         )
-        max_entangled_jobs = client.map(max_entangled_opt, param_range)
-        max_entangled_opt_dicts = client.gather(max_entangled_jobs)
+        arb_ghz_jobs = client.map(arb_ghz_opt, param_range)
+        arb_ghz_opt_dicts = client.gather(arb_ghz_jobs)
 
         utilities.save_optimizations_one_param_scan(
             data_dir,
-            "max_entangled_arb_n-" + str(n) + "_",
+            "arb_ghz_rot_n-" + str(n) + "_",
             param_range,
-            max_entangled_opt_dicts,
+            arb_ghz_opt_dicts,
             quantum_bound=np.sqrt(2),
             classical_bound=1,
         )
