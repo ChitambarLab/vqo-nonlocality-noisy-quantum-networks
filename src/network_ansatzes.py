@@ -55,12 +55,27 @@ def chain_nlocal_max_entangled_prep_nodes(n):
         qnet.PrepareNode(1, [2 * i, 2 * i + 1], qnet.max_entangled_state, 3) for i in range(n)
     ]
 
+def chain_ryrz_cnot_prep_nodes(n):
+    return [
+        qnet.PrepareNode(1, [2 * i, 2 * i + 1], ryrz_cnot, 2) for i in range(n)
+    ]
+
 
 def chain_nlocal_arbitrary_prep_nodes(n):
     return [
         qnet.PrepareNode(1, [2 * i, 2 * i + 1], qml.ArbitraryStatePreparation, 6) for i in range(n)
     ]
 
+def chain_local_ry_meas_nodes(n):
+    meas_nodes = []
+    
+    meas_nodes.append(qnet.MeasureNode(2, 2, [0], qnet.local_RY, 1))
+    meas_nodes.extend(
+        [qnet.MeasureNode(2, 2, [2 * i + 1, 2 * i + 2], qnet.local_RY, 2) for i in range(n - 1)]
+    )
+    meas_nodes.append(qnet.MeasureNode(2, 2, [2 * n - 1], qnet.local_RY, 1))
+
+    return meas_nodes
 
 def chain_local_rot_meas_nodes(n):
     meas_nodes = []
@@ -133,6 +148,9 @@ def star_nlocal_max_entangled_prep_nodes(n):
 
 def star_nlocal_arb_prep_nodes(n):
     return [qnet.PrepareNode(1, [i, n + i], qml.ArbitraryStatePreparation, 6) for i in range(n)]
+
+def star_ryrz_cnot_prep_nodes(n):
+    return [qnet.PrepareNode(1, [i, n + i], ryrz_cnot, 2) for i in range(n)]
 
 
 def star_22_local_ry_meas_nodes(n):

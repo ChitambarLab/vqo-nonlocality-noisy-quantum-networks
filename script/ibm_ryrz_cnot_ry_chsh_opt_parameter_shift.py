@@ -14,7 +14,7 @@ provider = IBMQ.load_account()
 provider = IBMQ.get_provider(hub="ibm-q-startup", group="xanadu", project="reservations")
 
 
-prep_nodes = [qnet.PrepareNode(1, [0, 1], network_ansatzes.ry_cnot, 2)]
+prep_nodes = [qnet.PrepareNode(1, [0, 1], network_ansatzes.ryrz_cnot, 2)]
 meas_nodes = [
     qnet.MeasureNode(2, 2, [0], qnet.local_RY, 1),
     qnet.MeasureNode(2, 2, [1], qnet.local_RY, 1),
@@ -25,9 +25,9 @@ dev_ibm = {
     "name": "qiskit.ibmq",
     "shots": 6000,
     # "backend": "ibmq_qasm_simulator",
-    # "backend": "ibmq_belem",
+    "backend": "ibmq_belem",
     # "backend": "ibmq_lima",
-    "backend": "ibmq_quito",
+    # "backend": "ibmq_quito",
     "provider": provider,
 }
 
@@ -39,7 +39,7 @@ ibm_chsh_cost = qnet.chsh_inequality_cost(
 
 par_grad = qnet.parallel_chsh_grad(ibm_chsh_ansatz, diff_method="parameter-shift")
 
-data_filepath = "script/data/ibm_ry_cnot_ry_chsh_opt_parameter_shift/"
+data_filepath = "script/data/ibm_ryrz_cnot_ry_chsh_opt_parameter_shift/"
 
 init_opt_dict = (
     qnet.read_optimization_json(data_filepath + "tmp/" + sys.argv[1]) if len(sys.argv) > 1 else {}
@@ -57,7 +57,7 @@ opt_dict = utilities.hardware_opt(
     ibm_chsh_ansatz.rand_scenario_settings(),
     num_steps=num_steps,
     current_step=curr_step,
-    step_size=0.2,
+    step_size=0.4,
     grad_fn=par_grad,
     tmp_filepath=data_filepath + "tmp/",
     init_opt_dict=init_opt_dict,
@@ -66,7 +66,7 @@ opt_dict = utilities.hardware_opt(
 
 # evaluating the score for the "theoretical" optimal settings
 opt_settings = [
-    [np.array([[np.pi/4, 0]])],  # prep settings
+    [np.array([[np.pi/2, 2*np.pi]])],  # prep settings
     [
         np.array([[0], [np.pi / 2]]),
         np.array([[np.pi/4], [-np.pi / 4]]),
