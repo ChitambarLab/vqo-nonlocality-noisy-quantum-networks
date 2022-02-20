@@ -60,6 +60,11 @@ def chain_ryrz_cnot_prep_nodes(n):
         qnet.PrepareNode(1, [2 * i, 2 * i + 1], ryrz_cnot, 2) for i in range(n)
     ]
 
+def chain_ghz_prep_nodes(n):
+    return [
+        qnet.PrepareNode(1, [2 * i, 2 * i + 1], qnet.ghz_state, 0) for i in range(n)
+    ]
+
 
 def chain_nlocal_arbitrary_prep_nodes(n):
     return [
@@ -148,6 +153,9 @@ def star_nlocal_max_entangled_prep_nodes(n):
 
 def star_nlocal_arb_prep_nodes(n):
     return [qnet.PrepareNode(1, [i, n + i], qml.ArbitraryStatePreparation, 6) for i in range(n)]
+
+def star_ghz_prep_nodes(n):
+    return [qnet.PrepareNode(1, [i, n + i], qnet.ghz_state, 0) for i in range(n)]
 
 def star_ryrz_cnot_prep_nodes(n):
     return [qnet.PrepareNode(1, [i, n + i], ryrz_cnot, 2) for i in range(n)]
