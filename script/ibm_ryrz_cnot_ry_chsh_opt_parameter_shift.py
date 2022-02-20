@@ -57,7 +57,7 @@ opt_dict = utilities.hardware_opt(
     ibm_chsh_ansatz.rand_scenario_settings(),
     num_steps=num_steps,
     current_step=curr_step,
-    step_size=0.4,
+    step_size=0.3,
     grad_fn=par_grad,
     tmp_filepath=data_filepath + "tmp/",
     init_opt_dict=init_opt_dict,
