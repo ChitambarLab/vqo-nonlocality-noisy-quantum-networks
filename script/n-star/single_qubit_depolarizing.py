@@ -38,7 +38,7 @@ def single_qubit_depolarizing_nodes_fn(n):
 
 if __name__ == "__main__":
 
-    data_dir = "data/n-star/single_qubit_qubit_depolarizing/"
+    data_dir = "data/n-star/single_qubit_depolarizing/"
     param_range = np.arange(0, 1.01, 0.05)
 
     for n in [3, 4]:
