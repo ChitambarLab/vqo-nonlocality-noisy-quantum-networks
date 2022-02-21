@@ -34,7 +34,7 @@ def uniform_depolarizing_nodes_fn(n):
             qnet.NoiseNode(
                 [i], lambda settings, wires: qml.DepolarizingChannel(noise_args, wires=wires)
             )
-            for i in range(2*n)
+            for i in range(2 * n)
         ]
 
     return noise_nodes
@@ -119,4 +119,3 @@ if __name__ == "__main__":
 
     # time_elapsed = time.time() - time_start
     # print("\nelapsed time : ", time_elapsed, "\n")
-

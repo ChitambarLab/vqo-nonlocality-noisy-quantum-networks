@@ -9,7 +9,6 @@ import network_ansatzes
 import utilities
 
 
-
 provider = IBMQ.load_account()
 provider = IBMQ.get_provider(hub="ibm-q-startup", group="xanadu", project="reservations")
 
@@ -66,10 +65,10 @@ opt_dict = utilities.hardware_opt(
 
 # evaluating the score for the "theoretical" optimal settings
 opt_settings = [
-    [np.array([[np.pi/2, 2*np.pi]])],  # prep settings
+    [np.array([[np.pi / 2, 2 * np.pi]])],  # prep settings
     [
         np.array([[0], [np.pi / 2]]),
-        np.array([[np.pi/4], [-np.pi / 4]]),
+        np.array([[np.pi / 4], [-np.pi / 4]]),
     ],  # meas settings
 ]
 opt_dict["theoretical_score"] = -(ibm_chsh_cost(opt_settings))
@@ -84,7 +83,7 @@ print(opt_dict)
 datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
 filename = data_filepath + datetime_ext
 
-plt.plot(opt_dict["samples"], [2*np.sqrt(2)] * len(opt_dict["samples"]), label="Quantum Bound")
+plt.plot(opt_dict["samples"], [2 * np.sqrt(2)] * len(opt_dict["samples"]), label="Quantum Bound")
 plt.plot(opt_dict["samples"], [2] * len(opt_dict["samples"]), label="Classical Bound")
 plt.plot(opt_dict["samples"], opt_dict["scores"], label="CHSH Optimization")
 plt.title("IBM Parameter-Shift Optimization of\nCHSH Violation with RY_CNOT_RY")

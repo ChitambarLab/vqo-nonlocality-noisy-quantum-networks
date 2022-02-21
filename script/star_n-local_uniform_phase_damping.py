@@ -30,9 +30,10 @@ def uniform_phase_damping_nodes_fn(n):
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [i,2*n+i], lambda settings, wires: qnet.pure_phase_damping([noise_args], wires=wires)
+                [i, 2 * n + i],
+                lambda settings, wires: qnet.pure_phase_damping([noise_args], wires=wires),
             )
-            for i in range(2*n)
+            for i in range(2 * n)
         ]
 
     return noise_nodes
@@ -44,7 +45,7 @@ if __name__ == "__main__":
 
     data_dir = "script/data/star_n-local_uniform_phase_damping/"
 
-    for n in [3,4]:
+    for n in [3, 4]:
 
         client = Client(processes=True, n_workers=3, threads_per_worker=1)
 
@@ -109,7 +110,7 @@ if __name__ == "__main__":
         max_ent_ghz_opt_dicts = client.gather(max_ent_ghz_jobs)
 
         utilities.save_optimizations_one_param_scan(
-            data_dir,    
+            data_dir,
             "max_entangled_ghz_rot_n-" + str(n) + "_",
             param_range,
             max_ent_ghz_opt_dicts,
@@ -193,4 +194,3 @@ if __name__ == "__main__":
 
         time_elapsed = time.time() - time_start
         print("\nelapsed time : ", time_elapsed, "\n")
-

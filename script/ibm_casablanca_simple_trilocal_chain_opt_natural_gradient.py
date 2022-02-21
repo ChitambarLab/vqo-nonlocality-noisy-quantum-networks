@@ -47,7 +47,7 @@ gradient as a viable means of optimization.
 """
 dev_ibm = {
     # "name": "qiskit.ibmq",
-    "name" : "default.qubit",
+    "name": "default.qubit",
     "shots": 24000,
     # "backend": "ibmq_qasm_simulator",
     # "backend": "ibmq_belem",
@@ -113,7 +113,9 @@ filename = data_filepath + datetime_ext
 plt.plot(opt_dict["samples"], [np.sqrt(2)] * len(opt_dict["samples"]), label="Quantum Bound")
 plt.plot(opt_dict["samples"], [1] * len(opt_dict["samples"]), label="Classical Bound")
 plt.plot(opt_dict["samples"], opt_dict["scores"], label="Trilocal Chain Optimization")
-plt.title("IBM Hardware Parameter-Shift Optimization of\nTrilocl Chain Violation with Simple Ansatz")
+plt.title(
+    "IBM Hardware Parameter-Shift Optimization of\nTrilocl Chain Violation with Simple Ansatz"
+)
 plt.ylabel("Trilocal Chain Score")
 plt.xlabel("Epoch")
 plt.legend()

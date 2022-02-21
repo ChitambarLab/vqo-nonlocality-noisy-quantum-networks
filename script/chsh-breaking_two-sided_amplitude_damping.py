@@ -30,12 +30,8 @@ def chsh_noise_optimization(prep_nodes, meas_nodes, **opt_kwargs):
     def _optimization_fn(arg1, arg2):
         print("noise aregs ares ", arg1, ", ", arg2)
         noise_nodes = [
-            qnet.NoiseNode(
-                [0], lambda settings, wires: qml.AmplitudeDamping(arg1, wires=wires[0])
-            ),
-            qnet.NoiseNode(
-                [1], lambda settings, wires: qml.AmplitudeDamping(arg2, wires=wires[0])
-            ),
+            qnet.NoiseNode([0], lambda settings, wires: qml.AmplitudeDamping(arg1, wires=wires[0])),
+            qnet.NoiseNode([1], lambda settings, wires: qml.AmplitudeDamping(arg2, wires=wires[0])),
         ]
 
         chsh_ansatz = qnet.NetworkAnsatz(prep_nodes, meas_nodes, noise_nodes)

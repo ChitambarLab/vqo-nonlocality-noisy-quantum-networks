@@ -4,7 +4,7 @@ from pennylane import numpy as np
 import pennylane as qml
 
 from context import qnetvo as qnet
-from context import src 
+from context import src
 
 
 """
@@ -30,7 +30,8 @@ def single_qubit_amplitude_damping_nodes_fn(n, wire):
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [wire,2*n], lambda settings, wires: qnet.pure_amplitude_damping([noise_args], wires=wires)
+                [wire, 2 * n],
+                lambda settings, wires: qnet.pure_amplitude_damping([noise_args], wires=wires),
             )
         ]
 
@@ -42,9 +43,9 @@ if __name__ == "__main__":
     data_dir = "data/n-star/single_qubit_amplitude_damping/"
     param_range = np.arange(0, 1.01, 0.05)
 
-    for n in [3,4]:
+    for n in [3, 4]:
 
-        for wire in [0,n]:
+        for wire in [0, n]:
 
             wire_tag = "out_" if wire == 0 else "in_"
 
@@ -86,7 +87,6 @@ if __name__ == "__main__":
             print("\nelapsed time : ", time_elapsed, "\n")
 
             client.restart()
-
 
             # local qubit rotation measurements and max entangled states
             time_start = time.time()
@@ -228,4 +228,3 @@ if __name__ == "__main__":
 
             time_elapsed = time.time() - time_start
             print("\nelapsed time : ", time_elapsed, "\n")
-

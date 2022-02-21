@@ -45,8 +45,8 @@ if __name__ == "__main__":
     #     qnet.PrepareNode(1, [2,3], qml.ArbitraryStatePreparation, 6)
     # ]
     ghz_prep_nodes = [
-        qnet.PrepareNode(1, [0,1], qnet.ghz_state, 0),
-        qnet.PrepareNode(1, [2,3], qnet.ghz_state, 0)
+        qnet.PrepareNode(1, [0, 1], qnet.ghz_state, 0),
+        qnet.PrepareNode(1, [2, 3], qnet.ghz_state, 0),
     ]
     # arb_meas_nodes = [
     #     qnet.MeasureNode(2, 2, [0], lambda settings, wires: qml.Rot(*settings, wires=wires), 3),
@@ -60,8 +60,8 @@ if __name__ == "__main__":
     # ]
     local_ry_meas_nodes = [
         qnet.MeasureNode(2, 2, [0], qnet.local_RY, 1),
-        qnet.MeasureNode(2, 2, [1,2], qnet.local_RY, 2),
-        qnet.MeasureNode(2, 2, [3], qnet.local_RY, 1)
+        qnet.MeasureNode(2, 2, [1, 2], qnet.local_RY, 2),
+        qnet.MeasureNode(2, 2, [3], qnet.local_RY, 1),
     ]
 
     client = Client(processes=True, n_workers=5, threads_per_worker=1)
@@ -130,7 +130,6 @@ if __name__ == "__main__":
 
     time_elapsed = time.time() - time_start
     print("\nelapsed time : ", time_elapsed, "\n")
-
 
     # client = Client(processes=True, n_workers=5, threads_per_worker=1)
 

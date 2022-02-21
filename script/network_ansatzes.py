@@ -51,9 +51,7 @@ def local_rot_meas_nodes(n):
 
 # Chain Network Ansatz Helpers
 def chain_nlocal_max_entangled_prep_nodes(n):
-    return [
-        qnet.PrepareNode(1, [2 * i, 2 * i + 1], qnet.max_entangled_state, 3) for i in range(n)
-    ]
+    return [qnet.PrepareNode(1, [2 * i, 2 * i + 1], qnet.max_entangled_state, 3) for i in range(n)]
 
 
 def chain_nlocal_arbitrary_prep_nodes(n):
@@ -88,9 +86,7 @@ def chain_bell_meas_nodes(n):
 
     meas_nodes.extend(
         [
-            qnet.MeasureNode(
-                2, 2, [2 * i + 1, 2 * i + 2], qml.adjoint(qnet.max_entangled_state), 3
-            )
+            qnet.MeasureNode(2, 2, [2 * i + 1, 2 * i + 2], qml.adjoint(qnet.max_entangled_state), 3)
             for i in range(n - 1)
         ]
     )

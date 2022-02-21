@@ -9,23 +9,22 @@ from context import src
 
 """
 This script collects data from noisy chsh optimizations.
-The considered noise model is an amplitude damping channel applied
-to a single qubit.
+The considered noise model is an depolarizing channel applied
+equally to each qubit.
 
 The scan range is gamma in [0,1] with an interval of 0.05.
 
-Arbitrary state preparations and maximally entanggled state prepaarations
+Arbitrary state preparations and maximally entangled state prepaarations
 are considered.
 """
 
 
-def single_qubit_amplitude_damping_nodes_fn():
+def single_qubit_depolarizing_nodes_fn():
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [0, 2],
-                lambda settings, wires: qnet.pure_amplitude_damping([noise_args], wires=wires),
-            ),
+                [0], lambda settings, wires: qml.DepolarizingChannel(noise_args, wires=wires)
+            )
         ]
 
     return noise_nodes
@@ -33,19 +32,25 @@ def single_qubit_amplitude_damping_nodes_fn():
 
 if __name__ == "__main__":
 
-    data_dir = "data/chsh/single_qubit_amplitude_damping/"
+    data_dir = "data/chsh/single_qubit_depolarizing/"
     param_range = np.arange(0, 1.01, 0.05)
 
-    max_ent_prep_nodes = [qnet.PrepareNode(1, [0, 1], qnet.max_entangled_state, 3)]
-    arb_prep_nodes = [qnet.PrepareNode(1, [0, 1], qml.ArbitraryStatePreparation, 6)]
-    ryrz_cnot_prep_nodes = [qnet.PrepareNode(1, [1, 0], src.ryrz_cnot, 2)]
+    max_ent_prep_nodes = [
+        qnet.PrepareNode(1, [0,1], qnet.max_entangled_state, 3)
+    ]
+    arb_prep_nodes = [
+        qnet.PrepareNode(1, [0, 1], qml.ArbitraryStatePreparation, 6)
+    ]
+    ghz_prep_nodes = [
+        qnet.PrepareNode(1, [1, 0], qnet.ghz_state, 2)
+    ]
     meas_nodes = [
         qnet.MeasureNode(2, 2, [0], lambda settings, wires: qml.Rot(*settings, wires=wires), 3),
-        qnet.MeasureNode(2, 2, [1], lambda settings, wires: qml.Rot(*settings, wires=wires), 3),
+        qnet.MeasureNode(2, 2, [1], lambda settings, wires: qml.Rot(*settings, wires=wires), 3)
     ]
     ry_meas_nodes = [
         qnet.MeasureNode(2, 2, [0], qnet.local_RY, 1),
-        qnet.MeasureNode(2, 2, [1], qnet.local_RY, 1),
+        qnet.MeasureNode(2, 2, [1], qnet.local_RY, 1)
     ]
 
     client = Client(processes=True, n_workers=5, threads_per_worker=1)
@@ -56,13 +61,8 @@ if __name__ == "__main__":
     max_ent_opt = src.noisy_net_opt_fn(
         max_ent_prep_nodes,
         meas_nodes,
-        single_qubit_amplitude_damping_nodes_fn(),
+        single_qubit_depolarizing_nodes_fn(),
         qnet.chsh_inequality_cost,
-        ansatz_kwargs={
-            "dev_kwargs": {
-                "name": "default.qubit",
-            },
-        },
         opt_kwargs={
             "sample_width": 5,
             "step_size": 0.3,
@@ -78,7 +78,7 @@ if __name__ == "__main__":
         "max_ent_local_rot_",
         param_range,
         max_ent_opt_dicts,
-        quantum_bound=2 * np.sqrt(2),
+        quantum_bound=2*np.sqrt(2),
         classical_bound=2,
     )
 
@@ -88,16 +88,11 @@ if __name__ == "__main__":
     # minimal ryrz_cnot prep ansatz for optimal strategy
     time_start = time.time()
 
-    ryrz_cnot_ry_opt = src.noisy_net_opt_fn(
-        ryrz_cnot_prep_nodes,
+    ghz_local_ry_opt = src.noisy_net_opt_fn(
+        ghz_prep_nodes,
         ry_meas_nodes,
-        single_qubit_amplitude_damping_nodes_fn(),
+        single_qubit_depolarizing_nodes_fn(),
         qnet.chsh_inequality_cost,
-        ansatz_kwargs={
-            "dev_kwargs": {
-                "name": "default.qubit",
-            },
-        },
         opt_kwargs={
             "sample_width": 5,
             "step_size": 0.3,
@@ -105,15 +100,15 @@ if __name__ == "__main__":
             "verbose": False,
         },
     )
-    ryrz_cnot_ry_jobs = client.map(ryrz_cnot_ry_opt, param_range)
-    ryrz_cnot_ry_opt_dicts = client.gather(ryrz_cnot_ry_jobs)
+    ghz_local_ry_jobs = client.map(ghz_local_ry_opt, param_range)
+    ghz_local_ry_opt_dicts = client.gather(ghz_local_ry_jobs)
 
     src.save_optimizations_one_param_scan(
         data_dir,
-        "ryrz_cnot_local_ry_",
+        "ghz_local_ry_",
         param_range,
-        ryrz_cnot_ry_opt_dicts,
-        quantum_bound=2 * np.sqrt(2),
+        ghz_local_ry_opt_dicts,
+        quantum_bound=2*np.sqrt(2),
         classical_bound=2,
     )
 
@@ -126,13 +121,8 @@ if __name__ == "__main__":
     arb_opt = src.noisy_net_opt_fn(
         arb_prep_nodes,
         meas_nodes,
-        single_qubit_amplitude_damping_nodes_fn(),
+        single_qubit_depolarizing_nodes_fn(),
         qnet.chsh_inequality_cost,
-        ansatz_kwargs={
-            "dev_kwargs": {
-                "name": "default.qubit",
-            },
-        },
         opt_kwargs={
             "sample_width": 5,
             "step_size": 0.15,
@@ -148,7 +138,7 @@ if __name__ == "__main__":
         "arb_local_rot_",
         param_range,
         arb_opt_dicts,
-        quantum_bound=2 * np.sqrt(2),
+        quantum_bound=2*np.sqrt(2),
         classical_bound=2,
     )
 

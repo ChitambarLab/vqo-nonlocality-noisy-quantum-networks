@@ -4,7 +4,7 @@ from pennylane import numpy as np
 import pennylane as qml
 
 from context import qnetvo as qnet
-from context import src 
+from context import src
 
 
 """
@@ -31,7 +31,7 @@ def uniform_depolarizing_nodes_fn(n):
             qnet.NoiseNode(
                 [i], lambda settings, wires: qml.DepolarizingChannel(noise_args, wires=wires)
             )
-            for i in range(2*n)
+            for i in range(2 * n)
         ]
 
     return noise_nodes
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     data_dir = "data/n-star/uniform_qubit_depolarizing/"
     param_range = np.arange(0, 1.01, 0.05)
 
-    for n in [3,4]:
+    for n in [3, 4]:
 
         client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
@@ -79,7 +79,6 @@ if __name__ == "__main__":
         print("\nelapsed time : ", time_elapsed, "\n")
 
         client.restart()
-
 
         # # local qubit rotation measurements and max entangled states
         # time_start = time.time()
@@ -207,4 +206,3 @@ if __name__ == "__main__":
 
         # time_elapsed = time.time() - time_start
         # print("\nelapsed time : ", time_elapsed, "\n")
-

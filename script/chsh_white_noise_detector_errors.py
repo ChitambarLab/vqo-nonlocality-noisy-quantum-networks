@@ -35,7 +35,7 @@ if __name__ == "__main__":
         for i in range(2)
     ]
 
-    white_noise_error_map = np.array([[0.5,0.5],[0.5,0.5]])
+    white_noise_error_map = np.array([[0.5, 0.5], [0.5, 0.5]])
 
     scan_range = np.arange(0, 1.001, 0.05)
 
@@ -53,10 +53,10 @@ if __name__ == "__main__":
     bell_state_optimization = utilities.detector_error_opt_fn(
         qnet.NetworkAnsatz(bell_prep_nodes, meas_nodes),
         detector_error_chsh_cost_fn,
-        cost_kwargs = {
+        cost_kwargs={
             "error_map": white_noise_error_map,
         },
-        opt_kwargs = {
+        opt_kwargs={
             "step_size": 0.6,
             "num_steps": 35,
             "sample_width": 5,
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     arb_state_optimization = utilities.detector_error_opt_fn(
         qnet.NetworkAnsatz(arb_prep_nodes, meas_nodes),
         detector_error_chsh_cost_fn,
-        cost_kwargs = {
+        cost_kwargs={
             "error_map": white_noise_error_map,
         },
         opt_kwargs={

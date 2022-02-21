@@ -18,6 +18,7 @@ This script compares the performance of the GHZ state against arrbitrary state
 preparations.
 """
 
+
 def pure_amplitude_damping_nodes_fn(n):
     def noise_nodes(noise_args):
         return [
@@ -29,6 +30,7 @@ def pure_amplitude_damping_nodes_fn(n):
         ]
 
     return noise_nodes
+
 
 if __name__ == "__main__":
 

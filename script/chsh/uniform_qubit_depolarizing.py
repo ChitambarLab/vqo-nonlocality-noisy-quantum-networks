@@ -38,22 +38,16 @@ if __name__ == "__main__":
     data_dir = "data/chsh/uniform_qubit_depolarizing/"
     param_range = np.arange(0, 1.01, 0.05)
 
-    max_ent_prep_nodes = [
-        qnet.PrepareNode(1, [0,1], qnet.max_entangled_state, 3)
-    ]
-    arb_prep_nodes = [
-        qnet.PrepareNode(1, [0, 1], qml.ArbitraryStatePreparation, 6)
-    ]
-    ghz_prep_nodes = [
-        qnet.PrepareNode(1, [1, 0], qnet.ghz_state, 2)
-    ]
+    max_ent_prep_nodes = [qnet.PrepareNode(1, [0, 1], qnet.max_entangled_state, 3)]
+    arb_prep_nodes = [qnet.PrepareNode(1, [0, 1], qml.ArbitraryStatePreparation, 6)]
+    ghz_prep_nodes = [qnet.PrepareNode(1, [1, 0], qnet.ghz_state, 2)]
     meas_nodes = [
         qnet.MeasureNode(2, 2, [0], lambda settings, wires: qml.Rot(*settings, wires=wires), 3),
-        qnet.MeasureNode(2, 2, [1], lambda settings, wires: qml.Rot(*settings, wires=wires), 3)
+        qnet.MeasureNode(2, 2, [1], lambda settings, wires: qml.Rot(*settings, wires=wires), 3),
     ]
     ry_meas_nodes = [
         qnet.MeasureNode(2, 2, [0], qnet.local_RY, 1),
-        qnet.MeasureNode(2, 2, [1], qnet.local_RY, 1)
+        qnet.MeasureNode(2, 2, [1], qnet.local_RY, 1),
     ]
 
     client = Client(processes=True, n_workers=5, threads_per_worker=1)
@@ -81,7 +75,7 @@ if __name__ == "__main__":
         "max_ent_local_rot_",
         param_range,
         max_ent_opt_dicts,
-        quantum_bound=2*np.sqrt(2),
+        quantum_bound=2 * np.sqrt(2),
         classical_bound=2,
     )
 
@@ -111,7 +105,7 @@ if __name__ == "__main__":
         "ghz_local_ry_",
         param_range,
         ghz_local_ry_opt_dicts,
-        quantum_bound=2*np.sqrt(2),
+        quantum_bound=2 * np.sqrt(2),
         classical_bound=2,
     )
 
@@ -141,7 +135,7 @@ if __name__ == "__main__":
         "arb_local_rot_",
         param_range,
         arb_opt_dicts,
-        quantum_bound=2*np.sqrt(2),
+        quantum_bound=2 * np.sqrt(2),
         classical_bound=2,
     )
 

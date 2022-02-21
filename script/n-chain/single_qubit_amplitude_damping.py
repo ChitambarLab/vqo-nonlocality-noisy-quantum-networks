@@ -19,11 +19,13 @@ Arbitrary state preparations and measurements are considered along with
 local qubit measurements and maximally entangled state preparations.
 """
 
-def single_qubit_amplitude_damping_nodes_fn(n,wire):
+
+def single_qubit_amplitude_damping_nodes_fn(n, wire):
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [wire,2*n], lambda settings, wires: qnet.pure_amplitude_damping([noise_args], wires=wires)
+                [wire, 2 * n],
+                lambda settings, wires: qnet.pure_amplitude_damping([noise_args], wires=wires),
             )
         ]
 
@@ -35,7 +37,7 @@ if __name__ == "__main__":
     data_dir = "data/n-chain/single_qubit_amplitude_damping/"
     param_range = np.arange(0, 1.01, 0.05)
 
-    for n in [3,4]:
+    for n in [3, 4]:
 
         for wire in [0, 1]:
 
@@ -54,7 +56,9 @@ if __name__ == "__main__":
                 single_qubit_amplitude_damping_nodes_fn(n, wire),
                 qnet.nlocal_chain_cost_22,
                 ansatz_kwargs={
-                    "dev_kwargs": {"name": "default.qubit",},
+                    "dev_kwargs": {
+                        "name": "default.qubit",
+                    },
                 },
                 opt_kwargs={
                     "sample_width": 5,
@@ -221,4 +225,3 @@ if __name__ == "__main__":
 
             time_elapsed = time.time() - time_start
             print("\nelapsed time : ", time_elapsed, "\n")
-

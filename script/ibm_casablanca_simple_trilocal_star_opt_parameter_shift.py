@@ -54,7 +54,9 @@ dev_ibm = {
 }
 
 ibm_ansatz = qnet.NetworkAnsatz(prep_nodes, meas_nodes, dev_kwargs=dev_ibm)
-cost = qnet.nlocal_star_22_cost_fn(ibm_ansatz, parallel=True, nthreads=5, diff_method="parameter-shift")
+cost = qnet.nlocal_star_22_cost_fn(
+    ibm_ansatz, parallel=True, nthreads=5, diff_method="parameter-shift"
+)
 par_grad = qnet.parallel_nlocal_star_grad_fn(ibm_ansatz, nthreads=5, diff_method="parameter-shift")
 
 data_filepath = "script/data/ibm_casablanca_simple_trilocal_star_opt_parameter_shift/"
@@ -85,10 +87,10 @@ opt_dict = utilities.hardware_opt(
 opt_settings = [
     [np.array([[]]), np.array([[]]), np.array([[]])],  # prep settings
     [
-        np.array([[np.pi/4], [-np.pi / 4]]),
-        np.array([[np.pi/4], [-np.pi / 4]]),
-        np.array([[np.pi/4], [-np.pi / 4]]),
-        np.array([[0, 0,0], [np.pi / 2, np.pi/2, np.pi/2]]),
+        np.array([[np.pi / 4], [-np.pi / 4]]),
+        np.array([[np.pi / 4], [-np.pi / 4]]),
+        np.array([[np.pi / 4], [-np.pi / 4]]),
+        np.array([[0, 0, 0], [np.pi / 2, np.pi / 2, np.pi / 2]]),
     ],  # meas settings
 ]
 opt_dict["theoretical_score"] = -(cost(opt_settings))
@@ -105,7 +107,9 @@ filename = data_filepath + datetime_ext
 plt.plot(opt_dict["samples"], [np.sqrt(2)] * len(opt_dict["samples"]), label="Quantum Bound")
 plt.plot(opt_dict["samples"], [1] * len(opt_dict["samples"]), label="Classical Bound")
 plt.plot(opt_dict["samples"], opt_dict["scores"], label="Trilocal Star Optimization")
-plt.title("IBM Hardware Parameter-Shift Optimization of\nTrilocal Star Violation with Simple Ansatz")
+plt.title(
+    "IBM Hardware Parameter-Shift Optimization of\nTrilocal Star Violation with Simple Ansatz"
+)
 plt.ylabel("Trilocal Star Score")
 plt.xlabel("Epoch")
 plt.legend()

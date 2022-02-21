@@ -24,11 +24,11 @@ def uniform_phase_damping_nodes_fn():
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [0,2], lambda settings, wires: qnet.pure_phase_damping([noise_args], wires=wires)
+                [0, 2], lambda settings, wires: qnet.pure_phase_damping([noise_args], wires=wires)
             ),
             qnet.NoiseNode(
                 [1, 3], lambda settings, wires: qnet.pure_phase_damping([noise_args], wires=wires)
-            )
+            ),
         ]
 
     return noise_nodes
@@ -39,15 +39,11 @@ if __name__ == "__main__":
     data_dir = "script/data/chsh_uniform_phase_damping/"
     param_range = np.arange(0, 1.01, 0.05)
 
-    max_ent_prep_nodes = [
-        qnet.PrepareNode(1, [0,1], qnet.max_entangled_state, 3)
-    ]
-    arb_prep_nodes = [
-        qnet.PrepareNode(1, [0, 1], qml.ArbitraryStatePreparation, 6)
-    ]
+    max_ent_prep_nodes = [qnet.PrepareNode(1, [0, 1], qnet.max_entangled_state, 3)]
+    arb_prep_nodes = [qnet.PrepareNode(1, [0, 1], qml.ArbitraryStatePreparation, 6)]
     meas_nodes = [
         qnet.MeasureNode(2, 2, [0], lambda settings, wires: qml.Rot(*settings, wires=wires), 3),
-        qnet.MeasureNode(2, 2, [1], lambda settings, wires: qml.Rot(*settings, wires=wires), 3)
+        qnet.MeasureNode(2, 2, [1], lambda settings, wires: qml.Rot(*settings, wires=wires), 3),
     ]
 
     client = Client(processes=True, n_workers=5, threads_per_worker=1)
@@ -80,7 +76,7 @@ if __name__ == "__main__":
         "max_ent_",
         param_range,
         max_ent_opt_dicts,
-        quantum_bound=2*np.sqrt(2),
+        quantum_bound=2 * np.sqrt(2),
         classical_bound=2,
     )
 
@@ -115,7 +111,7 @@ if __name__ == "__main__":
         "arb_",
         param_range,
         arb_opt_dicts,
-        quantum_bound=2*np.sqrt(2),
+        quantum_bound=2 * np.sqrt(2),
         classical_bound=2,
     )
 

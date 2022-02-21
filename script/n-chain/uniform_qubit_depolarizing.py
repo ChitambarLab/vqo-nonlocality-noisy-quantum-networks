@@ -19,13 +19,14 @@ Arbitrary state preparations and measurements are considered along with
 local qubit measurements and maximally entangled state preparations.
 """
 
+
 def uniform_depolarizing_nodes_fn(n):
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
                 [i], lambda settings, wires: qml.DepolarizingChannel(noise_args, wires=wires)
             )
-            for i in range(2*n)
+            for i in range(2 * n)
         ]
 
     return noise_nodes
@@ -36,7 +37,7 @@ if __name__ == "__main__":
     data_dir = "data/n-chain/uniform_qubit_depolarizing/"
     param_range = np.arange(0, 1.01, 0.05)
 
-    for n in [3,4]:
+    for n in [3, 4]:
 
         client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
@@ -219,4 +220,3 @@ if __name__ == "__main__":
 
         # time_elapsed = time.time() - time_start
         # print("\nelapsed time : ", time_elapsed, "\n")
-

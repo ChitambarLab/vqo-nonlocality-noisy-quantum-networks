@@ -23,7 +23,8 @@ def uniform_amplitude_damping_nodes_fn():
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [i,4+i], lambda settings, wires: qnet.pure_amplitude_damping([noise_args], wires=wires)
+                [i, 4 + i],
+                lambda settings, wires: qnet.pure_amplitude_damping([noise_args], wires=wires),
             )
             for i in range(4)
         ]
@@ -37,31 +38,31 @@ if __name__ == "__main__":
     param_range = np.arange(0, 1.01, 0.05)
 
     max_ent_prep_nodes = [
-        qnet.PrepareNode(1, [0,1], qnet.max_entangled_state, 3),
-        qnet.PrepareNode(1, [2,3], qnet.max_entangled_state, 3)
+        qnet.PrepareNode(1, [0, 1], qnet.max_entangled_state, 3),
+        qnet.PrepareNode(1, [2, 3], qnet.max_entangled_state, 3),
     ]
     arb_prep_nodes = [
-        qnet.PrepareNode(1, [0,1], qml.ArbitraryStatePreparation, 6),
-        qnet.PrepareNode(1, [2,3], qml.ArbitraryStatePreparation, 6)
+        qnet.PrepareNode(1, [0, 1], qml.ArbitraryStatePreparation, 6),
+        qnet.PrepareNode(1, [2, 3], qml.ArbitraryStatePreparation, 6),
     ]
     ryrz_cnot_prep_nodes = [
-        qnet.PrepareNode(1, [0,1], src.ryrz_cnot, 2),
-        qnet.PrepareNode(1, [2,3], src.ryrz_cnot, 2)
+        qnet.PrepareNode(1, [0, 1], src.ryrz_cnot, 2),
+        qnet.PrepareNode(1, [2, 3], src.ryrz_cnot, 2),
     ]
     arb_meas_nodes = [
         qnet.MeasureNode(2, 2, [0], lambda settings, wires: qml.Rot(*settings, wires=wires), 3),
         qnet.MeasureNode(2, 2, [1, 2], qml.ArbitraryUnitary, 15),
-        qnet.MeasureNode(2, 2, [3], lambda settings, wires: qml.Rot(*settings, wires=wires), 3)
+        qnet.MeasureNode(2, 2, [3], lambda settings, wires: qml.Rot(*settings, wires=wires), 3),
     ]
     local_rot_meas_nodes = [
         qnet.MeasureNode(2, 2, [0], src.local_rot, 3),
         qnet.MeasureNode(2, 2, [1, 2], src.local_rot, 6),
-        qnet.MeasureNode(2, 2, [3], src.local_rot, 3)
+        qnet.MeasureNode(2, 2, [3], src.local_rot, 3),
     ]
     local_ry_meas_nodes = [
         qnet.MeasureNode(2, 2, [0], qnet.local_RY, 1),
-        qnet.MeasureNode(2, 2, [1,2], qnet.local_RY, 2),
-        qnet.MeasureNode(2, 2, [3], qnet.local_RY, 1)
+        qnet.MeasureNode(2, 2, [1, 2], qnet.local_RY, 2),
+        qnet.MeasureNode(2, 2, [3], qnet.local_RY, 1),
     ]
 
     client = Client(processes=True, n_workers=5, threads_per_worker=1)
@@ -140,7 +141,6 @@ if __name__ == "__main__":
 
     time_elapsed = time.time() - time_start
     print("\nelapsed time : ", time_elapsed, "\n")
-
 
     client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
