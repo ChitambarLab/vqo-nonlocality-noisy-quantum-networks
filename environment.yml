@@ -1,4 +1,4 @@
-name: pennylane-nonlocality-dev
+name: vqo-non-n-locality-dev
 channels:
   - defaults
 dependencies:
