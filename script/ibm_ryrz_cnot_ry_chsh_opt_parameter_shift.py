@@ -1,4 +1,4 @@
-from context import qnetvo as qnet
+import qnetvo as qnet
 import sys
 from pennylane import numpy as np
 from datetime import datetime

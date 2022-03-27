@@ -4,7 +4,7 @@ from pennylane import numpy as np
 import pennylane as qml
 
 import math
-from context import qnetvo as qnet
+import qnetvo as qnet
 
 import utilities
 import network_ansatzes as ansatzes

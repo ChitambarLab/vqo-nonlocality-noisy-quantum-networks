@@ -1,6 +1,6 @@
 import pennylane as qml
 
-from context import qnetvo as qnet
+import qnetvo as qnet
 
 
 def local_rot(settings, wires):
@@ -23,6 +23,11 @@ def max_entangled(settings, wires):
     qml.Hadamard(wires=[wires[0]])
     qml.CNOT(wires=wires[0:2])
     qml.Rot(*settings[0:3], wires=wires[0])
+
+
+def psi_plus_state(settings, wires):
+    qnet.ghz_state(settings, wires=wires)
+    qml.PauliX(wires=wires[0])
 
 
 def ryrz_cnot(settings, wires):
@@ -61,6 +66,11 @@ def chain_ryrz_cnot_prep_nodes(n):
 def chain_ghz_prep_nodes(n):
     return [qnet.PrepareNode(1, [2 * i, 2 * i + 1], qnet.ghz_state, 0) for i in range(n)]
 
+
+def chain_psi_plus_prep_nodes(n):
+    return [
+        qnet.PrepareNode(1, [2 * i, 2 * i + 1], psi_plus_state, 0) for i in range(n)
+    ]
 
 def chain_nlocal_arbitrary_prep_nodes(n):
     return [

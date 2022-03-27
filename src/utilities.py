@@ -1,4 +1,4 @@
-from context import qnetvo as qnet
+import qnetvo as qnet
 from datetime import datetime
 from pennylane import numpy as np
 import matplotlib.pyplot as plt

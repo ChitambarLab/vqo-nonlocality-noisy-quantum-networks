@@ -1,6 +1,6 @@
 import pennylane as qml
 
-from context import qnetvo as qnet
+import qnetvo as qnet
 
 
 def local_rot(settings, wires):

@@ -1,5 +1,5 @@
 from pennylane import numpy as np
-from context import qnetvo as qnet
+import qnetvo as qnet
 
 
 def detector_error_chsh_cost_fn(

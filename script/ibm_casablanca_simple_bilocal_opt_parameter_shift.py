@@ -1,4 +1,4 @@
-from context import qnetvo as qnet
+import qnetvo as qnet
 import utilities
 
 from pennylane import numpy as np

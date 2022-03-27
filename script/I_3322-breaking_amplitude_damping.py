@@ -6,7 +6,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import json
 
-from context import qnetvo as qnet
+import qnetvo as qnet
 
 """
 This script collects data about the noise robustness of the I_3322 Bell inequality
