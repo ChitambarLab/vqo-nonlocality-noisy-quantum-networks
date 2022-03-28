@@ -9,11 +9,10 @@ from context import src
 
 """
 This script collects data from noisy n-local star optimizations.
-The considered noise model is a depolarizing channel to all
-qubits in the n-local star.
+Colored noise is applied to all sources in the n-local star.
 
 The scan range is gamma in [0,1] with an interval of 0.05.
-Stars with n = 3 are considered.
+Stars with n = 3,4 are considered.
 
 An arbitrary maximally entangled state is prepared and measured
 with local qubit rotations and a arbitrary two-qubit unitary on the central
@@ -25,13 +24,13 @@ Otherwise, the noisy qubit acts upon wires=[0] (the end node measurement).
 """
 
 
-def uniform_depolarizing_nodes_fn(n):
+def uniform_colored_noise_nodes_fn(n):
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [i], lambda settings, wires: qml.DepolarizingChannel(noise_args, wires=wires)
+                [2*i, 2*i + 1], lambda settings, wires: qnet.colored_noise(noise_args, wires=wires)
             )
-            for i in range(2 * n)
+            for i in range(n)
         ]
 
     return noise_nodes
@@ -39,7 +38,7 @@ def uniform_depolarizing_nodes_fn(n):
 
 if __name__ == "__main__":
 
-    data_dir = "data/n-star/uniform_qubit_depolarizing/"
+    data_dir = "data/n-star/uniform_source_colored_noise/"
     param_range = np.arange(0, 1.01, 0.05)
 
     for n in [3, 4]:
@@ -47,7 +46,7 @@ if __name__ == "__main__":
         client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
         """
-        Minimal optimal ansatz for amplitude damping
+        Minimal optimal ansatz for colored_noise
         """
         time_start = time.time()
 
@@ -79,6 +78,41 @@ if __name__ == "__main__":
         print("\nelapsed time : ", time_elapsed, "\n")
 
         client.restart()
+
+        """
+        Minimal nonoptimal ansatz for phi plus bell state
+        """
+        time_start = time.time()
+
+        phi_plus_local_ry_opt = src.noisy_net_opt_fn(
+            src.star_ghz_prep_nodes(n),
+            src.star_22_local_ry_meas_nodes(n),
+            uniform_depolarizing_nodes_fn(n),
+            qnet.nlocal_star_22_cost_fn,
+            opt_kwargs={
+                "sample_width": 5,
+                "step_size": 1.8,
+                "num_steps": 40,
+                "verbose": True,
+            },
+        )
+        phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
+        phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)
+
+        src.save_optimizations_one_param_scan(
+            data_dir,
+            "phi_plus_local_ry_n-" + str(n) + "_",
+            param_range,
+            phi_plus_local_ry_opt_dicts,
+            quantum_bound=np.sqrt(2),
+            classical_bound=1,
+        )
+
+        time_elapsed = time.time() - time_start
+        print("\nelapsed time : ", time_elapsed, "\n")
+
+        client.restart()
+
 
         # # local qubit rotation measurements and max entangled states
         # time_start = time.time()

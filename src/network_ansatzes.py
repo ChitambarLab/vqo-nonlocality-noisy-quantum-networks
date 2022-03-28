@@ -165,6 +165,10 @@ def star_ghz_prep_nodes(n):
     return [qnet.PrepareNode(1, [i, n + i], qnet.ghz_state, 0) for i in range(n)]
 
 
+def star_psi_plus_prep_nodes(n):
+    return [qnet.PrepareNode(1, [i, n + i], psi_plus_state, 0) for i in range(n)]
+
+
 def star_ryrz_cnot_prep_nodes(n):
     return [qnet.PrepareNode(1, [i, n + i], ryrz_cnot, 2) for i in range(n)]
 
