@@ -42,6 +42,12 @@ def local_ry_cnot(settings, wires):
     qml.CNOT(wires=wires[0:2])
 
 
+def local_rzry(settings, wires):
+    for i in range(len(wires)):
+        qml.RZ(settings[2*i], wires=wires[i])
+        qml.RY(settings[2*i + 1], wires=wires[i])
+
+
 def ghz_prep_node(n):
     return [qnet.PrepareNode(1, range(n), qnet.ghz_state, 0)]
 
@@ -176,6 +182,13 @@ def star_ryrz_cnot_prep_nodes(n):
 def star_22_local_ry_meas_nodes(n):
     meas_nodes = [qnet.MeasureNode(2, 2, [i], qnet.local_RY, 1) for i in range(n)]
     meas_nodes.append(qnet.MeasureNode(2, 2, [i for i in range(n, 2 * n)], qnet.local_RY, n))
+
+    return meas_nodes
+
+
+def star_22_local_rzry_meas_nodes(n):
+    meas_nodes = [qnet.MeasureNode(2, 2, [i], local_rzry, 2) for i in range(n)]
+    meas_nodes.append(qnet.MeasureNode(2, 2, [i for i in range(n, 2 * n)], local_rzry, 2 * n))
 
     return meas_nodes
 

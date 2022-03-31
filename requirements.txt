@@ -1,4 +1,4 @@
-pennylane==0.20
+pennylane==0.21
 qnetvo==0.1
 qiskit
 pennylane-qiskit
