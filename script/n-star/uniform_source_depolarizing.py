@@ -9,10 +9,10 @@ from context import src
 
 """
 This script collects data from noisy n-local star optimizations.
-Colored noise is applied to all sources in the n-local star.
+Depolarizing noise is applied to all sources in the n-local star.
 
 The scan range is gamma in [0,1] with an interval of 0.05.
-Stars with n = 3,4 are considered.
+Stars with n = 3 are considered.
 
 An arbitrary maximally entangled state is prepared and measured
 with local qubit rotations and a arbitrary two-qubit unitary on the central
@@ -24,11 +24,11 @@ Otherwise, the noisy qubit acts upon wires=[0] (the end node measurement).
 """
 
 
-def uniform_colored_noise_nodes_fn(n):
+def uniform_depolarizing_nodes_fn(n):
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [2*i, 2*i + 1], lambda settings, wires: qnet.colored_noise(noise_args, wires=wires)
+                [2*i, 2*i + 1], lambda settings, wires: qnet.two_qubit_depolarizing(noise_args, wires=wires)
             )
             for i in range(n)
         ]
@@ -38,56 +38,22 @@ def uniform_colored_noise_nodes_fn(n):
 
 if __name__ == "__main__":
 
-    data_dir = "data/n-star/uniform_source_colored_noise/"
+    data_dir = "data/n-star/uniform_source_depolarizing/"
     param_range = np.arange(0, 1.01, 0.05)
 
     for n in [3]:
 
-        # client = Client(processes=True, n_workers=5, threads_per_worker=1)
-
-        # """
-        # Minimal optimal ansatz for colored_noise
-        # """
-        # time_start = time.time()
-
-        # psi_plus_local_ry_opt = src.noisy_net_opt_fn(
-        #     src.star_psi_plus_prep_nodes(n),
-        #     src.star_22_local_ry_meas_nodes(n),
-        #     uniform_colored_noise_nodes_fn(n),
-        #     qnet.nlocal_star_22_cost_fn,
-        #     opt_kwargs={
-        #         "sample_width": 5,
-        #         "step_size": 2,
-        #         "num_steps": 40,
-        #         "verbose": True,
-        #     },
-        # )
-        # psi_plus_local_ry_jobs = client.map(psi_plus_local_ry_opt, param_range)
-        # psi_plus_local_ry_opt_dicts = client.gather(psi_plus_local_ry_jobs)
-
-        # src.save_optimizations_one_param_scan(
-        #     data_dir,
-        #     "psi_plus_local_ry_n-" + str(n) + "_",
-        #     param_range,
-        #     psi_plus_local_ry_opt_dicts,
-        #     quantum_bound=np.sqrt(2),
-        #     classical_bound=1,
-        # )
-
-        # time_elapsed = time.time() - time_start
-        # print("\nelapsed time : ", time_elapsed, "\n")
-
         client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
         """
-        Minimal optimal ansatz for colored_noise
+        Minimal nonoptimal ansatz for phi plus bell state
         """
         time_start = time.time()
 
-        psi_plus_local_rzry_opt = src.noisy_net_opt_fn(
-            src.star_psi_plus_prep_nodes(n),
-            src.star_22_local_rzry_meas_nodes(n),
-            uniform_colored_noise_nodes_fn(n),
+        phi_plus_local_ry_opt = src.noisy_net_opt_fn(
+            src.star_ghz_prep_nodes(n),
+            src.star_22_local_ry_meas_nodes(n),
+            uniform_depolarizing_nodes_fn(n),
             qnet.nlocal_star_22_cost_fn,
             opt_kwargs={
                 "sample_width": 5,
@@ -96,54 +62,20 @@ if __name__ == "__main__":
                 "verbose": True,
             },
         )
-        psi_plus_local_rzry_jobs = client.map(psi_plus_local_rzry_opt, param_range)
-        psi_plus_local_rzry_opt_dicts = client.gather(psi_plus_local_rzry_jobs)
+        phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
+        phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)
 
         src.save_optimizations_one_param_scan(
             data_dir,
-            "psi_plus_local_rzry_n-" + str(n) + "_",
+            "phi_plus_local_ry_n-" + str(n) + "_",
             param_range,
-            psi_plus_local_rzry_opt_dicts,
+            phi_plus_local_ry_opt_dicts,
             quantum_bound=np.sqrt(2),
             classical_bound=1,
         )
 
         time_elapsed = time.time() - time_start
         print("\nelapsed time : ", time_elapsed, "\n")
-
-        client.restart()
-
-        # """
-        # Minimal nonoptimal ansatz for phi plus bell state
-        # """
-        # time_start = time.time()
-
-        # phi_plus_local_ry_opt = src.noisy_net_opt_fn(
-        #     src.star_ghz_prep_nodes(n),
-        #     src.star_22_local_ry_meas_nodes(n),
-        #     uniform_colored_noise_nodes_fn(n),
-        #     qnet.nlocal_star_22_cost_fn,
-        #     opt_kwargs={
-        #         "sample_width": 5,
-        #         "step_size": 2,
-        #         "num_steps": 40,
-        #         "verbose": True,
-        #     },
-        # )
-        # phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
-        # phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)
-
-        # src.save_optimizations_one_param_scan(
-        #     data_dir,
-        #     "phi_plus_local_ry_n-" + str(n) + "_",
-        #     param_range,
-        #     phi_plus_local_ry_opt_dicts,
-        #     quantum_bound=np.sqrt(2),
-        #     classical_bound=1,
-        # )
-
-        # time_elapsed = time.time() - time_start
-        # print("\nelapsed time : ", time_elapsed, "\n")
 
         # client.restart()
 
@@ -154,7 +86,7 @@ if __name__ == "__main__":
         # max_ent_local_rot_opt = src.noisy_net_opt_fn(
         #     src.star_nlocal_max_entangled_prep_nodes(n),
         #     src.star_22_local_rot_meas_nodes(n),
-        #     uniform_colored_noise_nodes_fn(n),
+        #     uniform_depolarizing_nodes_fn(n),
         #     qnet.nlocal_star_22_cost_fn,
         #     opt_kwargs={
         #         "sample_width": 5,
@@ -186,7 +118,7 @@ if __name__ == "__main__":
         # max_ent_ghz_opt = src.noisy_net_opt_fn(
         #     src.star_nlocal_max_entangled_prep_nodes(n),
         #     src.star_22_ghz_rot_meas_nodes(n),
-        #     uniform_colored_noise_nodes_fn(n),
+        #     uniform_depolarizing_nodes_fn(n),
         #     qnet.nlocal_star_22_cost_fn,
         #     opt_kwargs={
         #         "sample_width": 5,
@@ -219,7 +151,7 @@ if __name__ == "__main__":
         # arb_opt = src.noisy_net_opt_fn(
         #     src.star_nlocal_arb_prep_nodes(n),
         #     src.star_22_local_rot_meas_nodes(n),
-        #     uniform_colored_noise_nodes_fn(n),
+        #     uniform_depolarizing_nodes_fn(n),
         #     qnet.nlocal_star_22_cost_fn,
         #     opt_kwargs={
         #         "sample_width": 5,
@@ -251,7 +183,7 @@ if __name__ == "__main__":
         # arb_ghz_opt = src.noisy_net_opt_fn(
         #     src.star_nlocal_arb_prep_nodes(n),
         #     src.star_22_ghz_rot_meas_nodes(n),
-        #     uniform_colored_noise_nodes_fn(n),
+        #     uniform_depolarizing_nodes_fn(n),
         #     qnet.nlocal_star_22_cost_fn,
         #     opt_kwargs={
         #         "sample_width": 5,
