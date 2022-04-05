@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
         src.save_optimizations_one_param_scan(
             data_dir,
-            "ghz_local_ry_n-" + str(n) + "_",
+            "ghz_local_ry_out_n-" + str(n) + "_",
             param_range,
             ghz_local_ry_opt_dicts,
             quantum_bound=np.sqrt(2),

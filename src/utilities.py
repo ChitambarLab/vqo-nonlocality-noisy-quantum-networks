@@ -571,3 +571,63 @@ def get_data_files(path, regex):
         for f in listdir(path)
         if (f.endswith(".json") and isfile(join(path, f)) and bool(re.match(regex, f)))
     ]
+
+
+def plot_single_and_uniform_max_scores_data(
+    fig_title,
+    ax_titles,
+    noise_params,
+    quantum_bound,
+    classical_bound,
+    single_max_scores,
+    uniform_max_scores,
+    data_labels,
+    plot_dir,
+):
+    fig, axes = plt.subplots(1, 2, figsize=(10,6))
+    fig.suptitle(fig_title, fontsize=24, fontweight="bold")
+    datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
+    filename = fig_title + "_max_scores_single_and_uniform_" + datetime_ext
+
+    num_samples = len(noise_params)
+    qbound = [quantum_bound] * num_samples
+    cbound = [classical_bound] * num_samples
+
+    ax_labels_fontsize = 20
+    ax_titles_fontsize = 22
+    data_set_markers = [":s", ":o", ":^", ":d", ":P", ":*"]
+
+    ax_data_sets = [single_max_scores, uniform_max_scores]
+
+    for i in range(2):
+
+        ax = axes[i]
+
+        ax.plot(noise_params, qbound, linewidth=3, label="Quantum Bound")
+        ax.plot(noise_params, cbound, "--", linewidth=3, label="Classical Bound")
+
+        for j in range(len(ax_data_sets[i])):
+            data_set = ax_data_sets[i][j]
+            ax.plot(
+                noise_params,
+                data_set,
+                data_set_markers[j],
+                linewidth=2,
+                markersize=8,
+                label=data_labels[j]
+            )
+
+        ax.set_title(ax_titles[i], size=ax_titles_fontsize)
+        ax.set_xlabel(r"Noise Parameter ($\gamma$)", size=ax_labels_fontsize)
+        if i == 0:
+            ax.set_ylabel(r"Bell Score ($S_{\mathrm{Bell}}$)", size=ax_labels_fontsize)
+            plt.figlegend(ncol=4, loc="lower center", fontsize=16, bbox_to_anchor=(0,-0.01,1,1,))
+
+    plt.tight_layout()
+    fig.subplots_adjust(bottom=0.25)
+
+    plt.savefig(plot_dir + filename)
+
+
+
+
