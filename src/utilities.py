@@ -584,6 +584,41 @@ def plot_single_and_uniform_max_scores_data(
     data_labels,
     plot_dir,
 ):
+    """Plots the noise robustness for single and uniform qubit/source/measurement
+    noise models. This method is intended for plotting the max score across many
+    different network topologies. The constructed figure is saved in the specified
+    plot_dir.
+
+    :param fig_title: The title of the figure.
+    :type fig_title: String
+
+    :param ax_titles: A list of two strings for the left and right plots respectively.
+    :type ax_titles: List[String]
+
+    :param noise_params: A list of float values ranging from 0 to 1 that described the
+                         noise. Will be plotted on the x-axis.
+    :type noise_params: List[float]
+
+    :param quantum_bound: The upper quantum bound for the plot.
+    :type quantum_bound: Float
+
+    :param classical_bound: The upper classical bound for the plot.
+    :type classical_bound: Float
+
+    :param single_max_scores: A list containing the set of max scores for each network to plot.
+                            Inner lists are the max score for each noise parameter.
+    :type single_max_scores: List[List[Float]]
+
+    :param uniform_max_scores: A list containing the set of max scores for each network to plot.
+                            Inner lists are the max score for each noise parameter.
+    :type uniform_max_scores: List[List[Float]]
+
+    :param data_labels: The names for the data in each plot.
+    :type data_labels: List[String]
+
+    :param plot_dir: The directory to which the data will be plotted.
+    :type plt_dir: String
+    """
     fig, axes = plt.subplots(1, 2, figsize=(10,6))
     fig.suptitle(fig_title, fontsize=24, fontweight="bold")
     datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")

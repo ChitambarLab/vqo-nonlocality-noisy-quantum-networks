@@ -1,10 +1,13 @@
 import qnetvo as qnet
 from context import src
 
-# import matplotlib.pyplot as plt
 from pennylane import numpy as np
 
 
+"""
+This script aggregates data and plots the noise robustness results qubit
+depolarizing noise.
+"""
 if __name__ == "__main__":
     num_samples = 21
 

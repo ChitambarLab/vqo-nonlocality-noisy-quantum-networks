@@ -34,7 +34,7 @@ def uniform_phase_damping_nodes_fn():
 
 if __name__ == "__main__":
 
-    data_dir = "data/bilocal/uniform_phase_damping/"
+    data_dir = "data/bilocal/uniform_qubit_phase_damping/"
     param_range = np.arange(0, 1.01, 0.05)
 
     max_ent_prep_nodes = [
