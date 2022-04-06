@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     bilocal_single_pd_dir = "./data/bilocal/single_qubit_phase_damping/"
 
-    bilocal_single_pd_regexes = [r"max_ent_local_rot_out_.*", r"ghz_local_ry_out_.*", r"max_ent_arb_out_.*", r"arb_arb_out_.*"]
+    bilocal_single_pd_regexes = [r"max_ent_local_rot_.*", r"ghz_local_ry_.*", r"max_ent_arb_.*", r"arb_arb_.*"]
     bilocal_single_pd_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(bilocal_single_pd_dir, regex)
@@ -123,12 +123,12 @@ if __name__ == "__main__":
     chain_single_pd_dir = "./data/n-chain/single_qubit_phase_damping/"
 
     n3_chain_single_pd_regexes = [
-        r"ghz_local_ry_n-3_out_.*",
-        r"arb_arb_n-3_out_.*",
-        r"arb_local_rot_n-3_out_.*",
-        r"max_entangled_arb_n-3_out_.*",
-        r"max_entangled_local_rot_n-3_out_.*",
-        r"ryrz_cnot_local_ry_n-3_out_.*",
+        r"ghz_local_ry_n-3_.*",
+        r"arb_arb_n-3_.*",
+        r"arb_local_rot_n-3_.*",
+        r"max_entangled_arb_n-3_.*",
+        r"max_entangled_local_rot_n-3_.*",
+        r"ryrz_cnot_local_ry_n-3_.*",
     ]
 
     n3_chain_single_pd_data = [
@@ -144,12 +144,12 @@ if __name__ == "__main__":
     ]
 
     n4_chain_single_pd_regexes = [
-        r"ghz_local_ry_n-4_out_.*",
-        r"arb_arb_n-4_out_.*",
-        r"arb_local_rot_n-4_out_.*",
-        r"max_entangled_arb_n-4_out_.*",
-        r"max_entangled_local_rot_n-4_out_.*",
-        r"ryrz_cnot_local_ry_n-4_out_.*",
+        r"ghz_local_ry_n-4_.*",
+        r"arb_arb_n-4_.*",
+        r"arb_local_rot_n-4_.*",
+        r"max_entangled_arb_n-4_.*",
+        r"max_entangled_local_rot_n-4_.*",
+        r"ryrz_cnot_local_ry_n-4_.*",
     ]
     n4_chain_single_pd_data = [
         src.analyze_data_one_param_scan(
@@ -212,11 +212,11 @@ if __name__ == "__main__":
     star_single_pd_dir = "./data/n-star/single_qubit_phase_damping/"
 
     n3_star_pd_single_regexes = [
-        r"arb_ghz_rot_n-3_out_.*",
-        r"arb_local_rot_n-3_out_.*",
-        r"max_entangled_ghz_rot_n-3_out_.*",
-        r"max_entangled_local_rot_n-3_out_.*",
-        r"ghz_local_ry_n-3_out_.*",
+        r"arb_ghz_rot_n-3_.*",
+        r"arb_local_rot_n-3_.*",
+        r"max_entangled_ghz_rot_n-3_.*",
+        r"max_entangled_local_rot_n-3_.*",
+        r"ghz_local_ry_n-3_.*",
     ]
 
     n3_star_single_pd_data = [
@@ -232,11 +232,11 @@ if __name__ == "__main__":
     ]
 
     n4_star_pd_single_regexes = [
-        r"arb_ghz_rot_n-4_out_.*",
-        r"arb_local_rot_n-4_out_.*",
-        r"max_entangled_ghz_rot_n-4_out_.*",
-        r"max_entangled_local_rot_n-4_out_.*",
-        r"ghz_local_ry_n-4_out_.*",
+        r"arb_ghz_rot_n-4_.*",
+        r"arb_local_rot_n-4_.*",
+        r"max_entangled_ghz_rot_n-4_.*",
+        r"max_entangled_local_rot_n-4_.*",
+        r"ghz_local_ry_n-4_.*",
     ]
 
     n4_star_single_pd_data = [

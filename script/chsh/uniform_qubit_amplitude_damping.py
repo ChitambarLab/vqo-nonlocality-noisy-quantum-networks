@@ -4,8 +4,7 @@ from pennylane import numpy as np
 import pennylane as qml
 import qnetvo as qnet
 
-import utilities
-import network_ansatzes
+from context import src
 
 
 """
@@ -38,12 +37,12 @@ def uniform_amplitude_damping_nodes_fn():
 
 if __name__ == "__main__":
 
-    data_dir = "script/data/chsh_uniform_amplitude_damping/"
+    data_dir = "data/chsh/uniform_qubit_amplitude_damping/"
     param_range = np.arange(0, 1.01, 0.05)
 
     max_ent_prep_nodes = [qnet.PrepareNode(1, [0, 1], qnet.max_entangled_state, 3)]
     arb_prep_nodes = [qnet.PrepareNode(1, [0, 1], qml.ArbitraryStatePreparation, 6)]
-    ryrz_cnot_prep_nodes = [qnet.PrepareNode(1, [0, 1], network_ansatzes.ryrz_cnot, 2)]
+    ryrz_cnot_prep_nodes = [qnet.PrepareNode(1, [0, 1], src.ryrz_cnot, 2)]
     meas_nodes = [
         qnet.MeasureNode(2, 2, [0], lambda settings, wires: qml.Rot(*settings, wires=wires), 3),
         qnet.MeasureNode(2, 2, [1], lambda settings, wires: qml.Rot(*settings, wires=wires), 3),
@@ -58,7 +57,7 @@ if __name__ == "__main__":
     # local qubit rotation measurements and max entangled states
     time_start = time.time()
 
-    max_ent_opt = utilities.noisy_net_opt_fn(
+    max_ent_opt = src.noisy_net_opt_fn(
         max_ent_prep_nodes,
         meas_nodes,
         uniform_amplitude_damping_nodes_fn(),
@@ -78,7 +77,7 @@ if __name__ == "__main__":
     max_ent_jobs = client.map(max_ent_opt, param_range)
     max_ent_opt_dicts = client.gather(max_ent_jobs)
 
-    utilities.save_optimizations_one_param_scan(
+    src.save_optimizations_one_param_scan(
         data_dir,
         "max_ent_",
         param_range,
@@ -93,7 +92,7 @@ if __name__ == "__main__":
     # minimal ryrz_cnot prep ansatz for optimal strategy
     time_start = time.time()
 
-    ryrz_cnot_ry_opt = utilities.noisy_net_opt_fn(
+    ryrz_cnot_ry_opt = src.noisy_net_opt_fn(
         ryrz_cnot_prep_nodes,
         ry_meas_nodes,
         uniform_amplitude_damping_nodes_fn(),
@@ -113,7 +112,7 @@ if __name__ == "__main__":
     ryrz_cnot_ry_jobs = client.map(ryrz_cnot_ry_opt, param_range)
     ryrz_cnot_ry_opt_dicts = client.gather(ryrz_cnot_ry_jobs)
 
-    utilities.save_optimizations_one_param_scan(
+    src.save_optimizations_one_param_scan(
         data_dir,
         "ryrz_cnot_ry_",
         param_range,
@@ -128,7 +127,7 @@ if __name__ == "__main__":
     # local qubit rotation measurements and arb states
     time_start = time.time()
 
-    arb_opt = utilities.noisy_net_opt_fn(
+    arb_opt = src.noisy_net_opt_fn(
         arb_prep_nodes,
         meas_nodes,
         uniform_amplitude_damping_nodes_fn(),
@@ -148,7 +147,7 @@ if __name__ == "__main__":
     arb_jobs = client.map(arb_opt, param_range)
     arb_opt_dicts = client.gather(arb_jobs)
 
-    utilities.save_optimizations_one_param_scan(
+    src.save_optimizations_one_param_scan(
         data_dir,
         "arb_",
         param_range,
