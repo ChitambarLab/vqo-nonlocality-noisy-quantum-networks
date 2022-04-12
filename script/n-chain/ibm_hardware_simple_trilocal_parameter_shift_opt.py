@@ -1,5 +1,5 @@
 import qnetvo as qnet
-import utilities
+from context import src
 
 from pennylane import numpy as np
 from datetime import datetime
@@ -72,7 +72,7 @@ print("init_opt_dict : ", init_opt_dict)
 print("num_steps : ", num_steps)
 
 
-opt_dict = utilities.hardware_opt(
+opt_dict = src.hardware_opt(
     cost,
     ibm_ansatz.rand_scenario_settings(),
     num_steps=num_steps,

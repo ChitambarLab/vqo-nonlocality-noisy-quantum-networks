@@ -1,5 +1,5 @@
 import qnetvo as qnet
-import utilities
+from context import src
 
 from pennylane import numpy as np
 from datetime import datetime
@@ -59,7 +59,7 @@ cost = qnet.nlocal_star_22_cost_fn(
 )
 par_grad = qnet.parallel_nlocal_star_grad_fn(ibm_ansatz, nthreads=5, diff_method="parameter-shift")
 
-data_filepath = "data/n-star/ibm_hardware_simple_trilocal_star_parameter_shift_opt/"
+data_filepath = "data/n-star/ibm_hardware_simple_trilocal_parameter_shift_opt/"
 
 init_opt_dict = (
     qnet.read_optimization_json(data_filepath + "tmp/" + sys.argv[1]) if len(sys.argv) > 1 else {}
@@ -72,7 +72,7 @@ print("init_opt_dict : ", init_opt_dict)
 print("num_steps : ", num_steps)
 
 
-opt_dict = utilities.hardware_opt(
+opt_dict = src.hardware_opt(
     cost,
     ibm_ansatz.rand_scenario_settings(),
     num_steps=num_steps,
