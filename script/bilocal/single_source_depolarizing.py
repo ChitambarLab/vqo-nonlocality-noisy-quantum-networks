@@ -216,7 +216,7 @@ if __name__ == "__main__":
         qnet.nlocal_chain_cost_22,
         opt_kwargs={
             "sample_width": 5,
-            "step_size": 1.3,
+            "step_size": 1.1,
             "num_steps": 80,
             "verbose": False,
         },
