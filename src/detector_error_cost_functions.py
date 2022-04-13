@@ -82,7 +82,6 @@ def detector_error_chain_cost_fn(
     :type qnode_kwargs: Dictionary
     """
     n = len(chain_ansatz.prepare_nodes)
-
     print("error rates : ", error_rates)
     error_maps = [
         (1 - gamma) * np.eye(2) + gamma * error_map
@@ -107,6 +106,7 @@ def detector_error_chain_cost_fn(
         post_map = np.kron(post_map, np.array([[1,0,0,1],[0,1,1,0]]))
 
     post_map = np.kron(post_map, np.eye(2))
+
     parity_vec = qnet.parity_vector(n+1)
 
 
@@ -131,7 +131,7 @@ def detector_error_chain_cost_fn(
 
         J22_score = 0
         J22_scalars = [1,-1,-1,1]
-        for J22_settings in range(len(J22_xy_settings)):
+        for i in range(len(J22_xy_settings)):
             J22_scalar = J22_scalars[i]
             J22_settings = J22_xy_settings[i]
             J22_probs = detector_errors @ post_map @ chain_probs(J22_settings)

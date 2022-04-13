@@ -28,7 +28,7 @@ def single_depolarizing_nodes_fn(n):
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [0, 1], lambda settings, wires: qnet.two_qubit_depolarizing(noise_args, wires=wires)
+                [0, n], lambda settings, wires: qnet.two_qubit_depolarizing(noise_args, wires=wires)
             )
         ]
 

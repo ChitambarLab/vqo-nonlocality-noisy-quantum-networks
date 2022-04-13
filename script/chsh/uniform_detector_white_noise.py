@@ -44,7 +44,7 @@ if __name__ == "__main__":
     scan_range = np.arange(0, 1.001, 0.05)
 
     # preparing noise parameters for use with dask.distributed
-    params_range = np.zeros((2, len(scan_range) ** 2))
+    params_range = np.zeros((2, len(scan_range)))
     for i, gamma in enumerate(scan_range):
         params_range[:, i] = [gamma, gamma]
 

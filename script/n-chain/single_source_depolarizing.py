@@ -35,7 +35,7 @@ if __name__ == "__main__":
     data_dir = "data/n-chain/single_source_depolarizing/"
     param_range = np.arange(0, 1.01, 0.05)
 
-    for n in [3]:
+    for n in [3,4]:
 
         client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
