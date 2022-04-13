@@ -207,3 +207,12 @@ def star_22_ghz_rot_meas_nodes(n):
     )
 
     return meas_nodes
+
+
+def star_22_arb_meas_nodes(n):
+    meas_nodes = [qnet.MeasureNode(2, 2, [i], local_rot, 3) for i in range(n)]
+    meas_nodes.append(
+        qnet.MeasureNode(2, 2, [i for i in range(n, 2 * n)], qml.ArbitraryUnitary, 4**n - 1)
+    )
+
+    return meas_nodes

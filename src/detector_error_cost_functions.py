@@ -175,7 +175,6 @@ def detector_error_star_cost_fn(
     """
     n = len(star_ansatz.prepare_nodes)
 
-    print("error rates : ", error_rates)
     error_maps = [
         (1 - gamma) * np.eye(2) + gamma * error_map
         for gamma in error_rates
@@ -200,20 +199,17 @@ def detector_error_star_cost_fn(
 
     central_parity_vec = qnet.parity_vector(n)
 
-    central_post_map = np.zeros(2,2**n)
+    central_post_map = np.zeros((2,2**n))
     for i in range(len(central_parity_vec)):
         val = central_parity_vec[i]
         if val == 1:
             central_post_map[0,i] = 1
         else:
-            central_post_map[1,i] = -1
+            central_post_map[1,i] = 1
 
-    post_map = np.kron(post_map, central_post_map)
-    
-
+    post_map = np.kron(post_map, central_post_map)    
 
     parity_vec = qnet.parity_vector(n+1)
-
 
     def cost(network_settings):
 
@@ -235,18 +231,18 @@ def detector_error_star_cost_fn(
             I22_score += I22_correlator
 
         J22_score = 0
-        for J22_settings in range(len(J22_x_settings)):
+        for i in range(len(J22_x_settings)):
             
             J22_scalar = (-1)**(math.sum(J22_x_inputs[i][0:n]))
 
             J22_settings = J22_x_settings[i]
-            J22_probs = detector_errors @ post_map @ chain_probs(J22_settings)
+            J22_probs = detector_errors @ post_map @ star_probs(J22_settings)
 
             J22_correlator = math.sum(J22_probs * parity_vec)
             J22_score += J22_scalar * J22_correlator
 
 
-        star_score = np.power(math.abs(I22_score / 2**n), 1 / n) + np.power(math.abs(J22_score / 2**n), 1 / n)
+        star_score = np.power(math.abs(I22_score), 1 / n)/2 + np.power(math.abs(J22_score ), 1 / n)/2
 
         return -(star_score)
 
