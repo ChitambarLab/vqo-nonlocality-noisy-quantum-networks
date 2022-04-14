@@ -45,13 +45,13 @@ if __name__ == "__main__":
             },
             opt_kwargs={
                 "step_size": 1.4,
-                "num_steps": 40,
+                "num_steps": 60,
                 "sample_width": 5,
                 "verbose": False,
             },
         )
 
-        ryrz_cnot_local_ry_opt_jobs = client.map(gryrz_cnotlocal_ry_state_optimization, *params_range)
+        ryrz_cnot_local_ry_opt_jobs = client.map(ryrz_cnot_local_ry_state_optimization, *params_range)
         ryrz_cnot_local_ry_opt_dicts = client.gather(ryrz_cnot_local_ry_opt_jobs)
 
         print("optimization time : ", time.time() - time_start)
@@ -82,7 +82,7 @@ if __name__ == "__main__":
             },
             opt_kwargs={
                 "step_size": 1.4,
-                "num_steps": 40,
+                "num_steps": 60,
                 "sample_width": 5,
                 "verbose": False,
             },
@@ -116,7 +116,7 @@ if __name__ == "__main__":
                 "error_map": biased_noise_error_map,
             },
             opt_kwargs={
-                "step_size": 1,
+                "step_size": 0.9,
                 "num_steps": 60,
                 "sample_width": 5,
                 "verbose": False,
@@ -153,7 +153,7 @@ if __name__ == "__main__":
                 "error_map": biased_noise_error_map,
             },
             opt_kwargs={
-                "step_size": 1,
+                "step_size": 0.9,
                 "num_steps":60,
                 "sample_width": 5,
                 "verbose": False,
@@ -190,7 +190,7 @@ if __name__ == "__main__":
                 "error_map": biased_noise_error_map,
             },
             opt_kwargs={
-                "step_size": 1,
+                "step_size": 0.9,
                 "num_steps": 90,
                 "sample_width": 5,
                 "verbose": False,

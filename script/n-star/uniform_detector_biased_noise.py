@@ -45,7 +45,7 @@ if __name__ == "__main__":
             },
             opt_kwargs={
                 "step_size": 1.4,
-                "num_steps": 40,
+                "num_steps": 60,
                 "sample_width": 5,
                 "verbose": False,
             },
@@ -82,7 +82,7 @@ if __name__ == "__main__":
             },
             opt_kwargs={
                 "step_size": 1.4,
-                "num_steps": 40,
+                "num_steps": 60,
                 "sample_width": 5,
                 "verbose": False,
             },
