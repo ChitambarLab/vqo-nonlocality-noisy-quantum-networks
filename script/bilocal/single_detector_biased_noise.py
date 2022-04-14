@@ -58,7 +58,7 @@ if __name__ == "__main__":
     # preparing noise parameters for use with dask.distributed
     params_range = np.zeros((3, len(scan_range)))
     for i, gamma in enumerate(scan_range):
-        params_range[:, i] = [gamma] * 3
+        params_range[:, i] = [gamma, 0, 0]
 
     data_filepath = "data/bilocal/single_detector_biased_noise/"
     client = Client(processes=True, n_workers=5, threads_per_worker=1)
