@@ -2,12 +2,45 @@ import qnetvo as qnet
 from context import src
 
 from pennylane import numpy as np
+import pennylane as qml
 
 """
 This script aggregates and plots data for qubit phase damping noise.
 """
+
+@qml.qnode(qml.device("default.mixed", wires=[0,1]))
+def bell_state_uniform_noise(gamma):
+    qml.Hadamard(wires=[0])
+    qml.CNOT(wires=[0,1])
+
+    qml.PhaseDamping(gamma, wires=[0])
+    qml.PhaseDamping(gamma, wires=[1])
+
+    return qml.state()
+
+@qml.qnode(qml.device("default.mixed", wires=[0,1]))
+def bell_state_single_noise(gamma):
+    qml.Hadamard(wires=[0])
+    qml.CNOT(wires=[0,1])
+
+    qml.PhaseDamping(gamma, wires=[0])
+
+    return qml.state()
+
+
 if __name__ == "__main__":
     num_samples = 21
+
+    bell_state_uniform_noise_states = [
+        bell_state_uniform_noise(gamma)
+        for gamma in np.arange(0, 1.01, 0.05)
+    ]
+    bell_state_single_noise_states = [
+        bell_state_single_noise(gamma)
+        for gamma in np.arange(0, 1.01, 0.05)
+    ]
+
+    bell_state = np.array([[1,0,0,1],[0,0,0,0],[0,0,0,0],[1,0,0,1]])/2
 
     """
     Loading CHSH Data
@@ -41,6 +74,16 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
+    theoretical_bell_state_uniform_chsh = [
+        src.chsh_max_violation(state) / 2
+        for state in bell_state_uniform_noise_states
+    ]
+
+    theoretical_bell_state_single_chsh = [
+        src.chsh_max_violation(state) / 2
+        for state in bell_state_single_noise_states
+    ]
+
     """
     Loading Bilocal Data
     """
@@ -72,6 +115,16 @@ if __name__ == "__main__":
     max_bilocal_single_pd = [
         max(map(lambda opt_data: opt_data["max_scores"][i], bilocal_single_pd_data))
         for i in range(num_samples)
+    ]
+
+    theoretical_bell_state_uniform_bilocal = [
+        src.bilocal_max_violation(state, state)
+        for state in bell_state_uniform_noise_states
+    ]
+
+    theoretical_bell_state_single_bilocal = [
+        src.bilocal_max_violation(state, bell_state)
+        for state in bell_state_single_noise_states
     ]
 
     """
@@ -163,6 +216,26 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
+    theoretical_bell_state_uniform_n3_chain = [
+        src.chain_classical_interior_max_violation([state, state, state])
+        for state in bell_state_uniform_noise_states
+    ]
+
+    theoretical_bell_state_single_n3_chain = [
+        src.chain_classical_interior_max_violation([state, bell_state, bell_state])
+        for state in bell_state_single_noise_states
+    ]
+
+    theoretical_bell_state_uniform_n4_chain = [
+        src.chain_classical_interior_max_violation([state, state, state, state])
+        for state in bell_state_uniform_noise_states
+    ]
+
+    theoretical_bell_state_single_n4_chain = [
+        src.chain_classical_interior_max_violation([state, bell_state, bell_state, bell_state])
+        for state in bell_state_single_noise_states
+    ]
+
     """
     Loading n-Star Data
     """
@@ -251,6 +324,26 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
+    theoretical_bell_state_uniform_n3_star = [
+        src.star_max_violation([state, state, state])
+        for state in bell_state_uniform_noise_states
+    ]
+
+    theoretical_bell_state_single_n3_star = [
+        src.star_max_violation([state, bell_state, bell_state])
+        for state in bell_state_single_noise_states
+    ]
+
+    theoretical_bell_state_uniform_n4_star = [
+        src.star_max_violation([state, state, state, state])
+        for state in bell_state_uniform_noise_states
+    ]
+
+    theoretical_bell_state_single_n4_star = [
+        src.star_max_violation([state, bell_state, bell_state, bell_state])
+        for state in bell_state_single_noise_states
+    ]
+
     """
     Plotting Data
     """
@@ -265,9 +358,25 @@ if __name__ == "__main__":
             max_chsh_single_pd, max_bilocal_single_pd, max_n3_chain_single_pd,
             max_n4_chain_single_pd, max_n3_star_single_pd, max_n4_star_single_pd
         ],
+        single_theoretical_scores = [
+            theoretical_bell_state_single_chsh,
+            theoretical_bell_state_single_bilocal,
+            theoretical_bell_state_single_n3_chain,
+            theoretical_bell_state_single_n4_chain,
+            theoretical_bell_state_single_n3_star,
+            theoretical_bell_state_single_n4_star,
+        ],
         uniform_max_scores = [
             max_chsh_uniform_pd, max_bilocal_uniform_pd, max_n3_chain_uniform_pd,
             max_n4_chain_uniform_pd, max_n3_star_uniform_pd, max_n4_star_uniform_pd
+        ],
+        uniform_theoretical_scores = [
+            theoretical_bell_state_uniform_chsh,
+            theoretical_bell_state_uniform_bilocal,
+            theoretical_bell_state_uniform_n3_chain,
+            theoretical_bell_state_uniform_n4_chain,
+            theoretical_bell_state_uniform_n3_star,
+            theoretical_bell_state_uniform_n4_star,
         ],
         data_labels = ["CHSH", "Bilocal", "3-Local Chain", "4-Local Chain", "3-Local Star", "4-Local Star"],
         plot_dir =  "./data/plots/qubit_phase_damping_noise_robustness/" 
