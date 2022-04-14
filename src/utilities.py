@@ -647,7 +647,7 @@ def plot_single_and_uniform_max_scores_data(
 
         for j in range(len(ax_data_sets[i])):
             data_set = ax_data_sets[i][j]
-            theory_set = ax_theory_sets[i][j] 
+            theory_set = ax_theory_sets[i][j] if len(ax_theory_sets[i]) != 0 else []
             ax.plot(
                 noise_params,
                 data_set,
@@ -658,15 +658,16 @@ def plot_single_and_uniform_max_scores_data(
                 markersize=8,
                 label=data_labels[j] + " VQO"
             )
-            ax.plot(
-                noise_params,
-                theory_set,
-                color=line_colors[j],
-                linestyle="-",
-                linewidth=2,
-                markersize=8,
-                label=data_labels[j] + " Theory" 
-            )
+            if len(theory_set) != 0:
+                ax.plot(
+                    noise_params,
+                    theory_set,
+                    color=line_colors[j],
+                    linestyle="-",
+                    linewidth=2,
+                    markersize=8,
+                    label=data_labels[j] + " Theory" 
+                )
 
         ax.set_title(ax_titles[i], size=ax_titles_fontsize)
         ax.set_xlabel(r"Noise Parameter ($\gamma$)", size=ax_labels_fontsize)
