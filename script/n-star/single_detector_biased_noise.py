@@ -18,7 +18,7 @@ We scan through the values [0,1] for errors on each detector.
 
 if __name__ == "__main__":
 
-    white_noise_error_map = np.array([[0.5, 0.5], [0.5, 0.5]])
+    biased_noise_error_map = np.array([[1, 1], [0, 0]])
     scan_range = np.arange(0, 1.001, 0.05)
     data_filepath = "data/n-star/single_detector_biased_noise/"
 
@@ -41,7 +41,7 @@ if __name__ == "__main__":
             ),
             src.detector_error_star_cost_fn,
             cost_kwargs={
-                "error_map": white_noise_error_map,
+                "error_map": biased_noise_error_map,
             },
             opt_kwargs={
                 "step_size": 1.4,
@@ -78,7 +78,7 @@ if __name__ == "__main__":
             ),
             src.detector_error_star_cost_fn,
             cost_kwargs={
-                "error_map": white_noise_error_map,
+                "error_map": biased_noise_error_map,
             },
             opt_kwargs={
                 "step_size": 1.4,
@@ -113,7 +113,7 @@ if __name__ == "__main__":
             ),
             src.detector_error_star_cost_fn,
             cost_kwargs={
-                "error_map": white_noise_error_map,
+                "error_map": biased_noise_error_map,
             },
             opt_kwargs={
                 "step_size": 1,
@@ -152,7 +152,7 @@ if __name__ == "__main__":
                 ),
                 src.detector_error_star_cost_fn,
                 cost_kwargs={
-                    "error_map": white_noise_error_map,
+                    "error_map": biased_noise_error_map,
                 },
                 opt_kwargs={
                     "step_size": 1,
@@ -189,7 +189,7 @@ if __name__ == "__main__":
                 ),
                 src.detector_error_star_cost_fn,
                 cost_kwargs={
-                    "error_map": white_noise_error_map,
+                    "error_map": biased_noise_error_map,
                 },
                 opt_kwargs={
                     "step_size": 1,
