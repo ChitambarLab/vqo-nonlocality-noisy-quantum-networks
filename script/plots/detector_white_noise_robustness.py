@@ -264,7 +264,7 @@ if __name__ == "__main__":
     Plotting Data
     """
 
-    src.plot_single_and_uniform_max_scores_data(
+    src.plot_unital_single_and_uniform_max_scores_data(
         fig_title = "Detector White Noise Robustness",
         ax_titles = ["Single Detector Noise", "Uniform Detector Noise"],
         noise_params = chsh_single_dep_data[0]["noise_params"],

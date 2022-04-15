@@ -44,55 +44,55 @@ if __name__ == "__main__":
     """
     Loading CHSH Data
     """
-    chsh_ad_regexes = [r"max_ent_.*", r"arb_.*", r"ryrz_cnot_ry_.*"]
-
     chsh_uniform_ad_dir = "./data/chsh/uniform_qubit_amplitude_damping/"
 
-    chsh_uniform_ad_data = [
+    ent_chsh_ad_regexes = [r"max_ent_.*"]
+    arb_single_chsh_ad_regexes = [r"arb_.*", r"ryrz_cnot_local_ry_.*"]
+    arb_uniform_chsh_ad_regexes = [r"arb_.*", r"ryrz_cnot_ry_.*"]
+
+    ent_chsh_uniform_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chsh_uniform_ad_dir, regex)
         )
-        for regex in chsh_ad_regexes
+        for regex in ent_chsh_ad_regexes
     ]
-    max_chsh_uniform_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], chsh_uniform_ad_data)) / 2
+    ent_max_chsh_uniform_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_chsh_uniform_ad_data)) / 2
         for i in range(num_samples)
     ]
 
-    chsh_ent_ad_regexes = [r"max_ent.*"]
-    chsh_ent_uniform_ad_data = [
+    arb_chsh_uniform_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chsh_uniform_ad_dir, regex)
         )
-        for regex in chsh_ent_ad_regexes
+        for regex in arb_uniform_chsh_ad_regexes
     ]
-    max_chsh_ent_uniform_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], chsh_ent_uniform_ad_data)) / 2
+    arb_max_chsh_uniform_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_chsh_uniform_ad_data)) / 2
         for i in range(num_samples)
     ]
 
     chsh_single_ad_dir = "./data/chsh/single_qubit_amplitude_damping/"
 
-    chsh_single_ad_regexes = [r"arb_local_rot_.*", r"max_ent_local_rot_.*", r"ryrz_cnot_local_ry_.*"]
-    chsh_single_ad_data = [
+    ent_chsh_single_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chsh_single_ad_dir, regex)
         )
-        for regex in chsh_single_ad_regexes
+        for regex in ent_chsh_ad_regexes
     ]
-    max_chsh_single_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], chsh_single_ad_data)) / 2
+    ent_max_chsh_single_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_chsh_single_ad_data)) / 2
         for i in range(num_samples)
     ]
 
-    chsh_ent_single_ad_data = [
+    arb_chsh_single_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chsh_single_ad_dir, regex)
         )
-        for regex in chsh_ent_ad_regexes
+        for regex in arb_single_chsh_ad_regexes
     ]
-    max_chsh_ent_single_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], chsh_ent_single_ad_data)) / 2
+    arb_max_chsh_single_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_chsh_single_ad_data)) / 2
         for i in range(num_samples)
     ]
 
@@ -111,57 +111,59 @@ if __name__ == "__main__":
     """
     bilocal_uniform_ad_dir = "./data/bilocal/uniform_amplitude_damping/"
 
-    bilocal_uniform_ad_regexes = [r"ryrz_cnot_local_ry_.*", r"arb_arb_.*", r"max_ent_arb_.*", r"max_ent_local_rot_.*"]
-    bilocal_uniform_ad_data = [
+    arb_bilocal_uniform_ad_regexes = [r"ryrz_cnot_local_ry_.*", r"arb_arb_.*", r"max_ent_arb_.*"]
+    ent_bilocal_uniform_ad_regexes = [r"max_ent_local_rot_.*"]
+
+    ent_bilocal_uniform_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(bilocal_uniform_ad_dir, regex)
         )
-        for regex in bilocal_uniform_ad_regexes
+        for regex in ent_bilocal_uniform_ad_regexes
     ]
 
-    max_bilocal_uniform_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], bilocal_uniform_ad_data))
+    ent_max_bilocal_uniform_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_bilocal_uniform_ad_data))
         for i in range(num_samples)
     ]
 
-    bilocal_ent_uniform_ad_regexes = [ r"max_ent_local_rot_.*"]#,r"max_ent_arb_.*"]
-    bilocal_ent_uniform_ad_data = [
+    arb_bilocal_uniform_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(bilocal_uniform_ad_dir, regex)
         )
-        for regex in bilocal_ent_uniform_ad_regexes
+        for regex in arb_bilocal_uniform_ad_regexes
     ]
 
-    max_bilocal_ent_uniform_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], bilocal_ent_uniform_ad_data))
+    arb_max_bilocal_uniform_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_bilocal_uniform_ad_data))
         for i in range(num_samples)
     ]
 
     bilocal_single_ad_dir = "./data/bilocal/single_qubit_amplitude_damping/"
 
-    bilocal_single_ad_regexes = [r"max_ent_local_rot_out_.*", r"ryrz_cnot_local_ry_out_.*", r"max_ent_arb_out_.*", r"arb_arb_out_.*"]
-    bilocal_single_ad_data = [
+    arb_bilocal_single_ad_regexes = [r"ryrz_cnot_local_ry_out_.*", r"max_ent_arb_out_.*", r"arb_arb_out_.*"]
+    ent_bilocal_single_ad_regexes = [r"max_ent_local_rot_.*"]
+
+    ent_bilocal_single_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(bilocal_single_ad_dir, regex)
         )
-        for regex in bilocal_single_ad_regexes
+        for regex in ent_bilocal_single_ad_regexes
     ]
 
-    max_bilocal_single_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], bilocal_single_ad_data))
+    ent_max_bilocal_single_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_bilocal_single_ad_data))
         for i in range(num_samples)
     ]
 
-    bilocal_ent_single_ad_regexes = [r"max_ent_local_rot_out_.*"]#, r"max_ent_arb_out_.*"]
-    bilocal_ent_single_ad_data = [
+    arb_bilocal_single_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(bilocal_single_ad_dir, regex)
         )
-        for regex in bilocal_ent_single_ad_regexes
+        for regex in arb_bilocal_single_ad_regexes
     ]
 
-    max_bilocal_ent_single_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], bilocal_ent_single_ad_data))
+    arb_max_bilocal_single_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_bilocal_single_ad_data))
         for i in range(num_samples)
     ]
 
@@ -181,86 +183,141 @@ if __name__ == "__main__":
 
     chain_uniform_ad_dir = "./data/n-chain/uniform_amplitude_damping/"
 
-    n3_chain_uniform_ad_regexes = [
+    arb_n3_chain_uniform_ad_regexes = [
         r"ryrz_cnot_local_ry_n-3_.*",
         r"arb_arb_n-3_.*",
         r"arb_local_rot_n-3_.*",
-        r"max_entangled_arb_n-3_.*",
+    ]
+
+    ent_n3_chain_uniform_ad_regexes = [
         r"max_entangled_local_rot_n-3_.*"
     ]
 
-    n3_chain_uniform_ad_data = [
+    arb_n3_chain_uniform_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chain_uniform_ad_dir, regex)
         )
-        for regex in n3_chain_uniform_ad_regexes
+        for regex in arb_n3_chain_uniform_ad_regexes
     ]
 
-    max_n3_chain_uniform_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n3_chain_uniform_ad_data))
+    arb_max_n3_chain_uniform_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n3_chain_uniform_ad_data))
         for i in range(num_samples)
     ]
 
-    n4_chain_uniform_ad_regexes = [
-        r"ryrz_cnot_local_ry_n-4_.*",
-        r"arb_arb_n-4_.*",
-        r"arb_local_rot_n-4_.*",
-        r"max_entangled_arb_n-4_.*",
-        r"max_entangled_local_rot_n-4_.*"
-    ]
-
-    n4_chain_uniform_ad_data = [
+    ent_n3_chain_uniform_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chain_uniform_ad_dir, regex)
         )
-        for regex in n4_chain_uniform_ad_regexes
+        for regex in ent_n3_chain_uniform_ad_regexes
     ]
 
-    max_n4_chain_uniform_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n4_chain_uniform_ad_data))
+    ent_max_n3_chain_uniform_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n3_chain_uniform_ad_data))
+        for i in range(num_samples)
+    ]
+
+    
+    arb_n4_chain_uniform_ad_regexes = [
+        r"ryrz_cnot_local_ry_n-4_.*",
+        r"arb_arb_n-4_.*",
+        r"arb_local_rot_n-4_.*",
+    ]
+    ent_n4_chain_uniform_ad_regexes = [
+        r"max_entangled_local_rot_n-4_.*"
+    ]
+
+    ent_n4_chain_uniform_ad_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(chain_uniform_ad_dir, regex)
+        )
+        for regex in ent_n4_chain_uniform_ad_regexes
+    ]
+
+    ent_max_n4_chain_uniform_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n4_chain_uniform_ad_data))
+        for i in range(num_samples)
+    ]
+
+    arb_n4_chain_uniform_ad_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(chain_uniform_ad_dir, regex)
+        )
+        for regex in arb_n4_chain_uniform_ad_regexes
+    ]
+
+    arb_max_n4_chain_uniform_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n4_chain_uniform_ad_data))
         for i in range(num_samples)
     ]
 
     chain_single_ad_dir = "./data/n-chain/single_qubit_amplitude_damping/"
 
-    n3_chain_single_ad_regexes = [
+    arb_n3_chain_single_ad_regexes = [
         r"arb_arb_n-3_.*",
         r"arb_local_rot_n-3_.*",
         r"max_entangled_arb_n-3_.*",
-        r"max_entangled_local_rot_n-3_.*",
         r"ryrz_cnot_local_ry_n-3_.*",
     ]
+    ent_n3_chain_single_ad_regexes = [
+        r"max_entangled_local_rot_n-3_.*",
+    ]
 
-    n3_chain_single_ad_data = [
+    ent_n3_chain_single_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chain_single_ad_dir, regex)
         )
-        for regex in n3_chain_single_ad_regexes
+        for regex in ent_n3_chain_single_ad_regexes
     ]
 
-    max_n3_chain_single_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n3_chain_single_ad_data))
+    ent_max_n3_chain_single_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n3_chain_single_ad_data))
         for i in range(num_samples)
     ]
 
-    n4_chain_single_ad_regexes = [
+    arb_n3_chain_single_ad_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(chain_single_ad_dir, regex)
+        )
+        for regex in arb_n3_chain_single_ad_regexes
+    ]
+
+    arb_max_n3_chain_single_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n3_chain_single_ad_data))
+        for i in range(num_samples)
+    ]
+
+    arb_n4_chain_single_ad_regexes = [
         r"ryrz_cnot_local_ry_n-4_.*",
         r"arb_arb_n-4_.*",
         r"arb_local_rot_n-4_.*",
         r"max_entangled_arb_n-4_.*",
+    ]
+    ent_n4_chain_single_ad_regexes = [
         r"max_entangled_local_rot_n-4_.*",
     ]
-    n4_chain_single_ad_data = [
+
+    ent_n4_chain_single_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chain_single_ad_dir, regex)
         )
-        for regex in n4_chain_single_ad_regexes
+        for regex in ent_n4_chain_single_ad_regexes
     ]
 
-    print(n4_chain_single_ad_data)
+    ent_max_n4_chain_single_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n4_chain_single_ad_data))
+        for i in range(num_samples)
+    ]
 
-    max_n4_chain_single_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n4_chain_single_ad_data))
+    arb_n4_chain_single_ad_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(chain_single_ad_dir, regex)
+        )
+        for regex in arb_n4_chain_single_ad_regexes
+    ]
+
+    arb_max_n4_chain_single_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n4_chain_single_ad_data))
         for i in range(num_samples)
     ]
 
@@ -290,87 +347,144 @@ if __name__ == "__main__":
 
     star_uniform_ad_dir = "./data/n-star/uniform_amplitude_damping/"
 
-    n3_star_ad_uniform_regexes = [
+    ent_n3_star_ad_uniform_regexes = [
+        r"max_entangled_local_rot_n-3_.*",
+    ]
+    arb_n3_star_ad_uniform_regexes = [
         r"arb_ghz_rot_n-3_.*",
         r"arb_local_rot_n-3_.*",
         r"max_entangled_ghz_rot_n-3_.*",
-        r"max_entangled_local_rot_n-3_.*",
         r"ryrz_cnot_local_ry_n-3_.*",
     ]
 
-    n3_star_uniform_ad_data = [
+    ent_n3_star_uniform_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(star_uniform_ad_dir, regex)
         )
-        for regex in n3_star_ad_uniform_regexes
+        for regex in ent_n3_star_ad_uniform_regexes
     ]
 
-    max_n3_star_uniform_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n3_star_uniform_ad_data))
+    ent_max_n3_star_uniform_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n3_star_uniform_ad_data))
         for i in range(num_samples)
     ]
 
-    n4_star_ad_uniform_regexes = [
-        r"arb_ghz_rot_n-4_.*",
-        r"arb_local_rot_n-4_.*",
-        r"max_entangled_ghz_rot_n-4_.*",
-        r"max_entangled_local_rot_n-4_.*",
-        r"ryrz_cnot_local_ry_n-4_.*",
-    ]
-
-    n4_star_uniform_ad_data = [
+    arb_n3_star_uniform_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(star_uniform_ad_dir, regex)
         )
-        for regex in n4_star_ad_uniform_regexes
+        for regex in arb_n3_star_ad_uniform_regexes
     ]
 
-    max_n4_star_uniform_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n4_star_uniform_ad_data))
+    arb_max_n3_star_uniform_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n3_star_uniform_ad_data))
+        for i in range(num_samples)
+    ]
+
+    arb_n4_star_ad_uniform_regexes = [
+        r"arb_ghz_rot_n-4_.*",
+        r"arb_local_rot_n-4_.*",
+        r"max_entangled_ghz_rot_n-4_.*",
+        r"ryrz_cnot_local_ry_n-4_.*",
+    ]
+    ent_n4_star_ad_uniform_regexes = [
+        r"max_entangled_local_rot_n-4_.*",
+    ]
+
+    ent_n4_star_uniform_ad_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(star_uniform_ad_dir, regex)
+        )
+        for regex in ent_n4_star_ad_uniform_regexes
+    ]
+
+    ent_max_n4_star_uniform_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n4_star_uniform_ad_data))
+        for i in range(num_samples)
+    ]
+
+    arb_n4_star_uniform_ad_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(star_uniform_ad_dir, regex)
+        )
+        for regex in arb_n4_star_ad_uniform_regexes
+    ]
+
+    arb_max_n4_star_uniform_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n4_star_uniform_ad_data))
         for i in range(num_samples)
     ]
 
     star_single_ad_dir = "./data/n-star/single_qubit_amplitude_damping/"
 
-    n3_star_ad_single_regexes = [
+    ent_n3_star_ad_single_regexes = [
+        r"max_entangled_local_rot_n-3_.*",
+    ]
+    arb_n3_star_ad_single_regexes = [
         r"arb_ghz_rot_n-3_.*",
         r"arb_local_rot_n-3_.*",
         r"max_entangled_ghz_rot_n-3_.*",
-        r"max_entangled_local_rot_n-3_.*",
         r"ryrz_cnot_local_ry_n-3_.*",
     ]
 
-    n3_star_single_ad_data = [
+    ent_n3_star_single_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(star_single_ad_dir, regex)
         )
-        for regex in n3_star_ad_single_regexes
+        for regex in ent_n3_star_ad_single_regexes
     ]
 
-    max_n3_star_single_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n3_star_single_ad_data))
+    ent_max_n3_star_single_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n3_star_single_ad_data))
         for i in range(num_samples)
     ]
 
-    n4_star_ad_single_regexes = [
+    arb_n3_star_single_ad_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(star_single_ad_dir, regex)
+        )
+        for regex in arb_n3_star_ad_single_regexes
+    ]
+
+    arb_max_n3_star_single_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n3_star_single_ad_data))
+        for i in range(num_samples)
+    ]
+
+    ent_n4_star_ad_single_regexes = [
+        r"max_entangled_local_rot_n-4_.*",
+    ]
+    arb_n4_star_ad_single_regexes = [
         r"arb_ghz_rot_n-4_.*",
         r"arb_local_rot_n-4_.*",
         r"max_entangled_ghz_rot_n-4_.*",
-        r"max_entangled_local_rot_n-4_.*",
         r"ryrz_cnot_local_ry_n-4_.*",
     ]
 
-    n4_star_single_ad_data = [
+    ent_n4_star_single_ad_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(star_single_ad_dir, regex)
         )
-        for regex in n4_star_ad_single_regexes
+        for regex in ent_n4_star_ad_single_regexes
     ]
 
-    max_n4_star_single_ad = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n4_star_single_ad_data))
+    ent_max_n4_star_single_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n4_star_single_ad_data))
         for i in range(num_samples)
     ]
+
+    arb_n4_star_single_ad_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(star_single_ad_dir, regex)
+        )
+        for regex in arb_n4_star_ad_single_regexes
+    ]
+
+    arb_max_n4_star_single_ad = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n4_star_single_ad_data))
+        for i in range(num_samples)
+    ]
+
 
     theoretical_bell_state_uniform_n3_star = [
         src.star_max_violation([state, state, state])
@@ -396,41 +510,62 @@ if __name__ == "__main__":
     Plotting Data
     """
 
-    src.plot_single_and_uniform_max_scores_data(
+    src.plot_nonunital_single_and_uniform_max_scores_data(
         fig_title = "Qubit Amplitude Damping Noise Robustness",
         ax_titles = ["Single Qubit Noise", "Uniform Qubit Noise"],
-        noise_params = chsh_uniform_ad_data[0]["noise_params"],
+        noise_params = ent_chsh_uniform_ad_data[0]["noise_params"],
         quantum_bound = np.sqrt(2),
         classical_bound = 1,
-        single_max_scores = [
-            max_chsh_single_ad, max_bilocal_single_ad, max_n3_chain_single_ad,
-            max_n4_chain_single_ad, max_n3_star_single_ad, max_n4_star_single_ad
+        row1_single_max_scores = [
+            ent_max_chsh_single_ad, ent_max_bilocal_single_ad, ent_max_n3_chain_single_ad,
+            ent_max_n4_chain_single_ad, ent_max_n3_star_single_ad, ent_max_n4_star_single_ad
         ],
-        single_theoretical_scores = [
-            # theoretical_bell_state_single_chsh,
-            # theoretical_bell_state_single_bilocal,
-            max_chsh_ent_single_ad,
-            max_bilocal_ent_single_ad,
+        row1_single_theoretical_scores = [
+            theoretical_bell_state_single_chsh,
+            theoretical_bell_state_single_bilocal,
             theoretical_bell_state_single_n3_chain,
             theoretical_bell_state_single_n4_chain,
             theoretical_bell_state_single_n3_star,
             theoretical_bell_state_single_n4_star,
         ],
-        uniform_max_scores = [
-            max_chsh_uniform_ad, max_bilocal_uniform_ad, max_n3_chain_uniform_ad,
-            max_n4_chain_uniform_ad, max_n3_star_uniform_ad, max_n4_star_uniform_ad
+        row1_uniform_max_scores = [
+            ent_max_chsh_uniform_ad, ent_max_bilocal_uniform_ad, ent_max_n3_chain_uniform_ad,
+            ent_max_n4_chain_uniform_ad, ent_max_n3_star_uniform_ad, ent_max_n4_star_uniform_ad
         ],
-        uniform_theoretical_scores = [
-            # theoretical_bell_state_uniform_chsh,
-            # theoretical_bell_state_uniform_bilocal,
-            max_chsh_ent_uniform_ad,
-            max_bilocal_ent_uniform_ad,
+        row1_uniform_theoretical_scores = [
+            theoretical_bell_state_uniform_chsh,
+            theoretical_bell_state_uniform_bilocal,
+            theoretical_bell_state_uniform_n3_chain,
+            theoretical_bell_state_uniform_n4_chain,
+            theoretical_bell_state_uniform_n3_star,
+            theoretical_bell_state_uniform_n4_star,
+        ],
+        row2_single_max_scores = [
+            arb_max_chsh_single_ad, arb_max_bilocal_single_ad, arb_max_n3_chain_single_ad,
+            arb_max_n4_chain_single_ad, arb_max_n3_star_single_ad, arb_max_n4_star_single_ad
+        ],
+        row2_single_theoretical_scores = [
+            theoretical_bell_state_single_chsh,
+            theoretical_bell_state_single_bilocal,
+            theoretical_bell_state_single_n3_chain,
+            theoretical_bell_state_single_n4_chain,
+            theoretical_bell_state_single_n3_star,
+            theoretical_bell_state_single_n4_star,
+        ],
+        row2_uniform_max_scores = [
+            arb_max_chsh_uniform_ad, arb_max_bilocal_uniform_ad, arb_max_n3_chain_uniform_ad,
+            arb_max_n4_chain_uniform_ad, arb_max_n3_star_uniform_ad, arb_max_n4_star_uniform_ad
+        ],
+        row2_uniform_theoretical_scores = [
+            theoretical_bell_state_uniform_chsh,
+            theoretical_bell_state_uniform_bilocal,
             theoretical_bell_state_uniform_n3_chain,
             theoretical_bell_state_uniform_n4_chain,
             theoretical_bell_state_uniform_n3_star,
             theoretical_bell_state_uniform_n4_star,
         ],
         data_labels = ["CHSH", "Bilocal", "3-Local Chain", "4-Local Chain", "3-Local Star", "4-Local Star"],
+        row_labels = ["Max Entangled", "General"],
         plot_dir =  "./data/plots/qubit_amplitude_damping_noise_robustness/" 
     )
 

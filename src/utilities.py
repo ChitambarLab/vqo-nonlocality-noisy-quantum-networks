@@ -573,7 +573,7 @@ def get_data_files(path, regex):
     ]
 
 
-def plot_single_and_uniform_max_scores_data(
+def plot_unital_single_and_uniform_max_scores_data(
     fig_title,
     ax_titles,
     noise_params,
@@ -585,6 +585,7 @@ def plot_single_and_uniform_max_scores_data(
     uniform_theoretical_scores,
     data_labels,
     plot_dir,
+    legend_labels = ["VQO", "Theory"]
 ):
     """Plots the noise robustness for single and uniform qubit/source/measurement
     noise models. This method is intended for plotting the max score across many
@@ -656,7 +657,7 @@ def plot_single_and_uniform_max_scores_data(
                 marker=data_set_markers[j],
                 linewidth=2,
                 markersize=8,
-                label=data_labels[j] + " VQO"
+                label=data_labels[j] + " " + legend_labels[0]
             )
             if len(theory_set) != 0:
                 ax.plot(
@@ -666,11 +667,13 @@ def plot_single_and_uniform_max_scores_data(
                     linestyle="-",
                     linewidth=2,
                     markersize=8,
-                    label=data_labels[j] + " Theory" 
+                    label=data_labels[j] + " " + legend_labels[1]
                 )
+        
 
         ax.set_title(ax_titles[i], size=ax_titles_fontsize)
         ax.set_xlabel(r"Noise Parameter ($\gamma$)", size=ax_labels_fontsize)
+
         if i == 0:
             ax.set_ylabel(r"Bell Score ($S_{\mathrm{Bell}}$)", size=ax_labels_fontsize)
             plt.figlegend(ncol=3, loc="lower center", fontsize=16, bbox_to_anchor=(0,-0.01,1,1,))
@@ -680,6 +683,150 @@ def plot_single_and_uniform_max_scores_data(
 
     plt.savefig(plot_dir + filename)
 
+def plot_nonunital_single_and_uniform_max_scores_data(
+    fig_title,
+    ax_titles,
+    noise_params,
+    quantum_bound,
+    classical_bound,
+    row1_single_max_scores,
+    row1_single_theoretical_scores,
+    row1_uniform_max_scores,
+    row1_uniform_theoretical_scores,
+    row2_single_max_scores,
+    row2_single_theoretical_scores,
+    row2_uniform_max_scores,
+    row2_uniform_theoretical_scores,
+    data_labels,
+    row_labels,
+    plot_dir,
+    legend_labels = ["VQO", "Theory"]
+):
+    """Plots the noise robustness for single and uniform qubit/source/measurement
+    noise models. This method is intended for plotting the max score across many
+    different network topologies. The constructed figure is saved in the specified
+    plot_dir.
 
+    :param fig_title: The title of the figure.
+    :type fig_title: String
+
+    :param ax_titles: A list of two strings for the left and right plots respectively.
+    :type ax_titles: List[String]
+
+    :param noise_params: A list of float values ranging from 0 to 1 that described the
+                         noise. Will be plotted on the x-axis.
+    :type noise_params: List[float]
+
+    :param quantum_bound: The upper quantum bound for the plot.
+    :type quantum_bound: Float
+
+    :param classical_bound: The upper classical bound for the plot.
+    :type classical_bound: Float
+
+    :param single_max_scores: A list containing the set of max scores for each network to plot.
+                            Inner lists are the max score for each noise parameter.
+    :type single_max_scores: List[List[Float]]
+
+    :param uniform_max_scores: A list containing the set of max scores for each network to plot.
+                            Inner lists are the max score for each noise parameter.
+    :type uniform_max_scores: List[List[Float]]
+
+    :param data_labels: The names for the data in each plot.
+    :type data_labels: List[String]
+
+    :param plot_dir: The directory to which the data will be plotted.
+    :type plt_dir: String
+    """
+    fig, axes = plt.subplots(2, 2, figsize=(10,10))
+    fig.suptitle(fig_title, fontsize=24, fontweight="bold")
+    datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
+    filename = fig_title + "_max_scores_single_and_uniform_" + datetime_ext
+
+    num_samples = len(noise_params)
+    qbound = [quantum_bound] * num_samples
+    cbound = [classical_bound] * num_samples
+
+    ax_labels_fontsize = 20
+    ax_titles_fontsize = 22
+    data_set_markers = ["s", "o", "^", "d", "P", "*"]
+    line_colors = ["C2", "C3", "C4", "C5", "C6", "C7"]
+
+    ax_data_sets = [
+        [row1_single_max_scores, row1_uniform_max_scores],
+        [row2_single_max_scores, row2_uniform_max_scores],
+    ]
+    ax_theory_sets = [
+        [row1_single_theoretical_scores, row1_uniform_theoretical_scores],
+        [row2_single_theoretical_scores, row2_uniform_theoretical_scores],
+    ]
+
+    for row_id in range(2):
+
+        for i in range(2):
+
+            ax = axes[row_id][i]
+
+            ax.plot(noise_params, qbound, linestyle="-", color="C0", linewidth=3, label="Quantum Bound")
+            ax.plot(noise_params, cbound, linestyle="--", color="C1", linewidth=3, label="Classical Bound")
+
+            for j in range(len(ax_data_sets[row_id][i])):
+                data_set = ax_data_sets[row_id][i][j]
+                ax.plot(
+                    noise_params,
+                    data_set,
+                    color=line_colors[j],
+                    linestyle=":",
+                    marker=data_set_markers[j],
+                    linewidth=2,
+                    markersize=8,
+                    label=data_labels[j] + " " + legend_labels[0]
+                )
+
+            for j in range(len(ax_theory_sets[row_id][i])):
+                theory_set = ax_theory_sets[row_id][i][j] if len(ax_theory_sets[row_id][i]) != 0 else []
+                
+                ax.plot(
+                    noise_params,
+                    theory_set,
+                    color=line_colors[j],
+                    linestyle="-",
+                    linewidth=2,
+                    markersize=8,
+                    label=data_labels[j] + " " + legend_labels[1]
+                )
+
+            if row_id == 0:
+                ax.set_title(ax_titles[i], size=ax_titles_fontsize)
+            else:
+                ax.set_title("\n", size=ax_titles_fontsize)
+
+
+            if row_id == 1:
+                ax.set_xlabel(r"Noise Parameter ($\gamma$)", size=ax_labels_fontsize)
+
+            if i == 0:
+                ax.set_ylabel(r"Bell Score ($S_{\mathrm{Bell}}$)", size=ax_labels_fontsize)
+                ax.annotate(row_labels[row_id],
+                    xy=(-1, 0.5),
+                    xytext=(-ax.yaxis.labelpad,0),                    
+                    xycoords=ax.yaxis.label,
+                    textcoords='offset points',
+                    size=ax_labels_fontsize,
+                    ha='center',
+                    va='center',
+                    rotation=90,
+                    fontweight="bold",
+                )
+
+                if row_id == 0:
+                    plt.figlegend(ncol=3, loc="lower center", fontsize=16, bbox_to_anchor=(0,-0.01,1,1,))
+
+
+
+
+    plt.tight_layout()
+    fig.subplots_adjust(bottom=0.25)
+
+    plt.savefig(plot_dir + filename)
 
 

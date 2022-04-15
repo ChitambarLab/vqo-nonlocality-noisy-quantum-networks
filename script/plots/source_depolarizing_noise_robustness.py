@@ -186,9 +186,9 @@ if __name__ == "__main__":
     Plotting Data
     """
 
-    src.plot_single_and_uniform_max_scores_data(
+    src.plot_unital_single_and_uniform_max_scores_data(
         fig_title = "Source Depolarizing Noise Robustness",
-        ax_titles = ["Single Source Noise", "Uniform Source Noise"],
+        ax_titles = ["Single Qubit Noise", "Uniform Qubit Noise"],
         noise_params = chsh_dep_data[0]["noise_params"],
         quantum_bound = np.sqrt(2),
         classical_bound = 1,

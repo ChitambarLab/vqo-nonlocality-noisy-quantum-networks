@@ -17,84 +17,113 @@ if __name__ == "__main__":
     """
     Loading CHSH Data
     """
-    chsh_biased_regexes = [r"max_ent_local_rot_.*", r"ghz_local_rot_.*", r"ryrz_cnot_local_ry_.*", r"arb_local_rot_.*"]
-
     chsh_single_biased_dir = "./data/chsh/single_detector_biased_noise/"
 
-    chsh_single_biased_data = [
+    ent_chsh_biased_regexes = [r"max_ent_local_rot_.*", r"ghz_local_rot_.*"]
+    arb_chsh_biased_regexes = [r"ryrz_cnot_local_ry_.*", r"arb_local_rot_.*"]
+
+    ent_chsh_single_biased_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chsh_single_biased_dir, regex)
         )
-        for regex in chsh_biased_regexes
+        for regex in ent_chsh_biased_regexes
     ]
-    max_chsh_single_biased = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], chsh_single_biased_data)) / 2
+    ent_max_chsh_single_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_chsh_single_biased_data)) / 2
+        for i in range(num_samples)
+    ]
+
+    arb_chsh_single_biased_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(chsh_single_biased_dir, regex)
+        )
+        for regex in arb_chsh_biased_regexes
+    ]
+    arb_max_chsh_single_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_chsh_single_biased_data)) / 2
         for i in range(num_samples)
     ]
 
     chsh_uniform_biased_dir = "./data/chsh/uniform_detector_biased_noise/"
 
-    chsh_uniform_biased_data = [
+    arb_chsh_uniform_biased_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chsh_uniform_biased_dir, regex)
         )
-        for regex in chsh_biased_regexes
+        for regex in arb_chsh_biased_regexes
     ]
-    max_chsh_uniform_biased = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], chsh_uniform_biased_data)) / 2
+    arb_max_chsh_uniform_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_chsh_uniform_biased_data)) / 2
         for i in range(num_samples)
     ]
 
-    theoretical_max_chsh_uniform_score = [
-        np.sqrt(2) * (1 - gamma) ** 2
-        for gamma in noise_params
+    ent_chsh_uniform_biased_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(chsh_uniform_biased_dir, regex)
+        )
+        for regex in ent_chsh_biased_regexes
     ]
-
-    theoretical_max_chsh_single_score = [
-        np.sqrt(2) * (1 - gamma)
-        for gamma in noise_params
+    ent_max_chsh_uniform_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_chsh_uniform_biased_data)) / 2
+        for i in range(num_samples)
     ]
 
     """
     Loading Bilocal Data
     """
-    bilocal_biased_regexes = [r"max_ent_local_rot_.*", r"arb_arb_.*", r"ghz_arb_.*", r"ghz_local_ry_.*", r"ryrz_cnot_local_ry_.*", r"ryrz_cnot_arb_.*",   r"max_ent_arb_.*", r"arb_local_rot_.*"]
+    ent_bilocal_biased_regexes = [r"max_ent_local_rot_.*", r"ghz_local_ry_.*"]
+    arb_bilocal_biased_regexes = [r"arb_arb_.*", r"ghz_arb_.*", r"ryrz_cnot_local_ry_.*", r"ryrz_cnot_arb_.*", r"max_ent_arb_.*", r"arb_local_rot_.*"]
 
     bilocal_uniform_biased_dir = "./data/bilocal/uniform_detector_biased_noise/"
 
-    bilocal_uniform_biased_data = [
+    ent_bilocal_uniform_biased_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(bilocal_uniform_biased_dir, regex)
         )
-        for regex in bilocal_biased_regexes
+        for regex in ent_bilocal_biased_regexes
     ]
 
-    max_bilocal_uniform_biased = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], bilocal_uniform_biased_data))
+    ent_max_bilocal_uniform_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_bilocal_uniform_biased_data))
+        for i in range(num_samples)
+    ]
+
+    arb_bilocal_uniform_biased_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(bilocal_uniform_biased_dir, regex)
+        )
+        for regex in arb_bilocal_biased_regexes
+    ]
+
+    arb_max_bilocal_uniform_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_bilocal_uniform_biased_data))
         for i in range(num_samples)
     ]
 
     bilocal_single_biased_dir = "./data/bilocal/single_detector_biased_noise/"
 
-    bilocal_single_biased_data = [
+    ent_bilocal_single_biased_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(bilocal_single_biased_dir, regex)
         )
-        for regex in bilocal_biased_regexes
+        for regex in ent_bilocal_biased_regexes
     ]
 
-    max_bilocal_single_biased = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], bilocal_single_biased_data))
+    ent_max_bilocal_single_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_bilocal_single_biased_data))
         for i in range(num_samples)
     ]
 
-    theoretical_max_bilocal_single_score = [
-        np.sqrt(2) * np.sqrt((1 - gamma))
-        for gamma in noise_params
+    arb_bilocal_single_biased_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(bilocal_single_biased_dir, regex)
+        )
+        for regex in arb_bilocal_biased_regexes
     ]
-    theoretical_max_bilocal_uniform_score = [
-        np.sqrt(2) * np.sqrt((1 - gamma) ** 3)
-        for gamma in noise_params
+
+    arb_max_bilocal_single_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_bilocal_single_biased_data))
+        for i in range(num_samples)
     ]
 
     """
@@ -103,80 +132,108 @@ if __name__ == "__main__":
 
     chain_uniform_biased_dir = "./data/n-chain/uniform_detector_biased_noise/"
 
-    n3_chain_biased_regexes = [r"arb_arb_n-3_.*", r"arb_local_rot_n-3_.*", r"ghz_local_ry_n-3_.*", r"max_ent_arb_n-3_.*", r"ryrz_cnot_local_ry_n-3_.*"]
+    ent_n3_chain_biased_regexes = [r"ghz_local_ry_n-3_.*"]
+    arb_n3_chain_biased_regexes = [r"arb_arb_n-3_.*", r"arb_local_rot_n-3_.*", r"max_ent_arb_n-3_.*", r"ryrz_cnot_local_ry_n-3_.*"]
 
-    n3_chain_uniform_biased_data = [
+    ent_n3_chain_uniform_biased_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chain_uniform_biased_dir, regex)
         )
-        for regex in n3_chain_biased_regexes
+        for regex in ent_n3_chain_biased_regexes
     ]
 
-    max_n3_chain_uniform_biased = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n3_chain_uniform_biased_data))
+    ent_max_n3_chain_uniform_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n3_chain_uniform_biased_data))
+        for i in range(num_samples)
+    ]
+
+    arb_n3_chain_uniform_biased_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(chain_uniform_biased_dir, regex)
+        )
+        for regex in arb_n3_chain_biased_regexes
+    ]
+
+    arb_max_n3_chain_uniform_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n3_chain_uniform_biased_data))
         for i in range(num_samples)
     ]
 
     chain_single_biased_dir = "./data/n-chain/single_detector_biased_noise/"
 
-    n3_chain_single_biased_data = [
+    ent_n3_chain_single_biased_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chain_single_biased_dir, regex)
         )
-        for regex in n3_chain_biased_regexes
+        for regex in ent_n3_chain_biased_regexes
     ]
 
-    max_n3_chain_single_biased = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n3_chain_single_biased_data))
+    ent_max_n3_chain_single_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n3_chain_single_biased_data))
         for i in range(num_samples)
     ]
 
-    n4_chain_biased_regexes = [r"arb_arb_n-4_.*", r"arb_local_rot_n-4_.*", r"ghz_local_ry_n-4_.*", r"max_ent_arb_n-4_.*", r"ryrz_cnot_local_ry_n-4_.*"]
+    arb_n3_chain_single_biased_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(chain_single_biased_dir, regex)
+        )
+        for regex in arb_n3_chain_biased_regexes
+    ]
 
-    n4_chain_uniform_biased_data = [
+    arb_max_n3_chain_single_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n3_chain_single_biased_data))
+        for i in range(num_samples)
+    ]
+
+    ent_n4_chain_biased_regexes = [r"ghz_local_ry_n-4_.*"]
+    arb_n4_chain_biased_regexes = [r"arb_arb_n-4_.*", r"arb_local_rot_n-4_.*", r"max_ent_arb_n-4_.*", r"ryrz_cnot_local_ry_n-4_.*"]
+
+    ent_n4_chain_uniform_biased_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chain_uniform_biased_dir, regex)
         )
-        for regex in n4_chain_biased_regexes
+        for regex in ent_n4_chain_biased_regexes
     ]
 
-    max_n4_chain_uniform_biased = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n4_chain_uniform_biased_data))
+    ent_max_n4_chain_uniform_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n4_chain_uniform_biased_data))
         for i in range(num_samples)
     ]
 
-    chain_single_biased_dir = "./data/n-chain/single_detector_biased_noise/"
+    arb_n4_chain_uniform_biased_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(chain_uniform_biased_dir, regex)
+        )
+        for regex in arb_n4_chain_biased_regexes
+    ]
 
-    n4_chain_single_biased_data = [
+    arb_max_n4_chain_uniform_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n4_chain_uniform_biased_data))
+        for i in range(num_samples)
+    ]
+
+    ent_n4_chain_single_biased_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chain_single_biased_dir, regex)
         )
-        for regex in n4_chain_biased_regexes
+        for regex in ent_n4_chain_biased_regexes
     ]
 
-    max_n4_chain_single_biased = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n4_chain_single_biased_data))
+    ent_max_n4_chain_single_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n4_chain_single_biased_data))
         for i in range(num_samples)
     ]
 
-    theoretical_max_n3_chain_single_score = [
-        np.sqrt(2) * np.sqrt((1 - gamma))
-        for gamma in noise_params
+    arb_n4_chain_single_biased_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(chain_single_biased_dir, regex)
+        )
+        for regex in arb_n4_chain_biased_regexes
     ]
 
-    theoretical_max_n4_chain_single_score = [
-        np.sqrt(2) * np.sqrt((1 - gamma))
-        for gamma in noise_params
-    ]
-
-    theoretical_max_n3_chain_uniform_score = [
-        np.sqrt(2) * np.sqrt((1 - gamma) ** 4)
-        for gamma in noise_params
-    ]
-
-    theoretical_max_n4_chain_uniform_score = [
-        np.sqrt(2) * np.sqrt((1 - gamma) ** 5)
-        for gamma in noise_params
+    arb_max_n4_chain_single_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n4_chain_single_biased_data))
+        for i in range(num_samples)
     ]
 
     """
@@ -185,115 +242,139 @@ if __name__ == "__main__":
 
     star_uniform_biased_dir = "./data/n-star/uniform_detector_biased_noise/"
 
-    n3_star_biased_regexes = [r"arb_arb_n-3_.*", r"arb_local_rot_n-3_.*", r"ghz_local_ry_n-3_.*", r"max_ent_arb_n-3_.*", r"ryrz_cnot_local_ry_n-3_.*"]
+    ent_n3_star_biased_regexes = [r"ghz_local_ry_n-3_.*"]
+    arb_n3_star_biased_regexes = [r"arb_arb_n-3_.*", r"arb_local_rot_n-3_.*", r"max_ent_arb_n-3_.*", r"ryrz_cnot_local_ry_n-3_.*"]
 
-    n3_star_uniform_biased_data = [
+    ent_n3_star_uniform_biased_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(star_uniform_biased_dir, regex)
         )
-        for regex in n3_star_biased_regexes
+        for regex in ent_n3_star_biased_regexes
     ]
 
-    max_n3_star_uniform_biased = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n3_star_uniform_biased_data))
+    ent_max_n3_star_uniform_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n3_star_uniform_biased_data))
+        for i in range(num_samples)
+    ]
+
+    arb_n3_star_uniform_biased_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(star_uniform_biased_dir, regex)
+        )
+        for regex in arb_n3_star_biased_regexes
+    ]
+
+    arb_max_n3_star_uniform_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n3_star_uniform_biased_data))
         for i in range(num_samples)
     ]
 
     star_single_biased_dir = "./data/n-star/single_detector_biased_noise/"
 
-    n3_star_single_biased_data = [
+    ent_n3_star_single_biased_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(star_single_biased_dir, regex)
         )
-        for regex in n3_star_biased_regexes
+        for regex in ent_n3_star_biased_regexes
     ]
 
-    max_n3_star_single_biased = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n3_star_single_biased_data))
+    ent_max_n3_star_single_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n3_star_single_biased_data))
         for i in range(num_samples)
     ]
 
-    n4_star_biased_regexes = [r"arb_local_rot_n-4_.*", r"ghz_local_ry_n-4_.*", r"ryrz_cnot_local_ry_n-4_.*"]
+    arb_n3_star_single_biased_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(star_single_biased_dir, regex)
+        )
+        for regex in arb_n3_star_biased_regexes
+    ]
 
-    n4_star_uniform_biased_data = [
+    arb_max_n3_star_single_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n3_star_single_biased_data))
+        for i in range(num_samples)
+    ]
+
+    ent_n4_star_biased_regexes = [r"ghz_local_ry_n-4_.*"]
+    arb_n4_star_biased_regexes = [r"arb_local_rot_n-4_.*", r"ryrz_cnot_local_ry_n-4_.*"]
+
+    ent_n4_star_uniform_biased_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(star_uniform_biased_dir, regex)
         )
-        for regex in n4_star_biased_regexes
+        for regex in ent_n4_star_biased_regexes
     ]
 
-    max_n4_star_uniform_biased = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n4_star_uniform_biased_data))
+    ent_max_n4_star_uniform_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n4_star_uniform_biased_data))
         for i in range(num_samples)
     ]
 
-    n4_star_single_biased_data = [
+    arb_n4_star_uniform_biased_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(star_uniform_biased_dir, regex)
+        )
+        for regex in arb_n4_star_biased_regexes
+    ]
+
+    arb_max_n4_star_uniform_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n4_star_uniform_biased_data))
+        for i in range(num_samples)
+    ]
+
+
+    arb_n4_star_single_biased_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(star_single_biased_dir, regex)
         )
-        for regex in n4_star_biased_regexes
+        for regex in arb_n4_star_biased_regexes
     ]
 
-    max_n4_star_single_biased = [
-        max(map(lambda opt_data: opt_data["max_scores"][i], n4_star_single_biased_data))
+    arb_max_n4_star_single_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], arb_n4_star_single_biased_data))
         for i in range(num_samples)
     ]
 
-    theoretical_max_n3_star_single_score = [
-        np.sqrt(2) * np.power((1 - gamma), 1/3)
-        for gamma in noise_params
+    ent_n4_star_single_biased_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(star_single_biased_dir, regex)
+        )
+        for regex in ent_n4_star_biased_regexes
     ]
 
-    theoretical_max_n4_star_single_score = [
-        np.sqrt(2) * np.power((1 - gamma), 1/4)
-        for gamma in noise_params
-    ]
-
-    theoretical_max_n3_star_uniform_score = [
-        np.sqrt(2) * np.power((1 - gamma) ** 4, 1/3)
-        for gamma in noise_params
-    ]
-
-    theoretical_max_n4_star_uniform_score = [
-        np.sqrt(2) * np.power((1 - gamma) ** 5, 1/4)
-        for gamma in noise_params
+    ent_max_n4_star_single_biased = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], ent_n4_star_single_biased_data))
+        for i in range(num_samples)
     ]
 
     """
     Plotting Data
     """
 
-    src.plot_single_and_uniform_max_scores_data(
+    src.plot_unital_single_and_uniform_max_scores_data(
         fig_title = "Detector Biased Noise Robustness",
         ax_titles = ["Single Detector Noise", "Uniform Detector Noise"],
-        noise_params = chsh_single_biased_data[0]["noise_params"],
+        noise_params = arb_chsh_single_biased_data[0]["noise_params"],
         quantum_bound = np.sqrt(2),
         classical_bound = 1,
         single_max_scores = [
-            max_chsh_single_biased, max_bilocal_single_biased, max_n3_chain_single_biased,
-            max_n4_chain_single_biased, max_n3_star_single_biased, max_n4_star_single_biased
+            arb_max_chsh_single_biased, arb_max_bilocal_single_biased, arb_max_n3_chain_single_biased,
+            arb_max_n4_chain_single_biased, arb_max_n3_star_single_biased, arb_max_n4_star_single_biased
         ],
         single_theoretical_scores = [
-            theoretical_max_chsh_single_score,
-            theoretical_max_bilocal_single_score,
-            theoretical_max_n3_chain_single_score,
-            theoretical_max_n4_chain_single_score,
-            theoretical_max_n3_star_single_score,
-            theoretical_max_n4_star_single_score,
+            ent_max_chsh_single_biased, ent_max_bilocal_single_biased, ent_max_n3_chain_single_biased,
+            ent_max_n4_chain_single_biased, ent_max_n3_star_single_biased, ent_max_n4_star_single_biased
         ],
         uniform_max_scores = [
-            max_chsh_uniform_biased, max_bilocal_uniform_biased, max_n3_chain_uniform_biased,
-            max_n4_chain_uniform_biased, max_n3_star_uniform_biased, max_n4_star_uniform_biased,
+            arb_max_chsh_uniform_biased, arb_max_bilocal_uniform_biased, arb_max_n3_chain_uniform_biased,
+            arb_max_n4_chain_uniform_biased, arb_max_n3_star_uniform_biased, arb_max_n4_star_uniform_biased,
         ],
         uniform_theoretical_scores = [
-            theoretical_max_chsh_uniform_score,
-            theoretical_max_bilocal_uniform_score,
-            theoretical_max_n3_chain_uniform_score,
-            theoretical_max_n4_chain_uniform_score,
-            theoretical_max_n3_star_uniform_score,
-            theoretical_max_n4_star_uniform_score,
+            ent_max_chsh_uniform_biased, ent_max_bilocal_uniform_biased, ent_max_n3_chain_uniform_biased,
+            ent_max_n4_chain_uniform_biased, ent_max_n3_star_uniform_biased, ent_max_n4_star_uniform_biased,
         ],
         data_labels = ["CHSH", "Bilocal", "3-Local Chain", "4-Local Chain", "3-Local Star", "4-Local Chain"],
-        plot_dir =  "./data/plots/detector_biased_noise_robustness/" 
+        plot_dir =  "./data/plots/detector_biased_noise_robustness/",
+        legend_labels = ["General", "Entangled"]
     )
 

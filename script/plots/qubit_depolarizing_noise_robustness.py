@@ -301,7 +301,7 @@ if __name__ == "__main__":
     Plotting Data
     """
 
-    src.plot_single_and_uniform_max_scores_data(
+    src.plot_unital_single_and_uniform_max_scores_data(
         fig_title = "Qubit Depolarizing Noise Robustness",
         ax_titles = ["Single Qubit Noise", "Uniform Qubit Noise"],
         noise_params = chsh_uniform_dep_data[0]["noise_params"],
