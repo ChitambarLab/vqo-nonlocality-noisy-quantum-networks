@@ -321,6 +321,8 @@ if __name__ == "__main__":
     star_uniform_colored_dir = "./data/n-star/uniform_source_colored_noise/"
 
     psi_plus_n3_star_colored_regexes = [r"psi_plus_local_ry_n-3_.*"]
+    phi_plus_n3_star_colored_regexes = [r"phi_plus_local_ry_n-3_.*"]
+
 
     psi_plus_n3_star_uniform_colored_data = [
         src.analyze_data_one_param_scan(
@@ -331,6 +333,18 @@ if __name__ == "__main__":
 
     psi_plus_max_n3_star_uniform_colored = [
         max(map(lambda opt_data: opt_data["max_scores"][i], psi_plus_n3_star_uniform_colored_data))
+        for i in range(num_samples)
+    ]
+
+    phi_plus_n3_star_uniform_colored_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(star_uniform_colored_dir, regex)
+        )
+        for regex in phi_plus_n3_star_colored_regexes
+    ]
+
+    phi_plus_max_n3_star_uniform_colored = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], phi_plus_n3_star_uniform_colored_data))
         for i in range(num_samples)
     ]
 
@@ -345,6 +359,18 @@ if __name__ == "__main__":
 
     psi_plus_max_n3_star_single_colored = [
         max(map(lambda opt_data: opt_data["max_scores"][i], psi_plus_n3_star_single_colored_data))
+        for i in range(num_samples)
+    ]
+
+    phi_plus_n3_star_single_colored_data = [
+        src.analyze_data_one_param_scan(
+            src.get_data_files(star_single_colored_dir, regex)
+        )
+        for regex in phi_plus_n3_star_colored_regexes
+    ]
+
+    phi_plus_max_n3_star_single_colored = [
+        max(map(lambda opt_data: opt_data["max_scores"][i], phi_plus_n3_star_single_colored_data))
         for i in range(num_samples)
     ]
 
@@ -371,7 +397,7 @@ if __name__ == "__main__":
         row1_single_max_scores = [
             phi_plus_max_chsh_colored, phi_plus_max_bilocal_single_colored, phi_plus_max_n3_chain_single_colored,
             phi_plus_max_n4_chain_single_colored,
-            # phi_plus_max_n3_star_single_colored
+            phi_plus_max_n3_star_single_colored
         ],
         row1_single_theoretical_scores = [
             psi_plus_theoretical_bell_state_chsh,
@@ -383,7 +409,7 @@ if __name__ == "__main__":
         row1_uniform_max_scores = [
             phi_plus_max_chsh_colored, phi_plus_max_bilocal_uniform_colored, phi_plus_max_n3_chain_uniform_colored,
             phi_plus_max_n3_chain_uniform_colored,
-            # phi_plus_max_n3_star_uniform_colored,
+            phi_plus_max_n3_star_uniform_colored,
         ],
         row1_uniform_theoretical_scores = [
             psi_plus_theoretical_bell_state_chsh,

@@ -171,7 +171,7 @@ if __name__ == "__main__":
 		)
 
 		ax.set_title(titles[i], size=22)
-		ax.set_xlabel("Gradient Descent Epoch", size=18)
+		ax.set_xlabel("Gradient Descent Step", size=18)
 		ax.set_ylabel(ylabels[i], size=18)
 		# ax1.set_yticks(yticks)
 
