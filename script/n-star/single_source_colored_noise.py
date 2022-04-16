@@ -115,34 +115,34 @@ if __name__ == "__main__":
         # """
         # Minimal nonoptimal ansatz for phi plus bell state
         # """
-        # time_start = time.time()
+        time_start = time.time()
 
-        # phi_plus_local_ry_opt = src.noisy_net_opt_fn(
-        #     src.star_ghz_prep_nodes(n),
-        #     src.star_22_local_ry_meas_nodes(n),
-        #     single_colored_noise_nodes_fn(n),
-        #     qnet.nlocal_star_22_cost_fn,
-        #     opt_kwargs={
-        #         "sample_width": 5,
-        #         "step_size": 2,
-        #         "num_steps": 40,
-        #         "verbose": True,
-        #     },
-        # )
-        # phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
-        # phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)
+        phi_plus_local_ry_opt = src.noisy_net_opt_fn(
+            src.star_ghz_prep_nodes(n),
+            src.star_22_local_ry_meas_nodes(n),
+            single_colored_noise_nodes_fn(n),
+            qnet.nlocal_star_22_cost_fn,
+            opt_kwargs={
+                "sample_width": 5,
+                "step_size": 2,
+                "num_steps": 40,
+                "verbose": True,
+            },
+        )
+        phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
+        phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)
 
-        # src.save_optimizations_one_param_scan(
-        #     data_dir,
-        #     "phi_plus_local_ry_n-" + str(n) + "_",
-        #     param_range,
-        #     phi_plus_local_ry_opt_dicts,
-        #     quantum_bound=np.sqrt(2),
-        #     classical_bound=1,
-        # )
+        src.save_optimizations_one_param_scan(
+            data_dir,
+            "phi_plus_local_ry_n-" + str(n) + "_",
+            param_range,
+            phi_plus_local_ry_opt_dicts,
+            quantum_bound=np.sqrt(2),
+            classical_bound=1,
+        )
 
-        # time_elapsed = time.time() - time_start
-        # print("\nelapsed time : ", time_elapsed, "\n")
+        time_elapsed = time.time() - time_start
+        print("\nelapsed time : ", time_elapsed, "\n")
 
         # client.restart()
 
