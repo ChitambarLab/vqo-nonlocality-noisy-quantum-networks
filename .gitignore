@@ -4,3 +4,4 @@
 
 dask-worker-space/*
 script/data/**/tmp/*
+env/*
