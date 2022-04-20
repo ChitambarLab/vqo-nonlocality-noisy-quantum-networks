@@ -74,66 +74,136 @@ if __name__ == "__main__":
 
     client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
+    # """
+    # local qubit rotation measurements and max entangled states
+    # """
+    # time_start = time.time()
+
+    # max_ent_local_rot_opt = src.noisy_net_opt_fn(
+    #     max_ent_prep_nodes,
+    #     local_rot_meas_nodes,
+    #     single_colored_noise_nodes_fn(),
+    #     qnet.nlocal_chain_cost_22,
+    #     opt_kwargs={
+    #         "sample_width": 5,
+    #         "step_size": 1.4,
+    #         "num_steps": 50,
+    #         "verbose": False,
+    #     },
+    # )
+    # max_ent_local_rot_jobs = client.map(max_ent_local_rot_opt, param_range)
+    # max_ent_local_rot_opt_dicts = client.gather(max_ent_local_rot_jobs)
+
+    # src.save_optimizations_one_param_scan(
+    #     data_dir,
+    #     "max_ent_local_rot_",
+    #     param_range,
+    #     max_ent_local_rot_opt_dicts,
+    #     quantum_bound=np.sqrt(2),
+    #     classical_bound=1,
+    # )
+
+    # time_elapsed = time.time() - time_start
+    # print("\nelapsed time : ", time_elapsed, "\n")
+
+    # client = Client(processes=True, n_workers=5, threads_per_worker=1)
+
+    # """
+    # Minimal Optimal Ansatz, psi_plus state 
+    # and local ry measurements.
+    # """
+    # time_start = time.time()
+
+    # psi_plus_local_ry_opt = src.noisy_net_opt_fn(
+    #     psi_plus_prep_nodes,
+    #     local_ry_meas_nodes,
+    #     single_colored_noise_nodes_fn(),
+    #     qnet.nlocal_chain_cost_22,
+    #     opt_kwargs={
+    #         "sample_width": 5,
+    #         "step_size": 1.4,
+    #         "num_steps": 60,
+    #         "verbose": False,
+    #     },
+    # )
+    # psi_plus_local_ry_jobs = client.map(psi_plus_local_ry_opt, param_range)
+    # psi_plus_local_ry_opt_dicts = client.gather(psi_plus_local_ry_jobs)
+
+    # src.save_optimizations_one_param_scan(
+    #     data_dir,
+    #     "psi_plus_local_ry_",
+    #     param_range,
+    #     psi_plus_local_ry_opt_dicts,
+    #     quantum_bound=np.sqrt(2),
+    #     classical_bound=1,
+    # )
+
+    # time_elapsed = time.time() - time_start
+    # print("\nelapsed time : ", time_elapsed, "\n")
+
+    # client = Client(processes=True, n_workers=5, threads_per_worker=1)
+
+    # """
+    # Bad choice minimal Ansatz, phi_plus state 
+    # and local ry measurements.
+    # """
+    # time_start = time.time()
+
+    # phi_plus_local_ry_opt = src.noisy_net_opt_fn(
+    #     phi_plus_prep_nodes,
+    #     local_ry_meas_nodes,
+    #     single_colored_noise_nodes_fn(),
+    #     qnet.nlocal_chain_cost_22,
+    #     opt_kwargs={
+    #         "sample_width": 5,
+    #         "step_size": 1.4,
+    #         "num_steps": 60,
+    #         "verbose": False,
+    #     },
+    # )
+    # phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
+    # phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)
+
+    # src.save_optimizations_one_param_scan(
+    #     data_dir,
+    #     "phi_plus_local_ry_",
+    #     param_range,
+    #     phi_plus_local_ry_opt_dicts,
+    #     quantum_bound=np.sqrt(2),
+    #     classical_bound=1,
+    # )
+
+    # time_elapsed = time.time() - time_start
+    # print("\nelapsed time : ", time_elapsed, "\n")
+
+    # client = Client(processes=True, n_workers=5, threads_per_worker=1)
+
     """
-    local qubit rotation measurements and max entangled states
+    Bad choice minimal Ansatz, phi_plus state 
+    and local ry measurements.
     """
     time_start = time.time()
 
-    max_ent_local_rot_opt = src.noisy_net_opt_fn(
-        max_ent_prep_nodes,
+    phi_plus_local_rot_opt = src.noisy_net_opt_fn(
+        phi_plus_prep_nodes,
         local_rot_meas_nodes,
         single_colored_noise_nodes_fn(),
         qnet.nlocal_chain_cost_22,
         opt_kwargs={
             "sample_width": 5,
-            "step_size": 1.4,
-            "num_steps": 50,
-            "verbose": False,
-        },
-    )
-    max_ent_local_rot_jobs = client.map(max_ent_local_rot_opt, param_range)
-    max_ent_local_rot_opt_dicts = client.gather(max_ent_local_rot_jobs)
-
-    src.save_optimizations_one_param_scan(
-        data_dir,
-        "max_ent_local_rot_",
-        param_range,
-        max_ent_local_rot_opt_dicts,
-        quantum_bound=np.sqrt(2),
-        classical_bound=1,
-    )
-
-    time_elapsed = time.time() - time_start
-    print("\nelapsed time : ", time_elapsed, "\n")
-
-    client = Client(processes=True, n_workers=5, threads_per_worker=1)
-
-    """
-    Minimal Optimal Ansatz, psi_plus state 
-    and local ry measurements.
-    """
-    time_start = time.time()
-
-    psi_plus_local_ry_opt = src.noisy_net_opt_fn(
-        psi_plus_prep_nodes,
-        local_ry_meas_nodes,
-        single_colored_noise_nodes_fn(),
-        qnet.nlocal_chain_cost_22,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1.4,
+            "step_size": 1.5,
             "num_steps": 60,
             "verbose": False,
         },
     )
-    psi_plus_local_ry_jobs = client.map(psi_plus_local_ry_opt, param_range)
-    psi_plus_local_ry_opt_dicts = client.gather(psi_plus_local_ry_jobs)
+    phi_plus_local_rot_jobs = client.map(phi_plus_local_rot_opt, param_range)
+    phi_plus_local_rot_opt_dicts = client.gather(phi_plus_local_rot_jobs)
 
     src.save_optimizations_one_param_scan(
         data_dir,
-        "psi_plus_local_ry_",
+        "phi_plus_local_rot_",
         param_range,
-        psi_plus_local_ry_opt_dicts,
+        phi_plus_local_rot_opt_dicts,
         quantum_bound=np.sqrt(2),
         classical_bound=1,
     )
@@ -141,140 +211,105 @@ if __name__ == "__main__":
     time_elapsed = time.time() - time_start
     print("\nelapsed time : ", time_elapsed, "\n")
 
-    client = Client(processes=True, n_workers=5, threads_per_worker=1)
+    # client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
-    """
-    Bad choice minimal Ansatz, phi_plus state 
-    and local ry measurements.
-    """
-    time_start = time.time()
+    # """
+    # Bad choice minimal Ansatz, phi_plus state 
+    # and arbitrary measurements.
+    # """
+    # time_start = time.time()
 
-    phi_plus_local_ry_opt = src.noisy_net_opt_fn(
-        phi_plus_prep_nodes,
-        local_ry_meas_nodes,
-        single_colored_noise_nodes_fn(),
-        qnet.nlocal_chain_cost_22,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1.4,
-            "num_steps": 60,
-            "verbose": False,
-        },
-    )
-    phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
-    phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)
+    # phi_plus_arb_opt = src.noisy_net_opt_fn(
+    #     phi_plus_prep_nodes,
+    #     arb_meas_nodes,
+    #     single_colored_noise_nodes_fn(),
+    #     qnet.nlocal_chain_cost_22,
+    #     opt_kwargs={
+    #         "sample_width": 5,
+    #         "step_size": 1.4,
+    #         "num_steps": 60,
+    #         "verbose": False,
+    #     },
+    # )
+    # phi_plus_arb_jobs = client.map(phi_plus_arb_opt, param_range)
+    # phi_plus_arb_opt_dicts = client.gather(phi_plus_arb_jobs)
 
-    src.save_optimizations_one_param_scan(
-        data_dir,
-        "phi_plus_local_ry_",
-        param_range,
-        phi_plus_local_ry_opt_dicts,
-        quantum_bound=np.sqrt(2),
-        classical_bound=1,
-    )
+    # src.save_optimizations_one_param_scan(
+    #     data_dir,
+    #     "phi_plus_arb_",
+    #     param_range,
+    #     phi_plus_local_ry_opt_dicts,
+    #     quantum_bound=np.sqrt(2),
+    #     classical_bound=1,
+    # )
 
-    time_elapsed = time.time() - time_start
-    print("\nelapsed time : ", time_elapsed, "\n")
+    # time_elapsed = time.time() - time_start
+    # print("\nelapsed time : ", time_elapsed, "\n")
 
-    client = Client(processes=True, n_workers=5, threads_per_worker=1)
+    # client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
-    """
-    Bad choice minimal Ansatz, phi_plus state 
-    and arbitrary measurements.
-    """
-    time_start = time.time()
+    # """
+    # Maximally entangled states and Arbitrary Measurements
+    # """
+    # time_start = time.time()
 
-    phi_plus_arb_opt = src.noisy_net_opt_fn(
-        phi_plus_prep_nodes,
-        arb_meas_nodes,
-        single_colored_noise_nodes_fn(),
-        qnet.nlocal_chain_cost_22,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1.4,
-            "num_steps": 60,
-            "verbose": False,
-        },
-    )
-    phi_plus_arb_jobs = client.map(phi_plus_arb_opt, param_range)
-    phi_plus_arb_opt_dicts = client.gather(phi_plus_arb_jobs)
+    # max_ent_arb_opt = src.noisy_net_opt_fn(
+    #     max_ent_prep_nodes,
+    #     arb_meas_nodes,
+    #     single_colored_noise_nodes_fn(),
+    #     qnet.nlocal_chain_cost_22,
+    #     opt_kwargs={
+    #         "sample_width": 5,
+    #         "step_size": 1.2,
+    #         "num_steps": 70,
+    #         "verbose": False,
+    #     },
+    # )
+    # max_ent_arb_jobs = client.map(max_ent_arb_opt, param_range)
+    # max_ent_arb_opt_dicts = client.gather(max_ent_arb_jobs)
 
-    src.save_optimizations_one_param_scan(
-        data_dir,
-        "phi_plus_arb_",
-        param_range,
-        phi_plus_local_ry_opt_dicts,
-        quantum_bound=np.sqrt(2),
-        classical_bound=1,
-    )
+    # src.save_optimizations_one_param_scan(
+    #     data_dir,
+    #     "max_ent_arb_",
+    #     param_range,
+    #     max_ent_arb_opt_dicts,
+    #     quantum_bound=np.sqrt(2),
+    #     classical_bound=1,
+    # )
 
-    time_elapsed = time.time() - time_start
-    print("\nelapsed time : ", time_elapsed, "\n")
+    # time_elapsed = time.time() - time_start
+    # print("\nelapsed time : ", time_elapsed, "\n")
 
-    client = Client(processes=True, n_workers=5, threads_per_worker=1)
+    # client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
-    """
-    Maximally entangled states and Arbitrary Measurements
-    """
-    time_start = time.time()
+    # """
+    # Arbitrary state preparations and measurements
+    # """
+    # time_start = time.time()
 
-    max_ent_arb_opt = src.noisy_net_opt_fn(
-        max_ent_prep_nodes,
-        arb_meas_nodes,
-        single_colored_noise_nodes_fn(),
-        qnet.nlocal_chain_cost_22,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1.2,
-            "num_steps": 70,
-            "verbose": False,
-        },
-    )
-    max_ent_arb_jobs = client.map(max_ent_arb_opt, param_range)
-    max_ent_arb_opt_dicts = client.gather(max_ent_arb_jobs)
+    # arb_arb_opt = src.noisy_net_opt_fn(
+    #     arb_prep_nodes,
+    #     arb_meas_nodes,
+    #     single_colored_noise_nodes_fn(),
+    #     qnet.nlocal_chain_cost_22,
+    #     opt_kwargs={
+    #         "sample_width": 5,
+    #         "step_size": 1.1,
+    #         "num_steps": 80,
+    #         "verbose": False,
+    #     },
+    # )
+    # arb_arb_jobs = client.map(arb_arb_opt, param_range)
+    # arb_arb_opt_dicts = client.gather(arb_arb_jobs)
 
-    src.save_optimizations_one_param_scan(
-        data_dir,
-        "max_ent_arb_",
-        param_range,
-        max_ent_arb_opt_dicts,
-        quantum_bound=np.sqrt(2),
-        classical_bound=1,
-    )
+    # src.save_optimizations_one_param_scan(
+    #     data_dir,
+    #     "arb_arb_",
+    #     param_range,
+    #     arb_arb_opt_dicts,
+    #     quantum_bound=np.sqrt(2),
+    #     classical_bound=1,
+    # )
 
-    time_elapsed = time.time() - time_start
-    print("\nelapsed time : ", time_elapsed, "\n")
-
-    client = Client(processes=True, n_workers=5, threads_per_worker=1)
-
-    """
-    Arbitrary state preparations and measurements
-    """
-    time_start = time.time()
-
-    arb_arb_opt = src.noisy_net_opt_fn(
-        arb_prep_nodes,
-        arb_meas_nodes,
-        single_colored_noise_nodes_fn(),
-        qnet.nlocal_chain_cost_22,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1.1,
-            "num_steps": 80,
-            "verbose": False,
-        },
-    )
-    arb_arb_jobs = client.map(arb_arb_opt, param_range)
-    arb_arb_opt_dicts = client.gather(arb_arb_jobs)
-
-    src.save_optimizations_one_param_scan(
-        data_dir,
-        "arb_arb_",
-        param_range,
-        arb_arb_opt_dicts,
-        quantum_bound=np.sqrt(2),
-        classical_bound=1,
-    )
-
-    time_elapsed = time.time() - time_start
-    print("\nelapsed time : ", time_elapsed, "\n")
+    # time_elapsed = time.time() - time_start
+    # print("\nelapsed time : ", time_elapsed, "\n")

@@ -41,70 +41,104 @@ if __name__ == "__main__":
         client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
 
-        """
-        minimal optimal ansatz
-        """
-        time_start = time.time()
+        # """
+        # minimal optimal ansatz
+        # """
+        # time_start = time.time()
 
-        psi_plus_local_ry_opt = src.noisy_net_opt_fn(
-            src.chain_psi_plus_prep_nodes(n),
-            src.chain_local_ry_meas_nodes(n),
-            uniform_source_colored_noise_nodes_fn(n),
-            qnet.nlocal_chain_cost_22,
-            opt_kwargs={
-                "sample_width": 5,
-                "step_size": 2,
-                "num_steps": 40,
-                "verbose": True,
-            },
-        )
-        psi_plus_local_ry_jobs = client.map(psi_plus_local_ry_opt, param_range)
-        psi_plus_local_ry_opt_dicts = client.gather(psi_plus_local_ry_jobs)
+        # psi_plus_local_ry_opt = src.noisy_net_opt_fn(
+        #     src.chain_psi_plus_prep_nodes(n),
+        #     src.chain_local_ry_meas_nodes(n),
+        #     uniform_source_colored_noise_nodes_fn(n),
+        #     qnet.nlocal_chain_cost_22,
+        #     opt_kwargs={
+        #         "sample_width": 5,
+        #         "step_size": 2,
+        #         "num_steps": 40,
+        #         "verbose": True,
+        #     },
+        # )
+        # psi_plus_local_ry_jobs = client.map(psi_plus_local_ry_opt, param_range)
+        # psi_plus_local_ry_opt_dicts = client.gather(psi_plus_local_ry_jobs)
 
-        src.save_optimizations_one_param_scan(
-            data_dir,
-            "psi_plus_local_ry_n-" + str(n) + "_",
-            param_range,
-            psi_plus_local_ry_opt_dicts,
-            quantum_bound=np.sqrt(2),
-            classical_bound=1,
-        )
+        # src.save_optimizations_one_param_scan(
+        #     data_dir,
+        #     "psi_plus_local_ry_n-" + str(n) + "_",
+        #     param_range,
+        #     psi_plus_local_ry_opt_dicts,
+        #     quantum_bound=np.sqrt(2),
+        #     classical_bound=1,
+        # )
 
-        time_elapsed = time.time() - time_start
-        print("\nelapsed time : ", time_elapsed, "\n")
+        # time_elapsed = time.time() - time_start
+        # print("\nelapsed time : ", time_elapsed, "\n")
 
+
+        # """
+        # Minimal non-optimal ansatz
+        # """
+        # time_start = time.time()
+
+        # phi_plus_local_ry_opt = src.noisy_net_opt_fn(
+        #     src.chain_ghz_prep_nodes(n),
+        #     src.chain_local_ry_meas_nodes(n),
+        #     uniform_source_colored_noise_nodes_fn(n),
+        #     qnet.nlocal_chain_cost_22,
+        #     opt_kwargs={
+        #         "sample_width": 5,
+        #         "step_size": 2,
+        #         "num_steps": 40,
+        #         "verbose": True,
+        #     },
+        # )
+        # phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
+        # phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)
+
+        # src.save_optimizations_one_param_scan(
+        #     data_dir,
+        #     "phi_plus_local_ry_n-" + str(n) + "_",
+        #     param_range,
+        #     phi_plus_local_ry_opt_dicts,
+        #     quantum_bound=np.sqrt(2),
+        #     classical_bound=1,
+        # )
+
+        # time_elapsed = time.time() - time_start
+        # print("\nelapsed time : ", time_elapsed, "\n")
 
         """
         Minimal non-optimal ansatz
         """
         time_start = time.time()
 
-        phi_plus_local_ry_opt = src.noisy_net_opt_fn(
+        phi_plus_local_rot_opt = src.noisy_net_opt_fn(
             src.chain_ghz_prep_nodes(n),
-            src.chain_local_ry_meas_nodes(n),
+            src.chain_local_rot_meas_nodes(n),
             uniform_source_colored_noise_nodes_fn(n),
             qnet.nlocal_chain_cost_22,
             opt_kwargs={
                 "sample_width": 5,
-                "step_size": 2,
-                "num_steps": 40,
+                "step_size": 2.1,
+                "num_steps": 50,
                 "verbose": True,
             },
         )
-        phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
-        phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)
+        phi_plus_local_rot_jobs = client.map(phi_plus_local_rot_opt, param_range)
+        phi_plus_local_rot_opt_dicts = client.gather(phi_plus_local_rot_jobs)
 
         src.save_optimizations_one_param_scan(
             data_dir,
-            "phi_plus_local_ry_n-" + str(n) + "_",
+            "phi_plus_local_rot_n-" + str(n) + "_",
             param_range,
-            phi_plus_local_ry_opt_dicts,
+            phi_plus_local_rot_opt_dicts,
             quantum_bound=np.sqrt(2),
             classical_bound=1,
         )
 
         time_elapsed = time.time() - time_start
         print("\nelapsed time : ", time_elapsed, "\n")
+
+        # client.restart()
 
         # client.restart()
 

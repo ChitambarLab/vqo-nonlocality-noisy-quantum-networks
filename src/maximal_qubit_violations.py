@@ -32,41 +32,27 @@ def chsh_max_violation(rho):
     return 2 * np.sqrt(eigvals[-1] + eigvals[-2])
 
 
+def bilocal_max_violation_chsh_prod(rho1, rho2):
+
+    (T1, U1, eigvals1) = chsh_violation_criterion(rho1)
+    (T2, U2, eigvals2) = chsh_violation_criterion(rho2)
+
+    return np.sqrt(
+        np.sqrt(eigvals1[-1] + eigvals1[-2]) * np.sqrt(eigvals2[-1] + eigvals2[-2])
+    )
+
 def bilocal_max_violation(rho1, rho2):
 
     (T1, U1, eigvals1) = chsh_violation_criterion(rho1)
     (T2, U2, eigvals2) = chsh_violation_criterion(rho2)
 
-    # return np.sqrt(
-    #     np.sqrt(eigvals1[-1] * eigvals2[-1]) + np.sqrt(eigvals1[-2] * eigvals2[-2])
-    # )
     return np.sqrt(
-        np.sqrt(eigvals1[-1] + eigvals1[-2]) * np.sqrt(eigvals2[-1] + eigvals2[-2])
+        np.sqrt(eigvals1[-1] * eigvals2[-1]) + np.sqrt(eigvals1[-2] * eigvals2[-2])
     )
 
-def star_max_violation(states):
+def star_max_violation_chsh_prod(states):
 
     n = len(states)
-
-    # states_eigvals = [
-    #     chsh_violation_criterion(state)[2]
-    #     for state in states
-    # ]
-
-    # states_eigvals1 = [
-    #     eigvals[-1]
-    #     for eigvals in states_eigvals
-    # ]
-
-    # states_eigvals2 = [
-    #     eigvals[-2]
-    #     for eigvals in states_eigvals
-    # ]
-
-    # return np.sqrt(
-    #     np.power( np.prod(states_eigvals1), 1/n) + np.power( np.prod(states_eigvals2), 1/n)
-    # )
-
 
     chsh_violations = [
         chsh_max_violation(state) / 2 
@@ -75,7 +61,55 @@ def star_max_violation(states):
 
     return np.power((np.prod(chsh_violations)), 1/n )
 
+def star_max_violation(states):
+
+    n = len(states)
+
+    states_eigvals = [
+        chsh_violation_criterion(state)[2]
+        for state in states
+    ]
+
+    states_eigvals1 = [
+        eigvals[-1]
+        for eigvals in states_eigvals
+    ]
+
+    states_eigvals2 = [
+        eigvals[-2]
+        for eigvals in states_eigvals
+    ]
+
+    return np.sqrt(
+        np.power( np.prod(states_eigvals1), 1/n) + np.power( np.prod(states_eigvals2), 1/n)
+    )
+
+
+def chain_max_violation_chsh_prod(states):
+    n = len(states)
+
+    chsh_violations = [
+        chsh_max_violation(state) / 2 
+        for state in states
+    ]
+
+    return np.sqrt((np.prod(chsh_violations)))
+
+def chain_classical_interior_max_violation(states):
+    n = len(states)
+
+    S_bilocal = bilocal_max_violation_chsh_prod(states[0], states[-1])
+
+    interior_states_max_eigvals = [
+        chsh_violation_criterion(state)[2][-1]
+        for state in states[1:n]
+    ]
+
+    return S_bilocal*np.sqrt(np.prod(interior_states_max_eigvals))
+
+
 def chain_max_violation(states):
+
     n = len(states)
 
     states_eigvals = [
@@ -96,19 +130,6 @@ def chain_max_violation(states):
     return np.sqrt(
         np.sqrt( np.prod(states_eigvals1)) + np.sqrt( np.prod(states_eigvals2))
     )
-
-def chain_classical_interior_max_violation(states):
-    n = len(states)
-
-    S_bilocal = bilocal_max_violation(states[0], states[-1])
-
-    interior_states_max_eigvals = [
-        chsh_violation_criterion(state)[2][-1]
-        for state in states[1:n]
-    ]
-
-    return S_bilocal*np.sqrt(np.prod(interior_states_max_eigvals))
-
 
 
 

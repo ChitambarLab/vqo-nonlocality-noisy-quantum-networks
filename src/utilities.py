@@ -421,6 +421,8 @@ def analyze_data_one_param_scan(data_files):
             data_dicts.append(json.load(file))
 
     results = {}
+    settings_results = {}
+
     noise_params = []
     for data_dict in data_dicts:
         for i in range(len(data_dict["noise_params"])):
@@ -431,26 +433,44 @@ def analyze_data_one_param_scan(data_files):
 
             if noise_key in results:
                 results[noise_key].append(data_dict["max_scores"][i])
+                settings_results[noise_key].append(data_dict["opt_settings"][i])
+
             else:
                 results[noise_key] = [data_dict["max_scores"][i]]
+                settings_results[noise_key] = [data_dict["opt_settings"][i]]
+
                 noise_params.append(np.round(data_dict["noise_params"][i], 5))
 
     sorted_noise_params = np.sort(noise_params)
     max_scores = [max(results["{:.2f}".format(noise_param)]) for noise_param in sorted_noise_params]
+    
     mean_scores = [
         np.mean(results["{:.2f}".format(noise_param)], axis=0)
         for noise_param in sorted_noise_params
     ]
+    
     std_errs = [
         np.std(results[noise_key], axis=0) / np.sqrt(len(results[noise_key]))
         for noise_key in ["{:.2f}".format(noise_param) for noise_param in sorted_noise_params]
     ]
+
+
+    max_score_ids = [
+        (results["{:.2f}".format(sorted_noise_params[i])]).index(max_scores[i])
+        for i in range(len(noise_params))
+    ]
+
+    opt_settings_list = [
+        settings_results["{:.2f}".format(sorted_noise_params[i])][max_score_ids[i]]
+        for i in range(len(noise_params))
+    ]    
 
     return {
         "noise_params": sorted_noise_params,
         "max_scores": max_scores,
         "mean_scores": mean_scores,
         "std_errs": std_errs,
+        "opt_settings": opt_settings_list,
     }
 
 

@@ -27,6 +27,7 @@ def bell_state_single_noise(gamma):
 
     return qml.state()
 
+
 if __name__ == "__main__": 
     num_samples = 21
 
@@ -190,7 +191,8 @@ if __name__ == "__main__":
     ]
 
     ent_n3_chain_uniform_ad_regexes = [
-        r"max_entangled_local_rot_n-3_.*"
+        r"max_entangled_local_rot_n-3_.*",
+        r"ghz_local_rot_n-3_.*",
     ]
 
     arb_n3_chain_uniform_ad_data = [
@@ -216,7 +218,6 @@ if __name__ == "__main__":
         max(map(lambda opt_data: opt_data["max_scores"][i], ent_n3_chain_uniform_ad_data))
         for i in range(num_samples)
     ]
-
     
     arb_n4_chain_uniform_ad_regexes = [
         r"ryrz_cnot_local_ry_n-4_.*",
@@ -224,7 +225,8 @@ if __name__ == "__main__":
         r"arb_local_rot_n-4_.*",
     ]
     ent_n4_chain_uniform_ad_regexes = [
-        r"max_entangled_local_rot_n-4_.*"
+        r"max_entangled_local_rot_n-4_.*",
+        r"ghz_local_rot_n-4_.*",
     ]
 
     ent_n4_chain_uniform_ad_data = [
@@ -484,7 +486,6 @@ if __name__ == "__main__":
         max(map(lambda opt_data: opt_data["max_scores"][i], arb_n4_star_single_ad_data))
         for i in range(num_samples)
     ]
-
 
     theoretical_bell_state_uniform_n3_star = [
         src.star_max_violation([state, state, state])

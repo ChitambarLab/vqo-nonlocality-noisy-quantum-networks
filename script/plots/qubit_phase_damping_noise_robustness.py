@@ -117,14 +117,14 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
+    theoretical_bell_state_single_bilocal = [
+        src.bilocal_max_violation_chsh_prod(state, bell_state)
+        for state in bell_state_single_noise_states
+    ]
+
     theoretical_bell_state_uniform_bilocal = [
         src.bilocal_max_violation(state, state)
         for state in bell_state_uniform_noise_states
-    ]
-
-    theoretical_bell_state_single_bilocal = [
-        src.bilocal_max_violation(state, bell_state)
-        for state in bell_state_single_noise_states
     ]
 
     """
@@ -324,14 +324,19 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
+    theoretical_bell_state_single_n3_star = [
+        src.star_max_violation_chsh_prod([state, bell_state, bell_state])
+        for state in bell_state_single_noise_states
+    ]
+
+    theoretical_bell_state_single_n4_star = [
+        src.star_max_violation_chsh_prod([state, bell_state, bell_state, bell_state])
+        for state in bell_state_single_noise_states
+    ]
+
     theoretical_bell_state_uniform_n3_star = [
         src.star_max_violation([state, state, state])
         for state in bell_state_uniform_noise_states
-    ]
-
-    theoretical_bell_state_single_n3_star = [
-        src.star_max_violation([state, bell_state, bell_state])
-        for state in bell_state_single_noise_states
     ]
 
     theoretical_bell_state_uniform_n4_star = [
@@ -339,10 +344,6 @@ if __name__ == "__main__":
         for state in bell_state_uniform_noise_states
     ]
 
-    theoretical_bell_state_single_n4_star = [
-        src.star_max_violation([state, bell_state, bell_state, bell_state])
-        for state in bell_state_single_noise_states
-    ]
 
     """
     Plotting Data

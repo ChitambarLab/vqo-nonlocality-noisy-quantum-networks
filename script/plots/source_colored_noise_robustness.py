@@ -91,7 +91,7 @@ if __name__ == "__main__":
     bilocal_uniform_colored_dir = "./data/bilocal/uniform_source_colored_noise/"
 
     psi_plus_bilocal_colored_regexes = [r"max_ent_local_rot_.*", r"phi_plus_arb_.*", r"psi_plus_local_ry_.*", r"arb_arb_.*", r"max_ent_arb_.*"]
-    phi_plus_bilocal_colored_regexes = [r"phi_plus_local_ry_.*"]
+    phi_plus_bilocal_colored_regexes = [r"phi_plus_local_ry_.*", r"phi_plus_local_rot_.*"]
 
 
     psi_plus_bilocal_uniform_colored_data = [
@@ -144,13 +144,13 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
-    phi_plus_theoretical_bell_state_uniform_bilocal = [
-        src.bilocal_max_violation(state, state)
+    phi_plus_theoretical_bell_state_single_bilocal = [
+        src.bilocal_max_violation_chsh_prod(state, phi_plus_state)
         for state in phi_plus_noise_states
     ]
 
-    phi_plus_theoretical_bell_state_single_bilocal = [
-        src.bilocal_max_violation(state, phi_plus_state)
+    phi_plus_theoretical_bell_state_uniform_bilocal = [
+        src.bilocal_max_violation(state, state)
         for state in phi_plus_noise_states
     ]
 
@@ -160,7 +160,7 @@ if __name__ == "__main__":
     ]
 
     psi_plus_theoretical_bell_state_single_bilocal = [
-        src.bilocal_max_violation(state, psi_plus_state)
+        src.bilocal_max_violation_chsh_prod(state, psi_plus_state)
         for state in psi_plus_noise_states
     ]
 
@@ -171,7 +171,7 @@ if __name__ == "__main__":
     chain_uniform_colored_dir = "./data/n-chain/uniform_source_colored_noise/"
 
     psi_plus_n3_chain_colored_regexes = [r"psi_plus_local_ry_n-3_.*"]
-    phi_plus_n3_chain_colored_regexes = [r"phi_plus_local_ry_n-3_.*"]
+    phi_plus_n3_chain_colored_regexes = [r"phi_plus_local_ry_n-3_.*", r"phi_plus_local_rot_n-3_.*"]
 
     psi_plus_n3_chain_uniform_colored_data = [
         src.analyze_data_one_param_scan(
@@ -223,7 +223,7 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
-    phi_plus_n4_chain_colored_regexes = [r"phi_plus_local_ry_n-4_.*"]
+    phi_plus_n4_chain_colored_regexes = [r"phi_plus_local_ry_n-4_.*", r"phi_plus_local_rot_n-4_.*"]
     psi_plus_n4_chain_colored_regexes = [r"psi_plus_local_ry_n-4_.*"]
 
     phi_plus_n4_chain_uniform_colored_data = [
@@ -274,23 +274,24 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
-    phi_plus_theoretical_bell_state_uniform_n3_chain = [
-        src.chain_classical_interior_max_violation([state, state, state])
-        for state in phi_plus_noise_states
-    ]
 
     phi_plus_theoretical_bell_state_single_n3_chain = [
         src.chain_classical_interior_max_violation([state, phi_plus_state, phi_plus_state])
         for state in phi_plus_noise_states
     ]
 
-    phi_plus_theoretical_bell_state_uniform_n4_chain = [
-        src.chain_classical_interior_max_violation([state, state, state, state])
+    phi_plus_theoretical_bell_state_single_n4_chain = [
+        src.chain_classical_interior_max_violation([state, phi_plus_state, phi_plus_state, phi_plus_state])
         for state in phi_plus_noise_states
     ]
 
-    phi_plus_theoretical_bell_state_single_n4_chain = [
-        src.chain_classical_interior_max_violation([state, phi_plus_state, phi_plus_state, phi_plus_state])
+    phi_plus_theoretical_bell_state_uniform_n3_chain = [
+        src.chain_max_violation([state, state, state])
+        for state in phi_plus_noise_states
+    ]
+
+    phi_plus_theoretical_bell_state_uniform_n4_chain = [
+        src.chain_max_violation([state, state, state, state])
         for state in phi_plus_noise_states
     ]
 
@@ -321,7 +322,7 @@ if __name__ == "__main__":
     star_uniform_colored_dir = "./data/n-star/uniform_source_colored_noise/"
 
     psi_plus_n3_star_colored_regexes = [r"psi_plus_local_ry_n-3_.*"]
-    phi_plus_n3_star_colored_regexes = [r"phi_plus_local_ry_n-3_.*"]
+    phi_plus_n3_star_colored_regexes = [r"phi_plus_local_ry_n-3_.*", r"phi_plus_local_rot_n-3_.*"]
 
 
     psi_plus_n3_star_uniform_colored_data = [
@@ -374,14 +375,24 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
+    psi_plus_theoretical_bell_state_single_n3_star = [
+        src.star_max_violation_chsh_prod([state, psi_plus_state, psi_plus_state])
+        for state in psi_plus_noise_states
+    ]
+
+    phi_plus_theoretical_bell_state_single_n3_star = [
+        src.star_max_violation_chsh_prod([state, psi_plus_state, psi_plus_state])
+        for state in phi_plus_noise_states
+    ]
+
     psi_plus_theoretical_bell_state_uniform_n3_star = [
         src.star_max_violation([state, state, state])
         for state in psi_plus_noise_states
     ]
 
-    psi_plus_theoretical_bell_state_single_n3_star = [
-        src.star_max_violation([state, psi_plus_state, psi_plus_state])
-        for state in psi_plus_noise_states
+    phi_plus_theoretical_bell_state_uniform_n3_star = [
+        src.star_max_violation([state, state, state])
+        for state in phi_plus_noise_states
     ]
 
     """
@@ -400,23 +411,23 @@ if __name__ == "__main__":
             phi_plus_max_n3_star_single_colored
         ],
         row1_single_theoretical_scores = [
-            psi_plus_theoretical_bell_state_chsh,
-            psi_plus_theoretical_bell_state_single_bilocal,
-            psi_plus_theoretical_bell_state_single_n3_chain,
-            psi_plus_theoretical_bell_state_single_n4_chain,
-            psi_plus_theoretical_bell_state_single_n3_star,
+            phi_plus_theoretical_bell_state_chsh,
+            phi_plus_theoretical_bell_state_single_bilocal,
+            phi_plus_theoretical_bell_state_single_n3_chain,
+            phi_plus_theoretical_bell_state_single_n4_chain,
+            phi_plus_theoretical_bell_state_single_n3_star,
         ],
         row1_uniform_max_scores = [
             phi_plus_max_chsh_colored, phi_plus_max_bilocal_uniform_colored, phi_plus_max_n3_chain_uniform_colored,
-            phi_plus_max_n3_chain_uniform_colored,
+            phi_plus_max_n4_chain_uniform_colored,
             phi_plus_max_n3_star_uniform_colored,
         ],
         row1_uniform_theoretical_scores = [
-            psi_plus_theoretical_bell_state_chsh,
-            psi_plus_theoretical_bell_state_uniform_bilocal,
-            psi_plus_theoretical_bell_state_uniform_n3_chain,
-            psi_plus_theoretical_bell_state_uniform_n4_chain,
-            psi_plus_theoretical_bell_state_uniform_n3_star,
+            phi_plus_theoretical_bell_state_chsh,
+            phi_plus_theoretical_bell_state_uniform_bilocal,
+            phi_plus_theoretical_bell_state_uniform_n3_chain,
+            phi_plus_theoretical_bell_state_uniform_n4_chain,
+            phi_plus_theoretical_bell_state_uniform_n3_star,
         ],
         row2_single_max_scores = [
             psi_plus_max_chsh_colored, psi_plus_max_bilocal_single_colored, psi_plus_max_n3_chain_single_colored,

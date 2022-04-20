@@ -212,7 +212,6 @@ if __name__ == "__main__":
         src.chain_max_violation([state, bell_state, bell_state, bell_state])
         for state in bell_state_single_noise_states
     ]
-
     """
     Loading n-Star Data
     """

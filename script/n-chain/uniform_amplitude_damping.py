@@ -42,51 +42,14 @@ if __name__ == "__main__":
 
         client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
-        """
-        Minimal optimal ansatz
-        """
-        time_start = time.time()
-
-        ryrz_cnot_local_ry_opt = src.noisy_net_opt_fn(
-            src.chain_ryrz_cnot_prep_nodes(n),
-            src.chain_local_ry_meas_nodes(n),
-            uniform_amplitude_damping_nodes_fn(n),
-            qnet.nlocal_chain_cost_22,
-            ansatz_kwargs={
-                "dev_kwargs": {
-                    "name": "default.qubit",
-                },
-            },
-            opt_kwargs={
-                "sample_width": 5,
-                "step_size": 1.3,
-                "num_steps": 80,
-                "verbose": True,
-            },
-        )
-        ryrz_cnot_local_ry_jobs = client.map(ryrz_cnot_local_ry_opt, param_range)
-        ryrz_cnot_local_ry_opt_dicts = client.gather(ryrz_cnot_local_ry_jobs)
-
-        src.save_optimizations_one_param_scan(
-            data_dir,
-            "ryrz_cnot_local_ry_n-" + str(n) + "_",
-            param_range,
-            ryrz_cnot_local_ry_opt_dicts,
-            quantum_bound=np.sqrt(2),
-            classical_bound=1,
-        )
-
-        time_elapsed = time.time() - time_start
-        print("\nelapsed time : ", time_elapsed, "\n")
-
-        # client.restart()
-
-        # # local qubit rotation measurements and max entangled states
+        # """
+        # Minimal optimal ansatz
+        # """
         # time_start = time.time()
 
-        # max_ent_local_rot_opt = src.noisy_net_opt_fn(
-        #     src.chain_nlocal_max_entangled_prep_nodes(n),
-        #     src.chain_local_rot_meas_nodes(n),
+        # ryrz_cnot_local_ry_opt = src.noisy_net_opt_fn(
+        #     src.chain_ryrz_cnot_prep_nodes(n),
+        #     src.chain_local_ry_meas_nodes(n),
         #     uniform_amplitude_damping_nodes_fn(n),
         #     qnet.nlocal_chain_cost_22,
         #     ansatz_kwargs={
@@ -101,20 +64,97 @@ if __name__ == "__main__":
         #         "verbose": True,
         #     },
         # )
-        # max_ent_local_rot_jobs = client.map(max_ent_local_rot_opt, param_range)
-        # max_ent_local_rot_opt_dicts = client.gather(max_ent_local_rot_jobs)
+        # ryrz_cnot_local_ry_jobs = client.map(ryrz_cnot_local_ry_opt, param_range)
+        # ryrz_cnot_local_ry_opt_dicts = client.gather(ryrz_cnot_local_ry_jobs)
 
         # src.save_optimizations_one_param_scan(
         #     data_dir,
-        #     "max_entangled_local_rot_n-" + str(n) + "_",
+        #     "ryrz_cnot_local_ry_n-" + str(n) + "_",
         #     param_range,
-        #     max_ent_local_rot_opt_dicts,
+        #     ryrz_cnot_local_ry_opt_dicts,
         #     quantum_bound=np.sqrt(2),
         #     classical_bound=1,
         # )
 
         # time_elapsed = time.time() - time_start
         # print("\nelapsed time : ", time_elapsed, "\n")
+
+        # # client.restart()
+
+        """
+        ghz local rot
+        """
+        time_start = time.time()
+
+        ghz_local_rot_opt = src.noisy_net_opt_fn(
+            src.chain_ghz_prep_nodes(n),
+            src.chain_local_rot_meas_nodes(n),
+            uniform_amplitude_damping_nodes_fn(n),
+            qnet.nlocal_chain_cost_22,
+            ansatz_kwargs={
+                "dev_kwargs": {
+                    "name": "default.qubit",
+                },
+            },
+            opt_kwargs={
+                "sample_width": 5,
+                "step_size": 1.4,
+                "num_steps": 80,
+                "verbose": True,
+            },
+        )
+        ghz_local_rot_jobs = client.map(ghz_local_rot_opt, param_range)
+        ghz_local_rot_opt_dicts = client.gather(ghz_local_rot_jobs)
+
+        src.save_optimizations_one_param_scan(
+            data_dir,
+            "ghz_local_rot_n-" + str(n) + "_",
+            param_range,
+            ghz_local_rot_opt_dicts,
+            quantum_bound=np.sqrt(2),
+            classical_bound=1,
+        )
+
+        time_elapsed = time.time() - time_start
+        print("\nelapsed time : ", time_elapsed, "\n")
+
+        client.restart()
+
+
+        # local qubit rotation measurements and max entangled states
+        time_start = time.time()
+
+        max_ent_local_rot_opt = src.noisy_net_opt_fn(
+            src.chain_nlocal_max_entangled_prep_nodes(n),
+            src.chain_local_rot_meas_nodes(n),
+            uniform_amplitude_damping_nodes_fn(n),
+            qnet.nlocal_chain_cost_22,
+            ansatz_kwargs={
+                "dev_kwargs": {
+                    "name": "default.qubit",
+                },
+            },
+            opt_kwargs={
+                "sample_width": 5,
+                "step_size": 1.3,
+                "num_steps": 80,
+                "verbose": True,
+            },
+        )
+        max_ent_local_rot_jobs = client.map(max_ent_local_rot_opt, param_range)
+        max_ent_local_rot_opt_dicts = client.gather(max_ent_local_rot_jobs)
+
+        src.save_optimizations_one_param_scan(
+            data_dir,
+            "max_entangled_local_rot_n-" + str(n) + "_",
+            param_range,
+            max_ent_local_rot_opt_dicts,
+            quantum_bound=np.sqrt(2),
+            classical_bound=1,
+        )
+
+        time_elapsed = time.time() - time_start
+        print("\nelapsed time : ", time_elapsed, "\n")
 
         # client.restart()
 

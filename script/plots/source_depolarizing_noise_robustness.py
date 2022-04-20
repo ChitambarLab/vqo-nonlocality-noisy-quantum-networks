@@ -47,9 +47,14 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
+    # theoretical_bell_state_chsh = [
+    #     src.chsh_max_violation(state) / 2
+    #     for state in bell_state_noise_states
+    # ]
+
     theoretical_bell_state_chsh = [
-        src.chsh_max_violation(state) / 2
-        for state in bell_state_noise_states
+        np.sqrt(2) * np.abs(( 1 - gamma * 16/15))
+        for gamma in np.arange(0, 1.01, 0.05)
     ]
 
     """
@@ -84,14 +89,25 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
+
+    # theoretical_bell_state_uniform_bilocal = [
+    #     src.bilocal_max_violation(state, state)
+    #     for state in bell_state_noise_states
+    # ]
+
+    # theoretical_bell_state_single_bilocal = [
+    #     src.bilocal_max_violation(state, bell_state)
+    #     for state in bell_state_noise_states
+    # ]
+
     theoretical_bell_state_uniform_bilocal = [
-        src.bilocal_max_violation(state, state)
-        for state in bell_state_noise_states
+        np.sqrt(2) * np.sqrt(np.abs(( 1 - gamma * 16/15) ** 2))
+        for gamma in np.arange(0, 1.01, 0.05)
     ]
 
     theoretical_bell_state_single_bilocal = [
-        src.bilocal_max_violation(state, bell_state)
-        for state in bell_state_noise_states
+        np.sqrt(2) * np.sqrt(np.abs(( 1 - gamma * 16/15)))
+        for gamma in np.arange(0, 1.01, 0.05)
     ]
 
     """
@@ -128,14 +144,24 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
+    # theoretical_bell_state_uniform_n3_chain = [
+    #     src.chain_max_violation([state, state, state])
+    #     for state in bell_state_noise_states
+    # ]
+
+    # theoretical_bell_state_single_n3_chain = [
+    #     src.chain_max_violation([state, bell_state, bell_state])
+    #     for state in bell_state_noise_states
+    # ]
+
     theoretical_bell_state_uniform_n3_chain = [
-        src.chain_max_violation([state, state, state])
-        for state in bell_state_noise_states
+        np.sqrt(2) * np.sqrt(np.abs(( 1 - gamma * 16/15) ** 3))
+        for gamma in np.arange(0, 1.01, 0.05)
     ]
 
     theoretical_bell_state_single_n3_chain = [
-        src.chain_max_violation([state, bell_state, bell_state])
-        for state in bell_state_noise_states
+        np.sqrt(2) * np.sqrt(np.abs(( 1 - gamma * 16/15)))
+        for gamma in np.arange(0, 1.01, 0.05)
     ]
 
     """
@@ -172,14 +198,24 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
-    theoretical_bell_state_uniform_n3_star = [
-        src.star_max_violation([state, state, state])
-        for state in bell_state_noise_states
-    ]
+    # theoretical_bell_state_uniform_n3_star = [
+    #     src.star_max_violation([state, state, state])
+    #     for state in bell_state_noise_states
+    # ]
+
+    # theoretical_bell_state_single_n3_star = [
+    #     src.star_max_violation([state, bell_state, bell_state])
+    #     for state in bell_state_noise_states
+    # ]
 
     theoretical_bell_state_single_n3_star = [
-        src.star_max_violation([state, bell_state, bell_state])
-        for state in bell_state_noise_states
+        np.sqrt(2) * np.power(np.abs(( 1 - gamma * 16/15)), 1/3)
+        for gamma in np.arange(0, 1.01, 0.05)
+    ]
+
+    theoretical_bell_state_uniform_n3_star = [
+        np.sqrt(2) * np.power(np.abs(( 1 - gamma * 16/15) ** 3), 1/3)
+        for gamma in np.arange(0, 1.01, 0.05)
     ]
 
     """
