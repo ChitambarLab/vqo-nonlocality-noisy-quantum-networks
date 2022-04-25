@@ -1,5 +1,5 @@
-pennylane==0.20
-qnetvo==0.1.0
+pennylane==0.22
+qnetvo==0.1.3
 qiskit
 pennylane-qiskit
 dask[delayed]
