@@ -27,7 +27,6 @@ def bell_state_single_noise(gamma):
 
     return qml.state()
 
-
 if __name__ == "__main__": 
     num_samples = 21
 
@@ -48,8 +47,8 @@ if __name__ == "__main__":
     chsh_uniform_ad_dir = "./data/chsh/uniform_qubit_amplitude_damping/"
 
     ent_chsh_ad_regexes = [r"max_ent_.*"]
-    arb_single_chsh_ad_regexes = [r"arb_.*", r"ryrz_cnot_local_ry_.*"]
-    arb_uniform_chsh_ad_regexes = [r"arb_.*", r"ryrz_cnot_ry_.*"]
+    arb_single_chsh_ad_regexes = [r"arb_.*", r"ryrz_cnot_local_ry_.*",r"max_ent_.*"]
+    arb_uniform_chsh_ad_regexes = [r"arb_.*", r"ryrz_cnot_ry_.*",r"max_ent_.*", r"ryrz_cnot_local_rot_.*"]
 
     ent_chsh_uniform_ad_data = [
         src.analyze_data_one_param_scan(
@@ -112,7 +111,13 @@ if __name__ == "__main__":
     """
     bilocal_uniform_ad_dir = "./data/bilocal/uniform_amplitude_damping/"
 
-    arb_bilocal_uniform_ad_regexes = [r"ryrz_cnot_local_ry_.*", r"arb_arb_.*", r"max_ent_arb_.*"]
+    arb_bilocal_uniform_ad_regexes = [
+        r"ryrz_cnot_local_ry_.*",
+        r"ryrz_cnot_local_rot_.*",
+        r"arb_arb_.*",
+        r"max_ent_arb_.*",
+        r"max_ent_local_rot_.*"
+    ]
     ent_bilocal_uniform_ad_regexes = [r"max_ent_local_rot_.*"]
 
     ent_bilocal_uniform_ad_data = [
@@ -188,6 +193,10 @@ if __name__ == "__main__":
         r"ryrz_cnot_local_ry_n-3_.*",
         r"arb_arb_n-3_.*",
         r"arb_local_rot_n-3_.*",
+        r"max_entangled_local_rot_n-3_.*",
+        r"ghz_local_rot_n-3_.*",
+        r"ryrz_cnot_local_rot_n-3_.*",
+
     ]
 
     ent_n3_chain_uniform_ad_regexes = [
@@ -223,6 +232,9 @@ if __name__ == "__main__":
         r"ryrz_cnot_local_ry_n-4_.*",
         r"arb_arb_n-4_.*",
         r"arb_local_rot_n-4_.*",
+        r"max_entangled_local_rot_n-4_.*",
+        r"ghz_local_rot_n-4_.*",
+        r"ryrz_cnot_local_rot_n-4_.*",
     ]
     ent_n4_chain_uniform_ad_regexes = [
         r"max_entangled_local_rot_n-4_.*",
@@ -260,6 +272,7 @@ if __name__ == "__main__":
         r"arb_local_rot_n-3_.*",
         r"max_entangled_arb_n-3_.*",
         r"ryrz_cnot_local_ry_n-3_.*",
+        r"max_entangled_local_rot_n-3_.*",
     ]
     ent_n3_chain_single_ad_regexes = [
         r"max_entangled_local_rot_n-3_.*",
@@ -294,6 +307,7 @@ if __name__ == "__main__":
         r"arb_arb_n-4_.*",
         r"arb_local_rot_n-4_.*",
         r"max_entangled_arb_n-4_.*",
+        r"max_entangled_local_rot_n-4_.*",
     ]
     ent_n4_chain_single_ad_regexes = [
         r"max_entangled_local_rot_n-4_.*",
@@ -351,12 +365,16 @@ if __name__ == "__main__":
 
     ent_n3_star_ad_uniform_regexes = [
         r"max_entangled_local_rot_n-3_.*",
+        r"ghz_local_rot_n-3_.*",
     ]
     arb_n3_star_ad_uniform_regexes = [
         r"arb_ghz_rot_n-3_.*",
         r"arb_local_rot_n-3_.*",
         r"max_entangled_ghz_rot_n-3_.*",
         r"ryrz_cnot_local_ry_n-3_.*",
+        r"max_entangled_local_rot_n-3_.*",
+        r"ryrz_cnot_local_rot_n-3_.*",   
+        r"ghz_local_rot_n-3_.*",
     ]
 
     ent_n3_star_uniform_ad_data = [
@@ -388,9 +406,13 @@ if __name__ == "__main__":
         r"arb_local_rot_n-4_.*",
         r"max_entangled_ghz_rot_n-4_.*",
         r"ryrz_cnot_local_ry_n-4_.*",
+        r"ryrz_cnot_local_rot_n-4_.*",
+        r"max_entangled_local_rot_n-4_.*",
+        r"ghz_local_rot_n-4_.*",
     ]
     ent_n4_star_ad_uniform_regexes = [
         r"max_entangled_local_rot_n-4_.*",
+        r"ghz_local_rot_n-4_.*",
     ]
 
     ent_n4_star_uniform_ad_data = [
@@ -427,6 +449,7 @@ if __name__ == "__main__":
         r"arb_local_rot_n-3_.*",
         r"max_entangled_ghz_rot_n-3_.*",
         r"ryrz_cnot_local_ry_n-3_.*",
+        r"max_entangled_local_rot_n-3_.*",
     ]
 
     ent_n3_star_single_ad_data = [
@@ -461,6 +484,7 @@ if __name__ == "__main__":
         r"arb_local_rot_n-4_.*",
         r"max_entangled_ghz_rot_n-4_.*",
         r"ryrz_cnot_local_ry_n-4_.*",
+        r"max_entangled_local_rot_n-4_.*",
     ]
 
     ent_n4_star_single_ad_data = [
@@ -546,27 +570,28 @@ if __name__ == "__main__":
             arb_max_n4_chain_single_ad, arb_max_n3_star_single_ad, arb_max_n4_star_single_ad
         ],
         row2_single_theoretical_scores = [
-            theoretical_bell_state_single_chsh,
-            theoretical_bell_state_single_bilocal,
-            theoretical_bell_state_single_n3_chain,
-            theoretical_bell_state_single_n4_chain,
-            theoretical_bell_state_single_n3_star,
-            theoretical_bell_state_single_n4_star,
+            [max(score, np.power(np.sqrt(2), 0/1)) for score in theoretical_bell_state_single_chsh],
+            [max(score, np.power(np.sqrt(2), 1/2)) for score in theoretical_bell_state_single_bilocal],
+            [max(score, np.power(np.sqrt(2), 1/2)) for score in theoretical_bell_state_single_n3_chain],
+            [max(score, np.power(np.sqrt(2), 1/2)) for score in theoretical_bell_state_single_n4_chain],
+            [max(score, np.power(np.sqrt(2), 2/3)) for score in theoretical_bell_state_single_n3_star],
+            [max(score, np.power(np.sqrt(2), 3/4)) for score in theoretical_bell_state_single_n4_star],
         ],
         row2_uniform_max_scores = [
             arb_max_chsh_uniform_ad, arb_max_bilocal_uniform_ad, arb_max_n3_chain_uniform_ad,
             arb_max_n4_chain_uniform_ad, arb_max_n3_star_uniform_ad, arb_max_n4_star_uniform_ad
         ],
         row2_uniform_theoretical_scores = [
-            theoretical_bell_state_uniform_chsh,
-            theoretical_bell_state_uniform_bilocal,
-            theoretical_bell_state_uniform_n3_chain,
-            theoretical_bell_state_uniform_n4_chain,
-            theoretical_bell_state_uniform_n3_star,
-            theoretical_bell_state_uniform_n4_star,
+            [max(score, 1) for score in theoretical_bell_state_uniform_chsh],
+            [max(score, 1) for score in theoretical_bell_state_uniform_bilocal],
+            [max(score, 1) for score in theoretical_bell_state_uniform_n3_chain],
+            [max(score, 1) for score in theoretical_bell_state_uniform_n4_chain],
+            [max(score, 1) for score in theoretical_bell_state_uniform_n3_star],
+            [max(score, 1) for score in theoretical_bell_state_uniform_n4_star]
         ],
         data_labels = ["CHSH", "Bilocal", "3-Local Chain", "4-Local Chain", "3-Local Star", "4-Local Star"],
         row_labels = ["Max Entangled", "General"],
-        plot_dir =  "./data/plots/qubit_amplitude_damping_noise_robustness/" 
+        plot_dir =  "./data/plots/qubit_amplitude_damping_noise_robustness/",
+        bottom_padding=0.25,
     )
 

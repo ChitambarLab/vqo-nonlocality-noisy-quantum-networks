@@ -124,6 +124,41 @@ if __name__ == "__main__":
     time_elapsed = time.time() - time_start
     print("\nelapsed time : ", time_elapsed, "\n")
 
+    # minimal ryrz_cnot prep ansatz for optimal strategy
+    time_start = time.time()
+
+    ryrz_cnot_local_rot_opt = src.noisy_net_opt_fn(
+        ryrz_cnot_prep_nodes,
+        meas_nodes,
+        uniform_amplitude_damping_nodes_fn(),
+        qnet.chsh_inequality_cost,
+        ansatz_kwargs={
+            "dev_kwargs": {
+                "name": "default.qubit",
+            },
+        },
+        opt_kwargs={
+            "sample_width": 5,
+            "step_size": 0.3,
+            "num_steps": 50,
+            "verbose": False,
+        },
+    )
+    ryrz_cnot_local_rot_jobs = client.map(ryrz_cnot_local_rot_opt, param_range)
+    ryrz_cnot_local_rot_opt_dicts = client.gather(ryrz_cnot_local_rot_jobs)
+
+    src.save_optimizations_one_param_scan(
+        data_dir,
+        "ryrz_cnot_local_rot_",
+        param_range,
+        ryrz_cnot_local_rot_opt_dicts,
+        quantum_bound=2 * np.sqrt(2),
+        classical_bound=2,
+    )
+
+    time_elapsed = time.time() - time_start
+    print("\nelapsed time : ", time_elapsed, "\n")
+
     # local qubit rotation measurements and arb states
     time_start = time.time()
 

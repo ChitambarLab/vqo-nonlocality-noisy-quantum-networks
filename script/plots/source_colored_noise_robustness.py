@@ -386,12 +386,12 @@ if __name__ == "__main__":
     ]
 
     psi_plus_theoretical_bell_state_uniform_n3_star = [
-        src.star_max_violation([state, state, state])
+        src.star_max_violation_chsh_prod([state, state, state])
         for state in psi_plus_noise_states
     ]
 
     phi_plus_theoretical_bell_state_uniform_n3_star = [
-        src.star_max_violation([state, state, state])
+        src.star_max_violation_chsh_prod([state, state, state])
         for state in phi_plus_noise_states
     ]
 

@@ -318,6 +318,7 @@ if __name__ == "__main__":
             theoretical_bell_state_single_n3_star,
             theoretical_bell_state_single_n4_star,
         ],
+        single_match_scores = [],
         uniform_max_scores = [
             max_chsh_uniform_dep, max_bilocal_uniform_dep, max_n3_chain_uniform_dep,
             max_n4_chain_uniform_dep, max_n3_star_uniform_dep, max_n4_star_uniform_dep
@@ -330,7 +331,8 @@ if __name__ == "__main__":
             theoretical_bell_state_uniform_n3_star,
             theoretical_bell_state_uniform_n4_star,
         ],
+        uniform_match_scores = [],
         data_labels = ["CHSH", "Bilocal", "3-Local Chain", "4-Local Chain", "3-Local Star", "4-Local Star"],
-        plot_dir =  "./data/plots/qubit_depolarizing_noise_robustness/" 
+        plot_dir =  "./data/plots/qubit_depolarizing_noise_robustness/",
     )
 

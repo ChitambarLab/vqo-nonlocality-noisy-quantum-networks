@@ -47,14 +47,51 @@ if __name__ == "__main__":
 
         client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
+        # """
+        # Minimal optimal ansatz for amplitude damping
+        # """
+        # time_start = time.time()
+
+        # ryrz_cnot_local_ry_opt = src.noisy_net_opt_fn(
+        #     src.star_ryrz_cnot_prep_nodes(n),
+        #     src.star_22_local_ry_meas_nodes(n),
+        #     uniform_amplitude_damping_nodes_fn(n),
+        #     qnet.nlocal_star_22_cost_fn,
+        #     ansatz_kwargs={
+        #         "dev_kwargs": {"name": "default.qubit"},
+        #     },
+        #     opt_kwargs={
+        #         "sample_width": 5,
+        #         "step_size": 1.8,
+        #         "num_steps": 50,
+        #         "verbose": True,
+        #     },
+        # )
+        # ryrz_cnot_local_ry_jobs = client.map(ryrz_cnot_local_ry_opt, param_range)
+        # ryrz_cnot_local_ry_opt_dicts = client.gather(ryrz_cnot_local_ry_jobs)
+
+        # src.save_optimizations_one_param_scan(
+        #     data_dir,
+        #     "ryrz_cnot_local_ry_n-" + str(n) + "_",
+        #     param_range,
+        #     ryrz_cnot_local_ry_opt_dicts,
+        #     quantum_bound=np.sqrt(2),
+        #     classical_bound=1,
+        # )
+
+        # time_elapsed = time.time() - time_start
+        # print("\nelapsed time : ", time_elapsed, "\n")
+
+        # client.restart()
+
         """
         Minimal optimal ansatz for amplitude damping
         """
         time_start = time.time()
 
-        ryrz_cnot_local_ry_opt = src.noisy_net_opt_fn(
+        ryrz_cnot_local_rot_opt = src.noisy_net_opt_fn(
             src.star_ryrz_cnot_prep_nodes(n),
-            src.star_22_local_ry_meas_nodes(n),
+            src.star_22_local_rot_meas_nodes(n),
             uniform_amplitude_damping_nodes_fn(n),
             qnet.nlocal_star_22_cost_fn,
             ansatz_kwargs={
@@ -67,14 +104,51 @@ if __name__ == "__main__":
                 "verbose": True,
             },
         )
-        ryrz_cnot_local_ry_jobs = client.map(ryrz_cnot_local_ry_opt, param_range)
-        ryrz_cnot_local_ry_opt_dicts = client.gather(ryrz_cnot_local_ry_jobs)
+        ryrz_cnot_local_rot_jobs = client.map(ryrz_cnot_local_rot_opt, param_range)
+        ryrz_cnot_local_rot_opt_dicts = client.gather(ryrz_cnot_local_rot_jobs)
 
         src.save_optimizations_one_param_scan(
             data_dir,
-            "ryrz_cnot_local_ry_n-" + str(n) + "_",
+            "ryrz_cnot_local_rot_n-" + str(n) + "_",
             param_range,
-            ryrz_cnot_local_ry_opt_dicts,
+            ryrz_cnot_local_rot_opt_dicts,
+            quantum_bound=np.sqrt(2),
+            classical_bound=1,
+        )
+
+        time_elapsed = time.time() - time_start
+        print("\nelapsed time : ", time_elapsed, "\n")
+
+        client.restart()
+
+        """
+        Minimal optimal ansatz for amplitude damping
+        """
+        time_start = time.time()
+
+        ghz_local_rot_opt = src.noisy_net_opt_fn(
+            src.star_ghz_prep_nodes(n),
+            src.star_22_local_rot_meas_nodes(n),
+            uniform_amplitude_damping_nodes_fn(n),
+            qnet.nlocal_star_22_cost_fn,
+            ansatz_kwargs={
+                "dev_kwargs": {"name": "default.qubit"},
+            },
+            opt_kwargs={
+                "sample_width": 5,
+                "step_size": 1.8,
+                "num_steps": 50,
+                "verbose": True,
+            },
+        )
+        ghz_local_rot_jobs = client.map(ghz_local_rot_opt, param_range)
+        ghz_local_rot_opt_dicts = client.gather(ghz_local_rot_jobs)
+
+        src.save_optimizations_one_param_scan(
+            data_dir,
+            "ghz_local_rot_n-" + str(n) + "_",
+            param_range,
+            ghz_local_rot_opt_dicts,
             quantum_bound=np.sqrt(2),
             classical_bound=1,
         )

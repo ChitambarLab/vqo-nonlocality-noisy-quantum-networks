@@ -93,7 +93,19 @@ def chain_max_violation_chsh_prod(states):
         for state in states
     ]
 
-    return np.sqrt((np.prod(chsh_violations)))
+    return np.power((np.prod(chsh_violations)), 1/n)
+
+def chain_max_violation_chsh_prod2(states):
+    n = len(states)
+
+    chsh_violations = [
+        chsh_max_violation(state) / 2 
+        for state in states
+    ]
+
+    S_bilocal = bilocal_max_violation_chsh_prod(states[0], states[-1])
+
+    return np.power((S_bilocal**2) * np.prod(chsh_violations), 1/n)
 
 def chain_classical_interior_max_violation(states):
     n = len(states)

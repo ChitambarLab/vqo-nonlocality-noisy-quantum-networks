@@ -282,6 +282,7 @@ if __name__ == "__main__":
             theoretical_max_n3_star_single_score,
             theoretical_max_n4_star_single_score,
         ],
+        single_match_scores = [],
         uniform_max_scores = [
             max_chsh_uniform_dep, max_bilocal_uniform_dep, max_n3_chain_uniform_dep,
             max_n4_chain_uniform_dep, max_n3_star_uniform_dep, max_n4_star_uniform_dep,
@@ -294,7 +295,8 @@ if __name__ == "__main__":
             theoretical_max_n3_star_uniform_score,
             theoretical_max_n4_star_uniform_score,
         ],
+        uniform_match_scores = [],
         data_labels = ["CHSH", "Bilocal", "3-Local Chain", "4-Local Chain", "3-Local Star", "4-Local Chain"],
-        plot_dir =  "./data/plots/detector_white_noise_robustness/" 
+        plot_dir =  "./data/plots/detector_white_noise_robustness/",
     )
 

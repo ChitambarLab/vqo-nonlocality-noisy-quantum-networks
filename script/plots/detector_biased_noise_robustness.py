@@ -20,7 +20,7 @@ if __name__ == "__main__":
     chsh_single_biased_dir = "./data/chsh/single_detector_biased_noise/"
 
     ent_chsh_biased_regexes = [r"max_ent_local_rot_.*", r"ghz_local_rot_.*"]
-    arb_chsh_biased_regexes = [r"ryrz_cnot_local_ry_.*", r"arb_local_rot_.*"]
+    arb_chsh_biased_regexes = [r"ryrz_cnot_local_ry_.*", r"arb_local_rot_.*",r"max_ent_local_rot_.*", r"ghz_local_rot_.*"]
 
     ent_chsh_single_biased_data = [
         src.analyze_data_one_param_scan(
@@ -72,7 +72,10 @@ if __name__ == "__main__":
     Loading Bilocal Data
     """
     ent_bilocal_biased_regexes = [r"max_ent_local_rot_.*", r"ghz_local_ry_.*"]
-    arb_bilocal_biased_regexes = [r"arb_arb_.*", r"ghz_arb_.*", r"ryrz_cnot_local_ry_.*", r"ryrz_cnot_arb_.*", r"max_ent_arb_.*", r"arb_local_rot_.*"]
+    arb_bilocal_biased_regexes = [
+        r"arb_arb_.*", r"ghz_arb_.*", r"ryrz_cnot_arb_.*", r"max_ent_arb_.*",
+        r"max_ent_local_rot_.*", r"ghz_local_ry_.*", r"ryrz_cnot_local_ry_.*", r"arb_local_rot_.*"
+    ]
 
     bilocal_uniform_biased_dir = "./data/bilocal/uniform_detector_biased_noise/"
 
@@ -133,8 +136,11 @@ if __name__ == "__main__":
     chain_uniform_biased_dir = "./data/n-chain/uniform_detector_biased_noise/"
 
     ent_n3_chain_biased_regexes = [r"ghz_local_ry_n-3_.*"]
-    arb_n3_chain_biased_regexes = [r"arb_arb_n-3_.*", r"arb_local_rot_n-3_.*", r"max_ent_arb_n-3_.*", r"ryrz_cnot_local_ry_n-3_.*"]
-
+    arb_n3_chain_biased_regexes = [
+        r"arb_arb_n-3_.*", r"max_ent_arb_n-3_.*",
+        r"arb_local_rot_n-3_.*",  r"ryrz_cnot_local_ry_n-3_.*", r"ghz_local_ry_n-3_.*",
+    ]
+    
     ent_n3_chain_uniform_biased_data = [
         src.analyze_data_one_param_scan(
             src.get_data_files(chain_uniform_biased_dir, regex)
@@ -186,7 +192,7 @@ if __name__ == "__main__":
     ]
 
     ent_n4_chain_biased_regexes = [r"ghz_local_ry_n-4_.*"]
-    arb_n4_chain_biased_regexes = [r"arb_arb_n-4_.*", r"arb_local_rot_n-4_.*", r"max_ent_arb_n-4_.*", r"ryrz_cnot_local_ry_n-4_.*"]
+    arb_n4_chain_biased_regexes = [r"arb_arb_n-4_.*", r"arb_local_rot_n-4_.*", r"max_ent_arb_n-4_.*", r"ryrz_cnot_local_ry_n-4_.*", r"ghz_local_ry_n-4_.*"]
 
     ent_n4_chain_uniform_biased_data = [
         src.analyze_data_one_param_scan(
@@ -243,7 +249,12 @@ if __name__ == "__main__":
     star_uniform_biased_dir = "./data/n-star/uniform_detector_biased_noise/"
 
     ent_n3_star_biased_regexes = [r"ghz_local_ry_n-3_.*"]
-    arb_n3_star_biased_regexes = [r"arb_arb_n-3_.*", r"arb_local_rot_n-3_.*", r"max_ent_arb_n-3_.*", r"ryrz_cnot_local_ry_n-3_.*"]
+    arb_n3_star_biased_regexes = [
+        r"arb_arb_n-3_.*",
+        r"arb_local_rot_n-3_.*",
+        r"max_ent_arb_n-3_.*",
+        r"ryrz_cnot_local_ry_n-3_.*", r"ghz_local_ry_n-3_.*"
+    ]
 
     ent_n3_star_uniform_biased_data = [
         src.analyze_data_one_param_scan(
@@ -365,6 +376,7 @@ if __name__ == "__main__":
             ent_max_chsh_single_biased, ent_max_bilocal_single_biased, ent_max_n3_chain_single_biased,
             ent_max_n4_chain_single_biased, ent_max_n3_star_single_biased, ent_max_n4_star_single_biased
         ],
+        single_match_scores = [],
         uniform_max_scores = [
             arb_max_chsh_uniform_biased, arb_max_bilocal_uniform_biased, arb_max_n3_chain_uniform_biased,
             arb_max_n4_chain_uniform_biased, arb_max_n3_star_uniform_biased, arb_max_n4_star_uniform_biased,
@@ -373,8 +385,12 @@ if __name__ == "__main__":
             ent_max_chsh_uniform_biased, ent_max_bilocal_uniform_biased, ent_max_n3_chain_uniform_biased,
             ent_max_n4_chain_uniform_biased, ent_max_n3_star_uniform_biased, ent_max_n4_star_uniform_biased,
         ],
-        data_labels = ["CHSH", "Bilocal", "3-Local Chain", "4-Local Chain", "3-Local Star", "4-Local Chain"],
+        uniform_match_scores = [],
+        data_labels = ["CHSH", "Bilocal", "3-Local Chain", "4-Local Chain", "3-Local Star", "4-Local Star"],
         plot_dir =  "./data/plots/detector_biased_noise_robustness/",
-        legend_labels = ["General", "Entangled"]
+        legend_labels = ["Arbitrary VQO", "Max Entangled VQO" ],
+        ncol_legend=2,
+        bottom_padding=0.45,
+        fig_height=7,
     )
 
