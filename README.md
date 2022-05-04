@@ -2,6 +2,26 @@
 
 ArXiv: [Variational Quantum Optimization of Nonlocality in Noisy Quantum Networks](arxiv_url).
 
+## Project Overview
+
+The goal of this codebase to make our numerical methods accessible, transparent,
+and reproducible.
+All scripts are designed to be run on a laptop computer within a few hours.
+A few scripts run quantum circuits remotely on IBM quantum computers, which
+may require special access to IBM devices.
+
+This supplementary codebase is largely built upon two Python packages:
+* [qNetVO](https://github.com/ChitambarLab/qNetVO): the Quantum Network Variational Optimizer 
+* [PennyLane](https://github.com/ChitambarLab/qNetVO): a cross-platform library for differentiable
+		programming of quantum computers. 
+
+This supplementary codebase is primarily written in Python.
+The two exceptions are found in the `./script/proof_numerics/` directory where
+a Julia script and Mathematica notebook are found.
+These scripts are not used for data collection, but to verify the correctness of results
+presented in the work. 
+
+
 ## Project Structure
 
 * `./script` : This directory contains all scripts for data collection and plot creation. 
@@ -15,6 +35,11 @@ ArXiv: [Variational Quantum Optimization of Nonlocality in Noisy Quantum Network
 
 * `./src` : This directory contains helper methods for collecting, writing, reading, analyzing,
 		and  plotting data.
+
+
+## Citing this Work
+
+
 
 ## Development Environment
 
