@@ -1,6 +1,6 @@
 # Supplemental Code for: VQO of Nonlocality in Noisy Quantum Networks
 
-ArXiv: [Variational Quantum Optimization of Nonlocality in Noisy Quantum Networks](arxiv_url).
+ArXiv: ["Variational Quantum Optimization of Nonlocality in Noisy Quantum Networks"](arxiv_url).
 
 ## Project Overview
 
