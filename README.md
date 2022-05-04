@@ -43,7 +43,7 @@ presented in the work.
 
 [![DOI](https://zenodo.org/badge/443131164.svg)](https://zenodo.org/badge/latestdoi/443131164)
 
-See CITATION.bib for bibtex.
+See [CITATION.bib](https://github.com/ChitambarLab/vqo-nonlocality-noisy-quantum-networks/blob/main/CITATION.bib) for bibtex.
 
 
 ## Development Environment
