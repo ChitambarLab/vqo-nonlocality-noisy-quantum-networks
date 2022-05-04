@@ -77,17 +77,8 @@ if __name__ == "__main__":
         min_meas_nodes,
         uniform_phase_damping_nodes_fn(),
         qnet.nlocal_chain_cost_22,
-        ansatz_kwargs={
-            "dev_kwargs": {
-                "name": "default.qubit",
-            },
-        },
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1.4,
-            "num_steps": 60,
-            "verbose": False,
-        },
+        ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+        opt_kwargs={"sample_width": 5, "step_size": 1.4, "num_steps": 60, "verbose": False,},
     )
     ghz_local_ry_jobs = client.map(ghz_local_ry_opt, param_range)
     ghz_local_ry_opt_dicts = client.gather(ghz_local_ry_jobs)
@@ -116,17 +107,8 @@ if __name__ == "__main__":
         local_rot_meas_nodes,
         uniform_phase_damping_nodes_fn(),
         qnet.nlocal_chain_cost_22,
-        ansatz_kwargs={
-            "dev_kwargs": {
-                "name": "default.qubit",
-            },
-        },
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1.3,
-            "num_steps": 60,
-            "verbose": False,
-        },
+        ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+        opt_kwargs={"sample_width": 5, "step_size": 1.3, "num_steps": 60, "verbose": False,},
     )
     max_ent_local_rot_jobs = client.map(max_ent_local_rot_opt, param_range)
     max_ent_local_rot_opt_dicts = client.gather(max_ent_local_rot_jobs)
@@ -155,17 +137,8 @@ if __name__ == "__main__":
         arb_meas_nodes,
         uniform_phase_damping_nodes_fn(),
         qnet.nlocal_chain_cost_22,
-        ansatz_kwargs={
-            "dev_kwargs": {
-                "name": "default.qubit",
-            },
-        },
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1,
-            "num_steps": 70,
-            "verbose": False,
-        },
+        ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+        opt_kwargs={"sample_width": 5, "step_size": 1, "num_steps": 70, "verbose": False,},
     )
     max_ent_arb_jobs = client.map(max_ent_arb_opt, param_range)
     max_ent_arb_opt_dicts = client.gather(max_ent_arb_jobs)
@@ -194,17 +167,8 @@ if __name__ == "__main__":
         arb_meas_nodes,
         uniform_phase_damping_nodes_fn(),
         qnet.nlocal_chain_cost_22,
-        ansatz_kwargs={
-            "dev_kwargs": {
-                "name": "default.qubit",
-            },
-        },
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1,
-            "num_steps": 70,
-            "verbose": False,
-        },
+        ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+        opt_kwargs={"sample_width": 5, "step_size": 1, "num_steps": 70, "verbose": False,},
     )
     arb_arb_jobs = client.map(arb_arb_opt, param_range)
     arb_arb_opt_dicts = client.gather(arb_arb_jobs)

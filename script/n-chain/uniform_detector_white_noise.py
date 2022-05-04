@@ -27,11 +27,11 @@ if __name__ == "__main__":
     data_filepath = "data/n-chain/uniform_detector_white_noise/"
 
     for n in [3, 4]:
-         # preparing noise parameters for use with dask.distributed
-        params_range = np.zeros((n+1, len(scan_range)))
+        # preparing noise parameters for use with dask.distributed
+        params_range = np.zeros((n + 1, len(scan_range)))
         for i, gamma in enumerate(scan_range):
-            params_range[:, i] = [gamma] * (n+1)
-        
+            params_range[:, i] = [gamma] * (n + 1)
+
         """
         # minimal optimal ansatz
         """
@@ -39,20 +39,10 @@ if __name__ == "__main__":
 
         time_start = time.time()
         ghz_local_ry_state_optimization = src.detector_error_opt_fn(
-            qnet.NetworkAnsatz(
-                src.chain_ghz_prep_nodes(n),
-                src.chain_local_ry_meas_nodes(n)
-            ),
+            qnet.NetworkAnsatz(src.chain_ghz_prep_nodes(n), src.chain_local_ry_meas_nodes(n)),
             src.detector_error_chain_cost_fn,
-            cost_kwargs={
-                "error_map": white_noise_error_map,
-            },
-            opt_kwargs={
-                "step_size": 1.4,
-                "num_steps": 40,
-                "sample_width": 5,
-                "verbose": False,
-            },
+            cost_kwargs={"error_map": white_noise_error_map,},
+            opt_kwargs={"step_size": 1.4, "num_steps": 40, "sample_width": 5, "verbose": False,},
         )
 
         ghz_local_ry_opt_jobs = client.map(ghz_local_ry_state_optimization, *params_range)
@@ -75,19 +65,11 @@ if __name__ == "__main__":
         time_start = time.time()
         arb_local_rot_state_optimization = src.detector_error_opt_fn(
             qnet.NetworkAnsatz(
-                src.chain_nlocal_arbitrary_prep_nodes(n),
-                src.chain_local_rot_meas_nodes(n)
+                src.chain_nlocal_arbitrary_prep_nodes(n), src.chain_local_rot_meas_nodes(n)
             ),
             src.detector_error_chain_cost_fn,
-            cost_kwargs={
-                "error_map": white_noise_error_map,
-            },
-            opt_kwargs={
-                "step_size": 1,
-                "num_steps": 60,
-                "sample_width": 5,
-                "verbose": False,
-            },
+            cost_kwargs={"error_map": white_noise_error_map,},
+            opt_kwargs={"step_size": 1, "num_steps": 60, "sample_width": 5, "verbose": False,},
         )
 
         arb_local_rot_opt_jobs = client.map(arb_local_rot_state_optimization, *params_range)
@@ -112,19 +94,11 @@ if __name__ == "__main__":
         time_start = time.time()
         max_ent_arb_state_optimization = src.detector_error_opt_fn(
             qnet.NetworkAnsatz(
-                src.chain_nlocal_max_entangled_prep_nodes(n),
-                src.chain_arb_meas_nodes(n)
+                src.chain_nlocal_max_entangled_prep_nodes(n), src.chain_arb_meas_nodes(n)
             ),
             src.detector_error_chain_cost_fn,
-            cost_kwargs={
-                "error_map": white_noise_error_map,
-            },
-            opt_kwargs={
-                "step_size": 1,
-                "num_steps":60,
-                "sample_width": 5,
-                "verbose": False,
-            },
+            cost_kwargs={"error_map": white_noise_error_map,},
+            opt_kwargs={"step_size": 1, "num_steps": 60, "sample_width": 5, "verbose": False,},
         )
 
         max_ent_arb_opt_jobs = client.map(max_ent_arb_state_optimization, *params_range)
@@ -149,19 +123,11 @@ if __name__ == "__main__":
         time_start = time.time()
         arb_arb_state_optimization = src.detector_error_opt_fn(
             qnet.NetworkAnsatz(
-                src.chain_nlocal_arbitrary_prep_nodes(n),
-                src.chain_arb_meas_nodes(n)
+                src.chain_nlocal_arbitrary_prep_nodes(n), src.chain_arb_meas_nodes(n)
             ),
             src.detector_error_chain_cost_fn,
-            cost_kwargs={
-                "error_map": white_noise_error_map,
-            },
-            opt_kwargs={
-                "step_size": 1,
-                "num_steps": 90,
-                "sample_width": 5,
-                "verbose": False,
-            },
+            cost_kwargs={"error_map": white_noise_error_map,},
+            opt_kwargs={"step_size": 1, "num_steps": 90, "sample_width": 5, "verbose": False,},
         )
 
         arb_arb_opt_jobs = client.map(arb_arb_state_optimization, *params_range)
@@ -177,7 +143,3 @@ if __name__ == "__main__":
             quantum_bound=np.sqrt(2),
             classical_bound=1,
         )
-
-
-
-

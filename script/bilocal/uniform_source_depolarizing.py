@@ -23,7 +23,8 @@ def uniform_depolarizing_nodes_fn():
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [2*i, 2*i + 1], lambda settings, wires: qnet.two_qubit_depolarizing(noise_args, wires=wires)
+                [2 * i, 2 * i + 1],
+                lambda settings, wires: qnet.two_qubit_depolarizing(noise_args, wires=wires),
             )
             for i in range(2)
         ]
@@ -37,12 +38,12 @@ if __name__ == "__main__":
     param_range = np.arange(0, 1.01, 0.05)
 
     max_ent_prep_nodes = [
-        qnet.PrepareNode(1, [0,1], qnet.max_entangled_state, 3),
-        qnet.PrepareNode(1, [2,3], qnet.max_entangled_state, 3)
+        qnet.PrepareNode(1, [0, 1], qnet.max_entangled_state, 3),
+        qnet.PrepareNode(1, [2, 3], qnet.max_entangled_state, 3),
     ]
     arb_prep_nodes = [
-        qnet.PrepareNode(1, [0,1], qml.ArbitraryStatePreparation, 6),
-        qnet.PrepareNode(1, [2,3], qml.ArbitraryStatePreparation, 6)
+        qnet.PrepareNode(1, [0, 1], qml.ArbitraryStatePreparation, 6),
+        qnet.PrepareNode(1, [2, 3], qml.ArbitraryStatePreparation, 6),
     ]
     phi_plus_prep_nodes = [
         qnet.PrepareNode(1, [0, 1], qnet.ghz_state, 0),
@@ -52,12 +53,12 @@ if __name__ == "__main__":
     arb_meas_nodes = [
         qnet.MeasureNode(2, 2, [0], lambda settings, wires: qml.Rot(*settings, wires=wires), 3),
         qnet.MeasureNode(2, 2, [1, 2], qml.ArbitraryUnitary, 15),
-        qnet.MeasureNode(2, 2, [3], lambda settings, wires: qml.Rot(*settings, wires=wires), 3)
+        qnet.MeasureNode(2, 2, [3], lambda settings, wires: qml.Rot(*settings, wires=wires), 3),
     ]
     local_rot_meas_nodes = [
         qnet.MeasureNode(2, 2, [0], src.local_rot, 3),
         qnet.MeasureNode(2, 2, [1, 2], src.local_rot, 6),
-        qnet.MeasureNode(2, 2, [3], src.local_rot, 3)
+        qnet.MeasureNode(2, 2, [3], src.local_rot, 3),
     ]
     local_ry_meas_nodes = [
         qnet.MeasureNode(2, 2, [0], qnet.local_RY, 1),
@@ -77,12 +78,7 @@ if __name__ == "__main__":
         local_rot_meas_nodes,
         uniform_depolarizing_nodes_fn(),
         qnet.nlocal_chain_cost_22,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1.4,
-            "num_steps": 50,
-            "verbose": False,
-        },
+        opt_kwargs={"sample_width": 5, "step_size": 1.4, "num_steps": 50, "verbose": False,},
     )
     max_ent_local_rot_jobs = client.map(max_ent_local_rot_opt, param_range)
     max_ent_local_rot_opt_dicts = client.gather(max_ent_local_rot_jobs)
@@ -112,12 +108,7 @@ if __name__ == "__main__":
         local_ry_meas_nodes,
         uniform_depolarizing_nodes_fn(),
         qnet.nlocal_chain_cost_22,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1.4,
-            "num_steps": 60,
-            "verbose": False,
-        },
+        opt_kwargs={"sample_width": 5, "step_size": 1.4, "num_steps": 60, "verbose": False,},
     )
     phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
     phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)
@@ -147,12 +138,7 @@ if __name__ == "__main__":
         arb_meas_nodes,
         uniform_depolarizing_nodes_fn(),
         qnet.nlocal_chain_cost_22,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1.4,
-            "num_steps": 60,
-            "verbose": False,
-        },
+        opt_kwargs={"sample_width": 5, "step_size": 1.4, "num_steps": 60, "verbose": False,},
     )
     phi_plus_arb_jobs = client.map(phi_plus_arb_opt, param_range)
     phi_plus_arb_opt_dicts = client.gather(phi_plus_arb_jobs)
@@ -181,12 +167,7 @@ if __name__ == "__main__":
         arb_meas_nodes,
         uniform_depolarizing_nodes_fn(),
         qnet.nlocal_chain_cost_22,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1.2,
-            "num_steps": 70,
-            "verbose": False,
-        },
+        opt_kwargs={"sample_width": 5, "step_size": 1.2, "num_steps": 70, "verbose": False,},
     )
     max_ent_arb_jobs = client.map(max_ent_arb_opt, param_range)
     max_ent_arb_opt_dicts = client.gather(max_ent_arb_jobs)
@@ -215,12 +196,7 @@ if __name__ == "__main__":
         arb_meas_nodes,
         uniform_depolarizing_nodes_fn(),
         qnet.nlocal_chain_cost_22,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 1.3,
-            "num_steps": 80,
-            "verbose": False,
-        },
+        opt_kwargs={"sample_width": 5, "step_size": 1.3, "num_steps": 80, "verbose": False,},
     )
     arb_arb_jobs = client.map(arb_arb_opt, param_range)
     arb_arb_opt_dicts = client.gather(arb_arb_jobs)

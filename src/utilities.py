@@ -55,12 +55,7 @@ def hardware_opt(
 
     for i in range(current_step, num_steps):
         tmp_opt_dict = qnet.gradient_descent(
-            cost,
-            settings,
-            step_size=step_size,
-            num_steps=1,
-            sample_width=1,
-            grad_fn=grad_fn,
+            cost, settings, step_size=step_size, num_steps=1, sample_width=1, grad_fn=grad_fn,
         )
 
         # aggregate data into optimization dictionary
@@ -85,12 +80,7 @@ def hardware_opt(
 
 
 def detector_error_opt_fn(
-    network_ansatz,
-    cost_fn,
-    cost_kwargs={},
-    qnode_kwargs={},
-    opt_kwargs={},
-    verbose=True,
+    network_ansatz, cost_fn, cost_kwargs={}, qnode_kwargs={}, opt_kwargs={}, verbose=True,
 ):
     """Constructs an ansatz-specific ``optimze`` function for cost function
     catered for detector noise.
@@ -310,13 +300,7 @@ def save_optimizations_one_param_scan(
 
 
 def save_optimizations_two_param_scan(
-    data_filepath,
-    opt_name,
-    x_range,
-    y_range,
-    opt_dicts,
-    quantum_bound=None,
-    classical_bound=None,
+    data_filepath, opt_name, x_range, y_range, opt_dicts, quantum_bound=None, classical_bound=None,
 ):
     """Saves json data and plots for optimizations scanned over two
     fixed parameters.
@@ -443,17 +427,16 @@ def analyze_data_one_param_scan(data_files):
 
     sorted_noise_params = np.sort(noise_params)
     max_scores = [max(results["{:.3f}".format(noise_param)]) for noise_param in sorted_noise_params]
-    
+
     mean_scores = [
         np.mean(results["{:.3f}".format(noise_param)], axis=0)
         for noise_param in sorted_noise_params
     ]
-    
+
     std_errs = [
         np.std(results[noise_key], axis=0) / np.sqrt(len(results[noise_key]))
         for noise_key in ["{:.3f}".format(noise_param) for noise_param in sorted_noise_params]
     ]
-
 
     max_score_ids = [
         (results["{:.3f}".format(sorted_noise_params[i])]).index(max_scores[i])
@@ -463,7 +446,7 @@ def analyze_data_one_param_scan(data_files):
     opt_settings_list = [
         settings_results["{:.3f}".format(sorted_noise_params[i])][max_score_ids[i]]
         for i in range(len(noise_params))
-    ]    
+    ]
 
     return {
         "noise_params": sorted_noise_params,
@@ -569,7 +552,9 @@ def opt_dicts_mean_stderr(opt_dicts, num_samples=None):
     theoretical_max_array = np.array([opt_dict["theoretical_score"] for opt_dict in opt_dicts])
     mean_theoretical_score = np.mean(theoretical_max_array)
     max_theoretical_score = np.max(theoretical_max_array)
-    theory_stderr = np.std(theoretical_max_array, axis=0, ddof=1) / np.sqrt(theoretical_max_array.shape[0])
+    theory_stderr = np.std(theoretical_max_array, axis=0, ddof=1) / np.sqrt(
+        theoretical_max_array.shape[0]
+    )
 
     scores_mean = np.mean(scores_array, axis=0)
     scores_stderr = np.std(scores_array, axis=0, ddof=1) / np.sqrt(scores_array.shape[1])
@@ -613,8 +598,8 @@ def plot_unital_single_and_uniform_max_scores_data(
     uniform_match_scores,
     data_labels,
     plot_dir,
-    legend_labels = ["VQO", "Theory", "Match"],
-    bottom_padding = 0.45,
+    legend_labels=["VQO", "Theory", "Match"],
+    bottom_padding=0.45,
     fig_height=6,
     ncol_legend=3,
 ):
@@ -653,7 +638,7 @@ def plot_unital_single_and_uniform_max_scores_data(
     :param plot_dir: The directory to which the data will be plotted.
     :type plt_dir: String
     """
-    fig, axes = plt.subplots(1, 2, figsize=(10,fig_height))
+    fig, axes = plt.subplots(1, 2, figsize=(10, fig_height))
     fig.suptitle(fig_title, fontsize=24, fontweight="bold")
     datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
     filename = fig_title + "_max_scores_single_and_uniform_" + datetime_ext
@@ -666,9 +651,9 @@ def plot_unital_single_and_uniform_max_scores_data(
     ax_titles_fontsize = 22
     data_set_markers = ["s", "o", "^", "v", "P", "*"]
     line_colors = ["C2", "C3", "C4", "C5", "C6", "C7"]
-    marker_sizes = [8,7.75,7.5,7.25,7,6.75,6.5,6.25]
+    marker_sizes = [8, 7.75, 7.5, 7.25, 7, 6.75, 6.5, 6.25]
     # line_widths = [5.5,5,4.5,4,3.5,3,2.5,2]
-    dashes_list = [2,3,4,5,6,7,8,9]
+    dashes_list = [2, 3, 4, 5, 6, 7, 8, 9]
 
     ax_data_sets = [single_max_scores, uniform_max_scores]
     ax_theory_sets = [single_theoretical_scores, uniform_theoretical_scores]
@@ -679,11 +664,13 @@ def plot_unital_single_and_uniform_max_scores_data(
         ax = axes[i]
 
         ax.plot(noise_params, qbound, linestyle="-", color="C0", linewidth=3, label="Quantum Bound")
-        ax.plot(noise_params, cbound, linestyle="-.", color="C1", linewidth=3, label="Classical Bound")
+        ax.plot(
+            noise_params, cbound, linestyle="-.", color="C1", linewidth=3, label="Classical Bound"
+        )
 
         for j in range(len(ax_data_sets[i])):
             theory_set = ax_theory_sets[i][j] if len(ax_theory_sets[i]) != 0 else []
-            
+
             data_set = ax_data_sets[i][j]
 
             ax.plot(
@@ -695,9 +682,8 @@ def plot_unital_single_and_uniform_max_scores_data(
                 markerfacecolor="None",
                 linewidth=2,
                 markersize=marker_sizes[j],
-                label=data_labels[j] + " " + legend_labels[0]
+                label=data_labels[j] + " " + legend_labels[0],
             )
-
 
             if len(theory_set) != 0:
                 ax.plot(
@@ -705,11 +691,11 @@ def plot_unital_single_and_uniform_max_scores_data(
                     theory_set,
                     color=line_colors[j],
                     linestyle=":",
-                    linewidth=2,#line_widths[j],
-                    dashes=(dashes_list[j],2),
+                    linewidth=2,  # line_widths[j],
+                    dashes=(dashes_list[j], 2),
                     alpha=0.8,
                     markersize=8,
-                    label=data_labels[j] + " " + legend_labels[1]
+                    label=data_labels[j] + " " + legend_labels[1],
                 )
 
             match_set = ax_match_sets[i][j] if len(ax_match_sets[i]) != 0 else []
@@ -720,21 +706,21 @@ def plot_unital_single_and_uniform_max_scores_data(
                     match_set,
                     color=line_colors[j],
                     linestyle="-",
-                    linewidth=2, #line_widths[j],
+                    linewidth=2,  # line_widths[j],
                     # dashes=(5,dashes_list[j]),
                     alpha=0.6,
                     markersize=8,
-                    label=data_labels[j] + " " + legend_labels[2]
+                    label=data_labels[j] + " " + legend_labels[2],
                 )
-        
 
         ax.set_title(ax_titles[i], size=ax_titles_fontsize)
         ax.set_xlabel(r"Noise Parameter ($\gamma$)", size=ax_labels_fontsize)
 
         if i == 0:
             ax.set_ylabel(r"Bell Score ($S_{\mathrm{Bell}}$)", size=ax_labels_fontsize)
-            plt.figlegend(ncol=ncol_legend, loc="lower center", fontsize=16, bbox_to_anchor=(0,-0.01,1,1,))
-
+            plt.figlegend(
+                ncol=ncol_legend, loc="lower center", fontsize=16, bbox_to_anchor=(0, -0.01, 1, 1,)
+            )
 
         for j in range(len(ax_data_sets[i])):
             data_set = ax_data_sets[i][j]
@@ -755,6 +741,7 @@ def plot_unital_single_and_uniform_max_scores_data(
 
     plt.savefig(plot_dir + filename)
 
+
 def plot_nonunital_single_and_uniform_max_scores_data(
     fig_title,
     ax_titles,
@@ -772,7 +759,7 @@ def plot_nonunital_single_and_uniform_max_scores_data(
     data_labels,
     row_labels,
     plot_dir,
-    legend_labels = ["VQO", "Theory"],
+    legend_labels=["VQO", "Theory"],
     bottom_padding=0.25,
 ):
     """Plots the noise robustness for single and uniform qubit/source/measurement
@@ -810,7 +797,7 @@ def plot_nonunital_single_and_uniform_max_scores_data(
     :param plot_dir: The directory to which the data will be plotted.
     :type plt_dir: String
     """
-    fig, axes = plt.subplots(2, 2, figsize=(10,10))
+    fig, axes = plt.subplots(2, 2, figsize=(10, 10))
     fig.suptitle(fig_title, fontsize=24, fontweight="bold")
     datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
     filename = fig_title + "_max_scores_single_and_uniform_" + datetime_ext
@@ -833,10 +820,9 @@ def plot_nonunital_single_and_uniform_max_scores_data(
         [row2_single_theoretical_scores, row2_uniform_theoretical_scores],
     ]
 
-    marker_sizes = [8,7.75,7.5,7.25,7,6.75,6.5,6.25]
+    marker_sizes = [8, 7.75, 7.5, 7.25, 7, 6.75, 6.5, 6.25]
     # line_widths = [5.5,5,4.5,4,3.5,3,2.5,2]
-    dashes_list = [2,3,4,5,6,7,8,9]
-
+    dashes_list = [2, 3, 4, 5, 6, 7, 8, 9]
 
     for row_id in range(2):
 
@@ -844,8 +830,17 @@ def plot_nonunital_single_and_uniform_max_scores_data(
 
             ax = axes[row_id][i]
 
-            ax.plot(noise_params, qbound, linestyle="-", color="C0", linewidth=3, label="Quantum Bound")
-            ax.plot(noise_params, cbound, linestyle="-.", color="C1", linewidth=3, label="Classical Bound")
+            ax.plot(
+                noise_params, qbound, linestyle="-", color="C0", linewidth=3, label="Quantum Bound"
+            )
+            ax.plot(
+                noise_params,
+                cbound,
+                linestyle="-.",
+                color="C1",
+                linewidth=3,
+                label="Classical Bound",
+            )
 
             for j in range(len(ax_data_sets[row_id][i])):
                 data_set = ax_data_sets[row_id][i][j]
@@ -858,20 +853,22 @@ def plot_nonunital_single_and_uniform_max_scores_data(
                     linewidth=2,
                     markerfacecolor="None",
                     markersize=marker_sizes[j],
-                    label=data_labels[j] + " " + legend_labels[0]
+                    label=data_labels[j] + " " + legend_labels[0],
                 )
 
-                theory_set = ax_theory_sets[row_id][i][j] if len(ax_theory_sets[row_id][i]) != 0 else []
-                
+                theory_set = (
+                    ax_theory_sets[row_id][i][j] if len(ax_theory_sets[row_id][i]) != 0 else []
+                )
+
                 ax.plot(
                     noise_params,
                     theory_set,
                     color=line_colors[j],
                     linestyle=":",
-                    linewidth=2,#line_widths[j],
-                    dashes=(dashes_list[j],2),
+                    linewidth=2,  # line_widths[j],
+                    dashes=(dashes_list[j], 2),
                     alpha=0.6,
-                    label=data_labels[j] + " " + legend_labels[1]
+                    label=data_labels[j] + " " + legend_labels[1],
                 )
 
             if row_id == 0:
@@ -879,42 +876,42 @@ def plot_nonunital_single_and_uniform_max_scores_data(
             else:
                 ax.set_title("\n", size=ax_titles_fontsize)
 
-
             if row_id == 1:
                 ax.set_xlabel(r"Noise Parameter ($\gamma$)", size=ax_labels_fontsize)
 
             if i == 0:
                 ax.set_ylabel(r"Bell Score ($S_{\mathrm{Bell}}$)", size=ax_labels_fontsize)
-                ax.annotate(row_labels[row_id],
+                ax.annotate(
+                    row_labels[row_id],
                     xy=(-1, 0.5),
-                    xytext=(-ax.yaxis.labelpad,0),                    
+                    xytext=(-ax.yaxis.labelpad, 0),
                     xycoords=ax.yaxis.label,
-                    textcoords='offset points',
+                    textcoords="offset points",
                     size=ax_labels_fontsize,
-                    ha='center',
-                    va='center',
+                    ha="center",
+                    va="center",
                     rotation=90,
                     fontweight="bold",
                 )
 
                 if row_id == 0:
-                    plt.figlegend(ncol=3, loc="lower center", fontsize=16, bbox_to_anchor=(0,-0.01,1,1,))
+                    plt.figlegend(
+                        ncol=3, loc="lower center", fontsize=16, bbox_to_anchor=(0, -0.01, 1, 1,)
+                    )
 
             for j in range(len(ax_data_sets[row_id][i])):
-                    data_set = ax_data_sets[row_id][i][j]
-                    ax.plot(
-                        noise_params,
-                        data_set,
-                        color=line_colors[j],
-                        linestyle="None",
-                        marker="o",
-                        linewidth=2,
-                        markersize=2,
-                    )
+                data_set = ax_data_sets[row_id][i][j]
+                ax.plot(
+                    noise_params,
+                    data_set,
+                    color=line_colors[j],
+                    linestyle="None",
+                    marker="o",
+                    linewidth=2,
+                    markersize=2,
+                )
 
     plt.tight_layout()
     fig.subplots_adjust(bottom=bottom_padding)
 
     plt.savefig(plot_dir + filename)
-
-

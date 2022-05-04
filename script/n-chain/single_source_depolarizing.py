@@ -19,6 +19,7 @@ Arbitrary state preparations and measurements are considered along with
 local qubit measurements and maximally entangled state preparations.
 """
 
+
 def single_source_depolarizing_nodes_fn(n):
     def noise_nodes(noise_args):
         return [
@@ -35,7 +36,7 @@ if __name__ == "__main__":
     data_dir = "data/n-chain/single_source_depolarizing/"
     param_range = np.arange(0, 1.01, 0.05)
 
-    for n in [3,4]:
+    for n in [3, 4]:
 
         client = Client(processes=True, n_workers=5, threads_per_worker=1)
 
@@ -49,12 +50,7 @@ if __name__ == "__main__":
             src.chain_local_ry_meas_nodes(n),
             single_source_depolarizing_nodes_fn(n),
             qnet.nlocal_chain_cost_22,
-            opt_kwargs={
-                "sample_width": 5,
-                "step_size": 2,
-                "num_steps": 40,
-                "verbose": True,
-            },
+            opt_kwargs={"sample_width": 5, "step_size": 2, "num_steps": 40, "verbose": True,},
         )
         phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
         phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)

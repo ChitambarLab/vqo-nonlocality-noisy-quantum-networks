@@ -1,12 +1,9 @@
-name: vqo-non-n-locality-dev
+name: vqo-nonlocality-dev
 channels:
   - defaults
 dependencies:
   - python=3.8
   - black
-  - sphinx
-  - pytest
-  - notebook
   - matplotlib
   - pip
   - pip:

@@ -22,9 +22,7 @@ We consider Bell state preparations and arbitrary state preparations.
 
 if __name__ == "__main__":
 
-    max_ent_prep_nodes = [
-        qnet.PrepareNode(1, [0, 1], qnet.max_entangled_state, 3)
-    ]
+    max_ent_prep_nodes = [qnet.PrepareNode(1, [0, 1], qnet.max_entangled_state, 3)]
     ghz_prep_nodes = [
         qnet.PrepareNode(1, [0, 1], qnet.ghz_state, 0),
     ]
@@ -34,10 +32,7 @@ if __name__ == "__main__":
         qnet.MeasureNode(2, 2, [i], lambda settings, wires: qml.Rot(*settings, wires=wires), 3)
         for i in range(2)
     ]
-    ry_meas_nodes = [
-        qnet.MeasureNode(2, 2, [i], qnet.local_RY, 1)
-        for i in range(2)
-    ]
+    ry_meas_nodes = [qnet.MeasureNode(2, 2, [i], qnet.local_RY, 1) for i in range(2)]
 
     white_noise_error_map = np.array([[0.5, 0.5], [0.5, 0.5]])
 
@@ -58,15 +53,8 @@ if __name__ == "__main__":
     ghz_local_rot_state_optimization = src.detector_error_opt_fn(
         qnet.NetworkAnsatz(ghz_prep_nodes, meas_nodes),
         src.detector_error_chsh_cost_fn,
-        cost_kwargs={
-            "error_map": white_noise_error_map,
-        },
-        opt_kwargs={
-            "step_size": 0.6,
-            "num_steps": 40,
-            "sample_width": 5,
-            "verbose": False,
-        },
+        cost_kwargs={"error_map": white_noise_error_map,},
+        opt_kwargs={"step_size": 0.6, "num_steps": 40, "sample_width": 5, "verbose": False,},
     )
 
     ghz_local_rot_opt_jobs = client.map(ghz_local_rot_state_optimization, *params_range)
@@ -90,15 +78,8 @@ if __name__ == "__main__":
     ghz_local_ry_state_optimization = src.detector_error_opt_fn(
         qnet.NetworkAnsatz(ghz_prep_nodes, ry_meas_nodes),
         src.detector_error_chsh_cost_fn,
-        cost_kwargs={
-            "error_map": white_noise_error_map,
-        },
-        opt_kwargs={
-            "step_size": 0.6,
-            "num_steps": 40,
-            "sample_width": 5,
-            "verbose": False,
-        },
+        cost_kwargs={"error_map": white_noise_error_map,},
+        opt_kwargs={"step_size": 0.6, "num_steps": 40, "sample_width": 5, "verbose": False,},
     )
 
     ghz_local_ry_opt_jobs = client.map(ghz_local_ry_state_optimization, *params_range)
@@ -122,15 +103,8 @@ if __name__ == "__main__":
     max_ent_local_rot_state_optimization = src.detector_error_opt_fn(
         qnet.NetworkAnsatz(max_ent_prep_nodes, meas_nodes),
         src.detector_error_chsh_cost_fn,
-        cost_kwargs={
-            "error_map": white_noise_error_map,
-        },
-        opt_kwargs={
-            "step_size": 0.4,
-            "num_steps": 50,
-            "sample_width": 5,
-            "verbose": False,
-        },
+        cost_kwargs={"error_map": white_noise_error_map,},
+        opt_kwargs={"step_size": 0.4, "num_steps": 50, "sample_width": 5, "verbose": False,},
     )
 
     max_ent_local_rot_opt_jobs = client.map(max_ent_local_rot_state_optimization, *params_range)
@@ -154,15 +128,8 @@ if __name__ == "__main__":
     arb_local_rot_state_optimization = src.detector_error_opt_fn(
         qnet.NetworkAnsatz(arb_prep_nodes, meas_nodes),
         src.detector_error_chsh_cost_fn,
-        cost_kwargs={
-            "error_map": white_noise_error_map,
-        },
-        opt_kwargs={
-            "step_size": 0.3,
-            "num_steps": 60,
-            "sample_width": 5,
-            "verbose": False,
-        },
+        cost_kwargs={"error_map": white_noise_error_map,},
+        opt_kwargs={"step_size": 0.3, "num_steps": 60, "sample_width": 5, "verbose": False,},
     )
 
     arb_local_rot_opt_jobs = client.map(arb_local_rot_state_optimization, *params_range)
@@ -178,7 +145,3 @@ if __name__ == "__main__":
         quantum_bound=2 * np.sqrt(2),
         classical_bound=2,
     )
-
-
-
-

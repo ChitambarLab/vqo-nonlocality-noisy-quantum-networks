@@ -55,17 +55,8 @@ if __name__ == "__main__":
                 src.chain_local_ry_meas_nodes(n),
                 single_qubit_phase_damping_nodes_fn(n, wire),
                 qnet.nlocal_chain_cost_22,
-                ansatz_kwargs={
-                    "dev_kwargs": {
-                        "name": "default.qubit",
-                    },
-                },
-                opt_kwargs={
-                    "sample_width": 5,
-                    "step_size": 1.3,
-                    "num_steps": 80,
-                    "verbose": True,
-                },
+                ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+                opt_kwargs={"sample_width": 5, "step_size": 1.3, "num_steps": 80, "verbose": True,},
             )
             ghz_local_ry_jobs = client.map(ghz_local_ry_opt, param_range)
             ghz_local_ry_opt_dicts = client.gather(ghz_local_ry_jobs)

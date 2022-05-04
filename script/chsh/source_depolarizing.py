@@ -23,7 +23,7 @@ def source_depolarizing_nodes_fn():
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [0,1], lambda settings, wires: qnet.two_qubit_depolarizing(noise_args, wires=wires)
+                [0, 1], lambda settings, wires: qnet.two_qubit_depolarizing(noise_args, wires=wires)
             )
         ]
 
@@ -58,12 +58,7 @@ if __name__ == "__main__":
         rot_meas_nodes,
         source_depolarizing_nodes_fn(),
         qnet.chsh_inequality_cost,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 0.3,
-            "num_steps": 50,
-            "verbose": False,
-        },
+        opt_kwargs={"sample_width": 5, "step_size": 0.3, "num_steps": 50, "verbose": False,},
     )
     max_ent_jobs = client.map(max_ent_opt, param_range)
     max_ent_opt_dicts = client.gather(max_ent_jobs)
@@ -80,7 +75,6 @@ if __name__ == "__main__":
     time_elapsed = time.time() - time_start
     print("\nelapsed time : ", time_elapsed, "\n")
 
-
     # minimal prep ansatz for nonoptimal phi_plus strategy
     time_start = time.time()
 
@@ -89,12 +83,7 @@ if __name__ == "__main__":
         ry_meas_nodes,
         source_depolarizing_nodes_fn(),
         qnet.chsh_inequality_cost,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 0.3,
-            "num_steps": 70,
-            "verbose": False,
-        },
+        opt_kwargs={"sample_width": 5, "step_size": 0.3, "num_steps": 70, "verbose": False,},
     )
     phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
     phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)
@@ -111,7 +100,6 @@ if __name__ == "__main__":
     time_elapsed = time.time() - time_start
     print("\nelapsed time : ", time_elapsed, "\n")
 
-
     # min prep ansatz and general measurement
     time_start = time.time()
 
@@ -120,12 +108,7 @@ if __name__ == "__main__":
         rot_meas_nodes,
         source_depolarizing_nodes_fn(),
         qnet.chsh_inequality_cost,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 0.3,
-            "num_steps": 70,
-            "verbose": False,
-        },
+        opt_kwargs={"sample_width": 5, "step_size": 0.3, "num_steps": 70, "verbose": False,},
     )
     phi_plus_local_rot_jobs = client.map(phi_plus_local_rot_opt, param_range)
     phi_plus_local_rot_opt_dicts = client.gather(phi_plus_local_rot_jobs)
@@ -150,12 +133,7 @@ if __name__ == "__main__":
         rot_meas_nodes,
         source_depolarizing_nodes_fn(),
         qnet.chsh_inequality_cost,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 0.2,
-            "num_steps": 60,
-            "verbose": False,
-        },
+        opt_kwargs={"sample_width": 5, "step_size": 0.2, "num_steps": 60, "verbose": False,},
     )
     arb_jobs = client.map(arb_opt, param_range)
     arb_opt_dicts = client.gather(arb_jobs)

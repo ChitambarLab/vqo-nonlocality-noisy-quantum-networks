@@ -10,36 +10,38 @@ This script aggregates data and plots the noise robustness results qubit
 depolarizing noise.
 """
 
-@qml.qnode(qml.device("default.mixed", wires=[0,1]))
+
+@qml.qnode(qml.device("default.mixed", wires=[0, 1]))
 def bell_state_noise(gamma):
     qml.Hadamard(wires=[0])
-    qml.CNOT(wires=[0,1])
+    qml.CNOT(wires=[0, 1])
 
-    qnet.two_qubit_depolarizing(gamma, wires=[0,1])
+    qnet.two_qubit_depolarizing(gamma, wires=[0, 1])
 
     return qml.state()
+
 
 if __name__ == "__main__":
     num_samples = 21
 
-    bell_state_noise_states = [
-        bell_state_noise(gamma)
-        for gamma in np.arange(0, 1.01, 0.05)
-    ]
+    bell_state_noise_states = [bell_state_noise(gamma) for gamma in np.arange(0, 1.01, 0.05)]
 
-    bell_state = np.array([[1,0,0,1],[0,0,0,0],[0,0,0,0],[1,0,0,1]])/2
+    bell_state = np.array([[1, 0, 0, 1], [0, 0, 0, 0], [0, 0, 0, 0], [1, 0, 0, 1]]) / 2
 
     """
     Loading CHSH Data
     """
-    chsh_dep_regexes = [r"max_ent_local_rot_.*", r"arb_local_rot.*", r"phi_plus_local_ry_.*", r"phi_plus_local_rot_.*"]
+    chsh_dep_regexes = [
+        r"max_ent_local_rot_.*",
+        r"arb_local_rot.*",
+        r"phi_plus_local_ry_.*",
+        r"phi_plus_local_rot_.*",
+    ]
 
     chsh_dep_dir = "./data/chsh/source_depolarizing/"
 
     chsh_dep_data = [
-        src.analyze_data_one_param_scan(
-            src.get_data_files(chsh_dep_dir, regex)
-        )
+        src.analyze_data_one_param_scan(src.get_data_files(chsh_dep_dir, regex))
         for regex in chsh_dep_regexes
     ]
     max_chsh_dep = [
@@ -53,8 +55,7 @@ if __name__ == "__main__":
     # ]
 
     theoretical_bell_state_chsh = [
-        np.sqrt(2) * np.abs(( 1 - gamma * 16/15))
-        for gamma in np.arange(0, 1.01, 0.05)
+        np.sqrt(2) * np.abs((1 - gamma * 16 / 15)) for gamma in np.arange(0, 1.01, 0.05)
     ]
 
     """
@@ -62,11 +63,15 @@ if __name__ == "__main__":
     """
     bilocal_uniform_dep_dir = "./data/bilocal/uniform_source_depolarizing/"
 
-    bilocal_dep_regexes = [r"phi_plus_local_ry_.*", r"max_ent_local_rot_.*", r"phi_plus_arb_.*", r"max_ent_arb_.*", r"arb_arb_.*"]
+    bilocal_dep_regexes = [
+        r"phi_plus_local_ry_.*",
+        r"max_ent_local_rot_.*",
+        r"phi_plus_arb_.*",
+        r"max_ent_arb_.*",
+        r"arb_arb_.*",
+    ]
     bilocal_uniform_dep_data = [
-        src.analyze_data_one_param_scan(
-            src.get_data_files(bilocal_uniform_dep_dir, regex)
-        )
+        src.analyze_data_one_param_scan(src.get_data_files(bilocal_uniform_dep_dir, regex))
         for regex in bilocal_dep_regexes
     ]
 
@@ -78,9 +83,7 @@ if __name__ == "__main__":
     bilocal_single_dep_dir = "./data/bilocal/single_source_depolarizing/"
 
     bilocal_single_dep_data = [
-        src.analyze_data_one_param_scan(
-            src.get_data_files(bilocal_single_dep_dir, regex)
-        )
+        src.analyze_data_one_param_scan(src.get_data_files(bilocal_single_dep_dir, regex))
         for regex in bilocal_dep_regexes
     ]
 
@@ -88,7 +91,6 @@ if __name__ == "__main__":
         max(map(lambda opt_data: opt_data["max_scores"][i], bilocal_single_dep_data))
         for i in range(num_samples)
     ]
-
 
     # theoretical_bell_state_uniform_bilocal = [
     #     src.bilocal_max_violation(state, state)
@@ -101,13 +103,12 @@ if __name__ == "__main__":
     # ]
 
     theoretical_bell_state_uniform_bilocal = [
-        np.sqrt(2) * np.sqrt(np.abs(( 1 - gamma * 16/15) ** 2))
+        np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15) ** 2))
         for gamma in np.arange(0, 1.01, 0.05)
     ]
 
     theoretical_bell_state_single_bilocal = [
-        np.sqrt(2) * np.sqrt(np.abs(( 1 - gamma * 16/15)))
-        for gamma in np.arange(0, 1.01, 0.05)
+        np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15))) for gamma in np.arange(0, 1.01, 0.05)
     ]
 
     """
@@ -119,9 +120,7 @@ if __name__ == "__main__":
     n3_chain_dep_regexes = [r"phi_plus_local_ry_n-3_.*"]
 
     n3_chain_uniform_dep_data = [
-        src.analyze_data_one_param_scan(
-            src.get_data_files(chain_uniform_dep_dir, regex)
-        )
+        src.analyze_data_one_param_scan(src.get_data_files(chain_uniform_dep_dir, regex))
         for regex in n3_chain_dep_regexes
     ]
 
@@ -133,9 +132,7 @@ if __name__ == "__main__":
     chain_single_dep_dir = "./data/n-chain/single_source_depolarizing/"
 
     n3_chain_single_dep_data = [
-        src.analyze_data_one_param_scan(
-            src.get_data_files(chain_single_dep_dir, regex)
-        )
+        src.analyze_data_one_param_scan(src.get_data_files(chain_single_dep_dir, regex))
         for regex in n3_chain_dep_regexes
     ]
 
@@ -155,13 +152,12 @@ if __name__ == "__main__":
     # ]
 
     theoretical_bell_state_uniform_n3_chain = [
-        np.sqrt(2) * np.sqrt(np.abs(( 1 - gamma * 16/15) ** 3))
+        np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15) ** 3))
         for gamma in np.arange(0, 1.01, 0.05)
     ]
 
     theoretical_bell_state_single_n3_chain = [
-        np.sqrt(2) * np.sqrt(np.abs(( 1 - gamma * 16/15)))
-        for gamma in np.arange(0, 1.01, 0.05)
+        np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15))) for gamma in np.arange(0, 1.01, 0.05)
     ]
 
     """
@@ -173,9 +169,7 @@ if __name__ == "__main__":
     n3_star_dep_regexes = [r"phi_plus_local_ry_n-3_.*"]
 
     n3_star_uniform_dep_data = [
-        src.analyze_data_one_param_scan(
-            src.get_data_files(star_uniform_dep_dir, regex)
-        )
+        src.analyze_data_one_param_scan(src.get_data_files(star_uniform_dep_dir, regex))
         for regex in n3_star_dep_regexes
     ]
 
@@ -187,9 +181,7 @@ if __name__ == "__main__":
     star_single_dep_dir = "./data/n-star/single_source_depolarizing/"
 
     n3_star_single_dep_data = [
-        src.analyze_data_one_param_scan(
-            src.get_data_files(star_single_dep_dir, regex)
-        )
+        src.analyze_data_one_param_scan(src.get_data_files(star_single_dep_dir, regex))
         for regex in n3_star_dep_regexes
     ]
 
@@ -209,12 +201,12 @@ if __name__ == "__main__":
     # ]
 
     theoretical_bell_state_single_n3_star = [
-        np.sqrt(2) * np.power(np.abs(( 1 - gamma * 16/15)), 1/3)
+        np.sqrt(2) * np.power(np.abs((1 - gamma * 16 / 15)), 1 / 3)
         for gamma in np.arange(0, 1.01, 0.05)
     ]
 
     theoretical_bell_state_uniform_n3_star = [
-        np.sqrt(2) * np.power(np.abs(( 1 - gamma * 16/15) ** 3), 1/3)
+        np.sqrt(2) * np.power(np.abs((1 - gamma * 16 / 15) ** 3), 1 / 3)
         for gamma in np.arange(0, 1.01, 0.05)
     ]
 
@@ -223,35 +215,38 @@ if __name__ == "__main__":
     """
 
     src.plot_unital_single_and_uniform_max_scores_data(
-        fig_title = "Source Depolarizing Noise Robustness",
-        ax_titles = ["Single Source Noise", "Uniform Source Noise"],
-        noise_params = chsh_dep_data[0]["noise_params"],
-        quantum_bound = np.sqrt(2),
-        classical_bound = 1,
-        single_max_scores = [
-            max_chsh_dep, max_bilocal_single_dep,
-            max_n3_chain_single_dep, max_n3_star_single_dep
+        fig_title="Source Depolarizing Noise Robustness",
+        ax_titles=["Single Source Noise", "Uniform Source Noise"],
+        noise_params=chsh_dep_data[0]["noise_params"],
+        quantum_bound=np.sqrt(2),
+        classical_bound=1,
+        single_max_scores=[
+            max_chsh_dep,
+            max_bilocal_single_dep,
+            max_n3_chain_single_dep,
+            max_n3_star_single_dep,
         ],
-        single_theoretical_scores = [
+        single_theoretical_scores=[
             theoretical_bell_state_chsh,
             theoretical_bell_state_single_bilocal,
             theoretical_bell_state_single_n3_chain,
             theoretical_bell_state_single_n3_star,
         ],
         single_match_scores=[],
-        uniform_max_scores = [
-            max_chsh_dep, max_bilocal_uniform_dep,
-            max_n3_chain_uniform_dep, max_n3_star_uniform_dep,
+        uniform_max_scores=[
+            max_chsh_dep,
+            max_bilocal_uniform_dep,
+            max_n3_chain_uniform_dep,
+            max_n3_star_uniform_dep,
         ],
-        uniform_theoretical_scores = [
+        uniform_theoretical_scores=[
             theoretical_bell_state_chsh,
             theoretical_bell_state_uniform_bilocal,
             theoretical_bell_state_uniform_n3_chain,
             theoretical_bell_state_uniform_n3_star,
         ],
         uniform_match_scores=[],
-        data_labels = ["CHSH", "Bilocal", "3-Local Chain", "3-Local Star"],
-        plot_dir =  "./data/plots/source_depolarizing_noise_robustness/",
-        bottom_padding=0.4
+        data_labels=["CHSH", "Bilocal", "3-Local Chain", "3-Local Star"],
+        plot_dir="./data/plots/source_depolarizing_noise_robustness/",
+        bottom_padding=0.4,
     )
-

@@ -55,17 +55,8 @@ if __name__ == "__main__":
                 src.chain_local_ry_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wire),
                 qnet.nlocal_chain_cost_22,
-                ansatz_kwargs={
-                    "dev_kwargs": {
-                        "name": "default.qubit",
-                    },
-                },
-                opt_kwargs={
-                    "sample_width": 5,
-                    "step_size": 1.3,
-                    "num_steps": 80,
-                    "verbose": True,
-                },
+                ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+                opt_kwargs={"sample_width": 5, "step_size": 1.3, "num_steps": 80, "verbose": True,},
             )
             ryrz_cnot_local_ry_jobs = client.map(ryrz_cnot_local_ry_opt, param_range)
             ryrz_cnot_local_ry_opt_dicts = client.gather(ryrz_cnot_local_ry_jobs)
@@ -92,17 +83,8 @@ if __name__ == "__main__":
                 src.chain_local_rot_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wire),
                 qnet.nlocal_chain_cost_22,
-                ansatz_kwargs={
-                    "dev_kwargs": {
-                        "name": "default.qubit",
-                    },
-                },
-                opt_kwargs={
-                    "sample_width": 5,
-                    "step_size": 1.3,
-                    "num_steps": 80,
-                    "verbose": True,
-                },
+                ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+                opt_kwargs={"sample_width": 5, "step_size": 1.3, "num_steps": 80, "verbose": True,},
             )
             max_ent_local_rot_jobs = client.map(max_ent_local_rot_opt, param_range)
             max_ent_local_rot_opt_dicts = client.gather(max_ent_local_rot_jobs)
@@ -129,9 +111,7 @@ if __name__ == "__main__":
                 src.chain_local_rot_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wire),
                 qnet.nlocal_chain_cost_22,
-                ansatz_kwargs={
-                    "dev_kwargs": {"name": "default.qubit"},
-                },
+                ansatz_kwargs={"dev_kwargs": {"name": "default.qubit"},},
                 opt_kwargs={
                     "sample_width": 5,
                     "step_size": 1.4,
@@ -164,15 +144,8 @@ if __name__ == "__main__":
                 src.chain_arb_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wire),
                 qnet.nlocal_chain_cost_22,
-                ansatz_kwargs={
-                    "dev_kwargs": {"name": "default.qubit"},
-                },
-                opt_kwargs={
-                    "sample_width": 5,
-                    "step_size": 1,
-                    "num_steps": 110,
-                    "verbose": True,
-                },
+                ansatz_kwargs={"dev_kwargs": {"name": "default.qubit"},},
+                opt_kwargs={"sample_width": 5, "step_size": 1, "num_steps": 110, "verbose": True,},
             )
             arb_jobs = client.map(arb_opt, param_range)
             arb_opt_dicts = client.gather(arb_jobs)
@@ -199,17 +172,8 @@ if __name__ == "__main__":
                 src.chain_arb_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wire),
                 qnet.nlocal_chain_cost_22,
-                ansatz_kwargs={
-                    "dev_kwargs": {
-                        "name": "default.qubit",
-                    },
-                },
-                opt_kwargs={
-                    "sample_width": 5,
-                    "step_size": 1,
-                    "num_steps": 100,
-                    "verbose": True,
-                },
+                ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+                opt_kwargs={"sample_width": 5, "step_size": 1, "num_steps": 100, "verbose": True,},
             )
             max_entangled_jobs = client.map(max_entangled_opt, param_range)
             max_entangled_opt_dicts = client.gather(max_entangled_jobs)

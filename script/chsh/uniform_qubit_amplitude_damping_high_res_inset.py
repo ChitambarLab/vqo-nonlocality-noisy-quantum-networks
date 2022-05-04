@@ -121,17 +121,8 @@ if __name__ == "__main__":
         meas_nodes,
         uniform_amplitude_damping_nodes_fn(),
         qnet.chsh_inequality_cost,
-        ansatz_kwargs={
-            "dev_kwargs": {
-                "name": "default.qubit",
-            },
-        },
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 0.2,
-            "num_steps": 65,
-            "verbose": False,
-        },
+        ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+        opt_kwargs={"sample_width": 5, "step_size": 0.2, "num_steps": 65, "verbose": False,},
     )
     ghz_local_rot_jobs = client.map(ghz_local_rot_opt, param_range)
     ghz_local_rot_opt_dicts = client.gather(ghz_local_rot_jobs)
@@ -186,7 +177,7 @@ if __name__ == "__main__":
     # # local qubit rotation measurements and arb states
     # time_start = time.time()
 
-     # minimal ryrz_cnot prep ansatz for optimal strategy
+    # minimal ryrz_cnot prep ansatz for optimal strategy
     time_start = time.time()
 
     ryrz_cnot_local_rot_opt = src.noisy_net_opt_fn(
@@ -194,17 +185,8 @@ if __name__ == "__main__":
         meas_nodes,
         uniform_amplitude_damping_nodes_fn(),
         qnet.chsh_inequality_cost,
-        ansatz_kwargs={
-            "dev_kwargs": {
-                "name": "default.qubit",
-            },
-        },
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 0.15,
-            "num_steps": 75,
-            "verbose": False,
-        },
+        ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+        opt_kwargs={"sample_width": 5, "step_size": 0.15, "num_steps": 75, "verbose": False,},
     )
     ryrz_cnot_local_rot_jobs = client.map(ryrz_cnot_local_rot_opt, param_range)
     ryrz_cnot_local_rot_opt_dicts = client.gather(ryrz_cnot_local_rot_jobs)

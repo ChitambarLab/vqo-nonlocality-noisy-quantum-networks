@@ -61,9 +61,7 @@ if __name__ == "__main__":
                 src.star_22_local_ry_meas_nodes(n),
                 single_qubit_phase_damping_nodes_fn(n, wire),
                 qnet.nlocal_star_22_cost_fn,
-                ansatz_kwargs={
-                    "dev_kwargs": {"name": "default.qubit"},
-                },
+                ansatz_kwargs={"dev_kwargs": {"name": "default.qubit"},},
                 opt_kwargs={
                     "sample_width": 5,
                     "step_size": 1.8,

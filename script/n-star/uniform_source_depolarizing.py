@@ -28,7 +28,8 @@ def uniform_depolarizing_nodes_fn(n):
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [i, n + i], lambda settings, wires: qnet.two_qubit_depolarizing(noise_args, wires=wires)
+                [i, n + i],
+                lambda settings, wires: qnet.two_qubit_depolarizing(noise_args, wires=wires),
             )
             for i in range(n)
         ]
@@ -55,12 +56,7 @@ if __name__ == "__main__":
             src.star_22_local_ry_meas_nodes(n),
             uniform_depolarizing_nodes_fn(n),
             qnet.nlocal_star_22_cost_fn,
-            opt_kwargs={
-                "sample_width": 5,
-                "step_size": 2,
-                "num_steps": 40,
-                "verbose": True,
-            },
+            opt_kwargs={"sample_width": 5, "step_size": 2, "num_steps": 40, "verbose": True,},
         )
         phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
         phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)
@@ -78,7 +74,6 @@ if __name__ == "__main__":
         print("\nelapsed time : ", time_elapsed, "\n")
 
         # client.restart()
-
 
         # # local qubit rotation measurements and max entangled states
         # time_start = time.time()

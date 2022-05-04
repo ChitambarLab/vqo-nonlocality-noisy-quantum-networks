@@ -60,12 +60,7 @@ if __name__ == "__main__":
         meas_nodes,
         uniform_depolarizing_nodes_fn(),
         qnet.chsh_inequality_cost,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 0.3,
-            "num_steps": 50,
-            "verbose": False,
-        },
+        opt_kwargs={"sample_width": 5, "step_size": 0.3, "num_steps": 50, "verbose": False,},
     )
     max_ent_jobs = client.map(max_ent_opt, param_range)
     max_ent_opt_dicts = client.gather(max_ent_jobs)
@@ -90,12 +85,7 @@ if __name__ == "__main__":
         ry_meas_nodes,
         uniform_depolarizing_nodes_fn(),
         qnet.chsh_inequality_cost,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 0.3,
-            "num_steps": 70,
-            "verbose": False,
-        },
+        opt_kwargs={"sample_width": 5, "step_size": 0.3, "num_steps": 70, "verbose": False,},
     )
     ghz_local_ry_jobs = client.map(ghz_local_ry_opt, param_range)
     ghz_local_ry_opt_dicts = client.gather(ghz_local_ry_jobs)
@@ -120,12 +110,7 @@ if __name__ == "__main__":
         meas_nodes,
         uniform_depolarizing_nodes_fn(),
         qnet.chsh_inequality_cost,
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 0.15,
-            "num_steps": 60,
-            "verbose": False,
-        },
+        opt_kwargs={"sample_width": 5, "step_size": 0.15, "num_steps": 60, "verbose": False,},
     )
     arb_jobs = client.map(arb_opt, param_range)
     arb_opt_dicts = client.gather(arb_jobs)

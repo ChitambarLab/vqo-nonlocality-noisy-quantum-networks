@@ -19,11 +19,13 @@ Arbitrary state preparations and measurements are considered along with
 local qubit measurements and maximally entangled state preparations.
 """
 
+
 def uniform_source_depolarizing_nodes_fn(n):
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [2*i, 2*i + 1], lambda settings, wires: qnet.two_qubit_depolarizing(noise_args, wires=wires)
+                [2 * i, 2 * i + 1],
+                lambda settings, wires: qnet.two_qubit_depolarizing(noise_args, wires=wires),
             )
             for i in range(n)
         ]
@@ -50,12 +52,7 @@ if __name__ == "__main__":
             src.chain_local_ry_meas_nodes(n),
             uniform_source_depolarizing_nodes_fn(n),
             qnet.nlocal_chain_cost_22,
-            opt_kwargs={
-                "sample_width": 5,
-                "step_size": 2,
-                "num_steps": 40,
-                "verbose": True,
-            },
+            opt_kwargs={"sample_width": 5, "step_size": 2, "num_steps": 40, "verbose": True,},
         )
         phi_plus_local_ry_jobs = client.map(phi_plus_local_ry_opt, param_range)
         phi_plus_local_ry_opt_dicts = client.gather(phi_plus_local_ry_jobs)

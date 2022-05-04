@@ -51,12 +51,7 @@ if __name__ == "__main__":
             src.chain_local_ry_meas_nodes(n),
             uniform_depolarizing_nodes_fn(n),
             qnet.nlocal_chain_cost_22,
-            opt_kwargs={
-                "sample_width": 5,
-                "step_size": 1.3,
-                "num_steps": 40,
-                "verbose": True,
-            },
+            opt_kwargs={"sample_width": 5, "step_size": 1.3, "num_steps": 40, "verbose": True,},
         )
         ghz_local_ry_jobs = client.map(ghz_local_ry_opt, param_range)
         ghz_local_ry_opt_dicts = client.gather(ghz_local_ry_jobs)

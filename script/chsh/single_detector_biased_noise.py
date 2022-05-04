@@ -22,25 +22,18 @@ We consider Bell state preparations and arbitrary state preparations.
 
 if __name__ == "__main__":
 
-    max_ent_prep_nodes = [
-        qnet.PrepareNode(1, [0, 1], qnet.max_entangled_state, 3)
-    ]
+    max_ent_prep_nodes = [qnet.PrepareNode(1, [0, 1], qnet.max_entangled_state, 3)]
     ghz_prep_nodes = [
         qnet.PrepareNode(1, [0, 1], qnet.ghz_state, 0),
     ]
-    ryrz_cnot_prep_nodes = [
-        qnet.PrepareNode(1, [0, 1], src.ryrz_cnot, 2)
-    ]
+    ryrz_cnot_prep_nodes = [qnet.PrepareNode(1, [0, 1], src.ryrz_cnot, 2)]
     arb_prep_nodes = [qnet.PrepareNode(1, [0, 1], qml.ArbitraryStatePreparation, 6)]
 
     meas_nodes = [
         qnet.MeasureNode(2, 2, [i], lambda settings, wires: qml.Rot(*settings, wires=wires), 3)
         for i in range(2)
     ]
-    ry_meas_nodes = [
-        qnet.MeasureNode(2, 2, [i], qnet.local_RY, 1)
-        for i in range(2)
-    ]
+    ry_meas_nodes = [qnet.MeasureNode(2, 2, [i], qnet.local_RY, 1) for i in range(2)]
 
     biased_noise_error_map = np.array([[1, 1], [0, 0]])
 
@@ -61,15 +54,8 @@ if __name__ == "__main__":
     ryrz_cnot_local_ry_state_optimization = src.detector_error_opt_fn(
         qnet.NetworkAnsatz(ryrz_cnot_prep_nodes, ry_meas_nodes),
         src.detector_error_chsh_cost_fn,
-        cost_kwargs={
-            "error_map": biased_noise_error_map,
-        },
-        opt_kwargs={
-            "step_size": 0.6,
-            "num_steps": 40,
-            "sample_width": 5,
-            "verbose": False,
-        },
+        cost_kwargs={"error_map": biased_noise_error_map,},
+        opt_kwargs={"step_size": 0.6, "num_steps": 40, "sample_width": 5, "verbose": False,},
     )
 
     ryrz_cnot_local_ry_opt_jobs = client.map(ryrz_cnot_local_ry_state_optimization, *params_range)
@@ -86,7 +72,6 @@ if __name__ == "__main__":
         classical_bound=2,
     )
 
-
     """
     # ghz local rot
     """
@@ -94,15 +79,8 @@ if __name__ == "__main__":
     ghz_local_rot_state_optimization = src.detector_error_opt_fn(
         qnet.NetworkAnsatz(ghz_prep_nodes, meas_nodes),
         src.detector_error_chsh_cost_fn,
-        cost_kwargs={
-            "error_map": biased_noise_error_map,
-        },
-        opt_kwargs={
-            "step_size": 0.6,
-            "num_steps": 40,
-            "sample_width": 5,
-            "verbose": False,
-        },
+        cost_kwargs={"error_map": biased_noise_error_map,},
+        opt_kwargs={"step_size": 0.6, "num_steps": 40, "sample_width": 5, "verbose": False,},
     )
 
     ghz_local_rot_opt_jobs = client.map(ghz_local_rot_state_optimization, *params_range)
@@ -126,15 +104,8 @@ if __name__ == "__main__":
     max_ent_local_rot_state_optimization = src.detector_error_opt_fn(
         qnet.NetworkAnsatz(max_ent_prep_nodes, meas_nodes),
         src.detector_error_chsh_cost_fn,
-        cost_kwargs={
-            "error_map": biased_noise_error_map,
-        },
-        opt_kwargs={
-            "step_size": 0.25,
-            "num_steps": 60,
-            "sample_width": 5,
-            "verbose": False,
-        },
+        cost_kwargs={"error_map": biased_noise_error_map,},
+        opt_kwargs={"step_size": 0.25, "num_steps": 60, "sample_width": 5, "verbose": False,},
     )
 
     max_ent_local_rot_opt_jobs = client.map(max_ent_local_rot_state_optimization, *params_range)
@@ -158,15 +129,8 @@ if __name__ == "__main__":
     arb_local_rot_state_optimization = src.detector_error_opt_fn(
         qnet.NetworkAnsatz(arb_prep_nodes, meas_nodes),
         src.detector_error_chsh_cost_fn,
-        cost_kwargs={
-            "error_map": biased_noise_error_map,
-        },
-        opt_kwargs={
-            "step_size": 0.25,
-            "num_steps": 70,
-            "sample_width": 5,
-            "verbose": False,
-        },
+        cost_kwargs={"error_map": biased_noise_error_map,},
+        opt_kwargs={"step_size": 0.25, "num_steps": 70, "sample_width": 5, "verbose": False,},
     )
 
     arb_local_rot_opt_jobs = client.map(arb_local_rot_state_optimization, *params_range)
@@ -182,7 +146,3 @@ if __name__ == "__main__":
         quantum_bound=2 * np.sqrt(2),
         classical_bound=2,
     )
-
-
-
-

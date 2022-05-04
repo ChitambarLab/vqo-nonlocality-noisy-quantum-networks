@@ -61,9 +61,7 @@ if __name__ == "__main__":
                 src.star_22_local_ry_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wire),
                 qnet.nlocal_star_22_cost_fn,
-                ansatz_kwargs={
-                    "dev_kwargs": {"name": "default.qubit"},
-                },
+                ansatz_kwargs={"dev_kwargs": {"name": "default.qubit"},},
                 opt_kwargs={
                     "sample_width": 5,
                     "step_size": 1.8,
@@ -96,15 +94,8 @@ if __name__ == "__main__":
                 src.star_22_local_rot_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wire),
                 qnet.nlocal_star_22_cost_fn,
-                ansatz_kwargs={
-                    "dev_kwargs": {"name": "default.qubit"},
-                },
-                opt_kwargs={
-                    "sample_width": 5,
-                    "step_size": 1.8,
-                    "num_steps": 40,
-                    "verbose": True,
-                },
+                ansatz_kwargs={"dev_kwargs": {"name": "default.qubit"},},
+                opt_kwargs={"sample_width": 5, "step_size": 1.8, "num_steps": 40, "verbose": True,},
             )
             max_ent_local_rot_jobs = client.map(max_ent_local_rot_opt, param_range)
             max_ent_local_rot_opt_dicts = client.gather(max_ent_local_rot_jobs)
@@ -131,15 +122,8 @@ if __name__ == "__main__":
                 src.star_22_ghz_rot_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wire),
                 qnet.nlocal_star_22_cost_fn,
-                ansatz_kwargs={
-                    "dev_kwargs": {"name": "default.qubit"},
-                },
-                opt_kwargs={
-                    "sample_width": 5,
-                    "step_size": 1.4,
-                    "num_steps": 40,
-                    "verbose": True,
-                },
+                ansatz_kwargs={"dev_kwargs": {"name": "default.qubit"},},
+                opt_kwargs={"sample_width": 5, "step_size": 1.4, "num_steps": 40, "verbose": True,},
             )
             max_ent_ghz_jobs = client.map(max_ent_ghz_opt, param_range)
             max_ent_ghz_opt_dicts = client.gather(max_ent_ghz_jobs)
@@ -167,17 +151,8 @@ if __name__ == "__main__":
                 src.star_22_local_rot_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wire),
                 qnet.nlocal_star_22_cost_fn,
-                ansatz_kwargs={
-                    "dev_kwargs": {
-                        "name": "default.qubit",
-                    },
-                },
-                opt_kwargs={
-                    "sample_width": 5,
-                    "step_size": 1.8,
-                    "num_steps": 40,
-                    "verbose": True,
-                },
+                ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+                opt_kwargs={"sample_width": 5, "step_size": 1.8, "num_steps": 40, "verbose": True,},
             )
             arb_jobs = client.map(arb_opt, param_range)
             arb_opt_dicts = client.gather(arb_jobs)
@@ -204,15 +179,8 @@ if __name__ == "__main__":
                 src.star_22_ghz_rot_meas_nodes(n),
                 single_qubit_amplitude_damping_nodes_fn(n, wire),
                 qnet.nlocal_star_22_cost_fn,
-                ansatz_kwargs={
-                    "dev_kwargs": {"name": "default.qubit"},
-                },
-                opt_kwargs={
-                    "sample_width": 5,
-                    "step_size": 1.4,
-                    "num_steps": 40,
-                    "verbose": True,
-                },
+                ansatz_kwargs={"dev_kwargs": {"name": "default.qubit"},},
+                opt_kwargs={"sample_width": 5, "step_size": 1.4, "num_steps": 40, "verbose": True,},
             )
             arb_ghz_jobs = client.map(arb_ghz_opt, param_range)
             arb_ghz_opt_dicts = client.gather(arb_ghz_jobs)

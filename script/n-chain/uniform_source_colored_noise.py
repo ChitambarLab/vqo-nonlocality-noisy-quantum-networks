@@ -19,11 +19,13 @@ Arbitrary state preparations and measurements are considered along with
 local qubit measurements and maximally entangled state preparations.
 """
 
+
 def uniform_source_colored_noise_nodes_fn(n):
     def noise_nodes(noise_args):
         return [
             qnet.NoiseNode(
-                [2*i, 2*i + 1], lambda settings, wires: qnet.colored_noise(noise_args, wires=wires)
+                [2 * i, 2 * i + 1],
+                lambda settings, wires: qnet.colored_noise(noise_args, wires=wires),
             )
             for i in range(n)
         ]
@@ -39,7 +41,6 @@ if __name__ == "__main__":
     for n in [3, 4]:
 
         client = Client(processes=True, n_workers=5, threads_per_worker=1)
-
 
         # """
         # minimal optimal ansatz
@@ -72,7 +73,6 @@ if __name__ == "__main__":
 
         # time_elapsed = time.time() - time_start
         # print("\nelapsed time : ", time_elapsed, "\n")
-
 
         # """
         # Minimal non-optimal ansatz
@@ -116,12 +116,7 @@ if __name__ == "__main__":
             src.chain_local_rot_meas_nodes(n),
             uniform_source_colored_noise_nodes_fn(n),
             qnet.nlocal_chain_cost_22,
-            opt_kwargs={
-                "sample_width": 5,
-                "step_size": 2.1,
-                "num_steps": 50,
-                "verbose": True,
-            },
+            opt_kwargs={"sample_width": 5, "step_size": 2.1, "num_steps": 50, "verbose": True,},
         )
         phi_plus_local_rot_jobs = client.map(phi_plus_local_rot_opt, param_range)
         phi_plus_local_rot_opt_dicts = client.gather(phi_plus_local_rot_jobs)

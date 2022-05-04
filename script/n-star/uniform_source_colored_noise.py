@@ -155,12 +155,7 @@ if __name__ == "__main__":
             src.star_22_local_rot_meas_nodes(n),
             uniform_colored_noise_nodes_fn(n),
             qnet.nlocal_star_22_cost_fn,
-            opt_kwargs={
-                "sample_width": 5,
-                "step_size": 2.1,
-                "num_steps": 50,
-                "verbose": True,
-            },
+            opt_kwargs={"sample_width": 5, "step_size": 2.1, "num_steps": 50, "verbose": True,},
         )
         phi_plus_local_rot_jobs = client.map(phi_plus_local_rot_opt, param_range)
         phi_plus_local_rot_opt_dicts = client.gather(phi_plus_local_rot_jobs)
@@ -178,7 +173,6 @@ if __name__ == "__main__":
         print("\nelapsed time : ", time_elapsed, "\n")
 
         # client.restart()
-
 
         # # local qubit rotation measurements and max entangled states
         # time_start = time.time()

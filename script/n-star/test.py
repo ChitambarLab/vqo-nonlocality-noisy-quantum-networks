@@ -44,16 +44,16 @@ if __name__ == "__main__":
     param_range = np.arange(0, 1.01, 0.05)
 
     prep_nodes = [
-        qnet.PrepareNode(1, [0,3], lambda settings, wires: None, 0),
-        qnet.PrepareNode(1, [1,4], qnet.ghz_state, 0),
-        qnet.PrepareNode(1, [2,5], qnet.ghz_state, 0),
+        qnet.PrepareNode(1, [0, 3], lambda settings, wires: None, 0),
+        qnet.PrepareNode(1, [1, 4], qnet.ghz_state, 0),
+        qnet.PrepareNode(1, [2, 5], qnet.ghz_state, 0),
     ]
 
     meas_nodes = [
         qnet.MeasureNode(2, 2, [0], qnet.local_RY, 1),
         qnet.MeasureNode(2, 2, [1], qnet.local_RY, 1),
         qnet.MeasureNode(2, 2, [2], qnet.local_RY, 1),
-        qnet.MeasureNode(2, 2, [3,4,5], qnet.local_RY, 3),
+        qnet.MeasureNode(2, 2, [3, 4, 5], qnet.local_RY, 3),
     ]
 
     star_ansatz = qnet.NetworkAnsatz(prep_nodes, meas_nodes)
@@ -66,10 +66,9 @@ if __name__ == "__main__":
         num_steps=40,
         step_size=1.5,
         sample_width=5,
-        verbose=True
+        verbose=True,
     )
     print(opt_dict["opt_settings"])
-    
 
     # for n in [3, 4]:
 

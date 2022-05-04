@@ -91,17 +91,8 @@ if __name__ == "__main__":
             src.chain_local_rot_meas_nodes(n),
             uniform_amplitude_damping_nodes_fn(n),
             qnet.nlocal_chain_cost_22,
-            ansatz_kwargs={
-                "dev_kwargs": {
-                    "name": "default.qubit",
-                },
-            },
-            opt_kwargs={
-                "sample_width": 5,
-                "step_size": 1.3,
-                "num_steps": 80,
-                "verbose": True,
-            },
+            ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+            opt_kwargs={"sample_width": 5, "step_size": 1.3, "num_steps": 80, "verbose": True,},
         )
         ryrz_cnot_local_rot_jobs = client.map(ryrz_cnot_local_rot_opt, param_range)
         ryrz_cnot_local_rot_opt_dicts = client.gather(ryrz_cnot_local_rot_jobs)
@@ -130,17 +121,8 @@ if __name__ == "__main__":
             src.chain_local_rot_meas_nodes(n),
             uniform_amplitude_damping_nodes_fn(n),
             qnet.nlocal_chain_cost_22,
-            ansatz_kwargs={
-                "dev_kwargs": {
-                    "name": "default.qubit",
-                },
-            },
-            opt_kwargs={
-                "sample_width": 5,
-                "step_size": 1.4,
-                "num_steps": 80,
-                "verbose": True,
-            },
+            ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+            opt_kwargs={"sample_width": 5, "step_size": 1.4, "num_steps": 80, "verbose": True,},
         )
         ghz_local_rot_jobs = client.map(ghz_local_rot_opt, param_range)
         ghz_local_rot_opt_dicts = client.gather(ghz_local_rot_jobs)
@@ -158,7 +140,6 @@ if __name__ == "__main__":
         print("\nelapsed time : ", time_elapsed, "\n")
 
         client.restart()
-
 
         # # local qubit rotation measurements and max entangled states
         # time_start = time.time()

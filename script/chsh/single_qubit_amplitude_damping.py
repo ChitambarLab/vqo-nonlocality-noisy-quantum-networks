@@ -58,17 +58,8 @@ if __name__ == "__main__":
         meas_nodes,
         single_qubit_amplitude_damping_nodes_fn(),
         qnet.chsh_inequality_cost,
-        ansatz_kwargs={
-            "dev_kwargs": {
-                "name": "default.qubit",
-            },
-        },
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 0.3,
-            "num_steps": 50,
-            "verbose": False,
-        },
+        ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+        opt_kwargs={"sample_width": 5, "step_size": 0.3, "num_steps": 50, "verbose": False,},
     )
     max_ent_jobs = client.map(max_ent_opt, param_range)
     max_ent_opt_dicts = client.gather(max_ent_jobs)
@@ -93,17 +84,8 @@ if __name__ == "__main__":
         ry_meas_nodes,
         single_qubit_amplitude_damping_nodes_fn(),
         qnet.chsh_inequality_cost,
-        ansatz_kwargs={
-            "dev_kwargs": {
-                "name": "default.qubit",
-            },
-        },
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 0.3,
-            "num_steps": 70,
-            "verbose": False,
-        },
+        ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+        opt_kwargs={"sample_width": 5, "step_size": 0.3, "num_steps": 70, "verbose": False,},
     )
     ryrz_cnot_ry_jobs = client.map(ryrz_cnot_ry_opt, param_range)
     ryrz_cnot_ry_opt_dicts = client.gather(ryrz_cnot_ry_jobs)
@@ -128,17 +110,8 @@ if __name__ == "__main__":
         meas_nodes,
         single_qubit_amplitude_damping_nodes_fn(),
         qnet.chsh_inequality_cost,
-        ansatz_kwargs={
-            "dev_kwargs": {
-                "name": "default.qubit",
-            },
-        },
-        opt_kwargs={
-            "sample_width": 5,
-            "step_size": 0.15,
-            "num_steps": 60,
-            "verbose": False,
-        },
+        ansatz_kwargs={"dev_kwargs": {"name": "default.qubit",},},
+        opt_kwargs={"sample_width": 5, "step_size": 0.15, "num_steps": 60, "verbose": False,},
     )
     arb_jobs = client.map(arb_opt, param_range)
     arb_opt_dicts = client.gather(arb_jobs)
