@@ -2,6 +2,8 @@
 
 ArXiv: ["Variational Quantum Optimization of Nonlocality in Noisy Quantum Networks"](arxiv_url)
 
+[![DOI](https://zenodo.org/badge/443131164.svg)](https://zenodo.org/badge/latestdoi/443131164)
+
 ## Project Overview
 
 The goal of this codebase to make our numerical methods accessible, transparent,
@@ -37,8 +39,11 @@ presented in the work.
 		and  plotting data.
 
 
-## Citing this Work
+## Citing this Supplemental Codebase
 
+[![DOI](https://zenodo.org/badge/443131164.svg)](https://zenodo.org/badge/latestdoi/443131164)
+
+See CITATION.bib for bibtex.
 
 
 ## Development Environment
