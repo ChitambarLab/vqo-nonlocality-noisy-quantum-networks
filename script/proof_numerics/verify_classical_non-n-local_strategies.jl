@@ -1,3 +1,16 @@
+"""
+This Julia script verifies the partially classical strategies that
+are optimal for quantum non-n-locality in star and chain networks.
+
+To run script:
+
+    1. Install Julia at https://julialang.org/downloads/
+    2. Launch the Julia REPL
+    3. Install the QBase.jl packages: julia> using Pkg; Pkg.add("QBase")
+    4. Run the script:
+
+        julia> include("script/proof_numerics/verify_classical_non-n-local_strategies.jl")
+"""
 using QBase
 using LinearAlgebra
 using Test
