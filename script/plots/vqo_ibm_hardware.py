@@ -126,12 +126,12 @@ if __name__ == "__main__":
     """
 	Plotting Data
 	"""
-    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(12, 8))
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 8))
 
     fig.suptitle(r"VQO of Non-$n$-Locality on IBM Quantum Computers", size=24, fontweight="bold")
 
     axes = [ax1, ax2, ax3, ax4]
-    titles = ["CHSH", "Bilocal", "\nTrilocal Chain", "\nTrilocal Star"]
+    titles = ["CHSH Network", "Bilocal Network", "\nTrilocal Chain Network", "\nTrilocal Star Network"]
     ylabels = [
         r"Bell Score ($S_{\mathrm{CHSH}}$)",
         r"Bell Score ($S_{\mathrm{Bilocal}}$)",
@@ -156,31 +156,51 @@ if __name__ == "__main__":
             range(num_steps),
             [quantum_bounds[i]] * num_steps,
             "-",
-            linewidth=2,
-            label="Quantum Bound",
+            linewidth=3,
+            label="Quantum\nBound",
+            color="C0",
         )
         ax.plot(
             range(num_steps),
             [classical_bounds[i]] * num_steps,
             "--",
-            linewidth=2,
-            label="Classical Bound",
+            linewidth=3,
+            label="Classical\nBound",
+            color="C1",
+        )
+        ax.plot(
+            range(num_steps),
+            [data_sets[i]["mean_theoretical_score"]] * num_steps,
+            "-.",
+            label="Theoretical\nMean Score",
+            linewidth=3,
+            color="C5",
+        )
+        ax.plot(
+            range(num_steps),
+            [data_sets[i]["max_theoretical_score"]] * num_steps,
+            linestyle=(0, (3, 2, 1, 2, 1, 2)),
+            linewidth=3,
+            label="Theoretical\nMax Score",
+            color="C6",
         )
         ax.plot(
             range(num_steps),
             ideal_data_sets[i],
             ":d",
             markersize=8,
-            linewidth=2,
-            label="Max Noiseless Optimized Score",
+            linewidth=3,
+            label="Noiseless\nOptimized\nMax Score",
+            color="C2",
         )
         ax.plot(
             range(num_steps),
             data_sets[i]["max_scores"],
             ":o",
             markersize=7,
-            linewidth=2,
-            label="Max Optimized Score",
+            linewidth=3,
+            label="Optimized\nMax Score",
+            color="C3",
         )
         ax.errorbar(
             range(num_steps),
@@ -188,34 +208,20 @@ if __name__ == "__main__":
             data_sets[i]["stderr_scores"],
             linestyle=":",
             linewidth=3,
-            label="Mean Optimized Score",
+            label="Optimized\nMean Score",
+            color="C4",
         )
 
-        ax.plot(
-            range(num_steps),
-            [data_sets[i]["mean_theoretical_score"]] * num_steps,
-            "-.",
-            label="Mean Theoretical Score",
-            linewidth=2,
-        )
-        ax.plot(
-            range(num_steps),
-            [data_sets[i]["max_theoretical_score"]] * num_steps,
-            linestyle=(0, (3, 2, 1, 2, 1, 2)),
-            linewidth=2,
-            label="Max Theoretical Score",
-        )
+        ax.set_title(titles[i], size=20)
+        if i >= 2:
+            ax.set_xlabel("Gradient Descent Step", size=18)
 
-        ax.set_title(titles[i], size=22)
-        ax.set_xlabel("Gradient Descent Step", size=18)
         ax.set_ylabel(ylabels[i], size=18)
-        # ax1.set_yticks(yticks)
 
         if i == 0:
-            plt.figlegend(ncol=3, loc="lower center", fontsize=16, bbox_to_anchor=(0, -0.01, 1, 1,))
+            plt.figlegend(ncol=1, loc="center right", fontsize=18, bbox_to_anchor=(0,0,1,1)) #, bbox_to_anchor=(0, 0,1,1,))
 
-    plt.tight_layout()
-    fig.subplots_adjust(bottom=0.25)
+    fig.subplots_adjust(left=0.05,right=0.82)
 
     datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
     filename = "simple_ansatzes_" + datetime_ext
