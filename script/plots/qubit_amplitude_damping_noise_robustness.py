@@ -30,6 +30,80 @@ def bell_state_single_noise(gamma):
     return qml.state()
 
 
+def uniform_max_entangled_theoretical_star_score1(gamma):
+    return np.sqrt(2 * (1 - gamma) ** 2)
+
+
+def uniform_max_entangled_theoretical_star_score2(gamma):
+    return np.sqrt((1 - gamma) ** 2 + (gamma ** 2 + (1 - gamma) ** 2) ** 2)
+
+
+def uniform_max_entangled_theoretical_star_score(gamma):
+    return max(
+        uniform_max_entangled_theoretical_star_score1(gamma),
+        uniform_max_entangled_theoretical_star_score2(gamma),
+    )
+
+
+def uniform_max_entangled_theoretical_chain_score1(gamma, n):
+    return np.sqrt(2 * (1 - gamma) ** 2) * np.sqrt(1 - gamma) ** (n - 2)
+
+
+def uniform_max_entangled_theoretical_chain_score2(gamma, n):
+    return np.sqrt((1 - gamma) ** 2 + (gamma ** 2 + (1 - gamma) ** 2) ** 2) * np.sqrt(
+        gamma ** 2 + (1 - gamma) ** 2
+    ) ** (n - 2)
+
+
+def uniform_max_entangled_theoretical_chain_score(gamma, n):
+    return max(
+        uniform_max_entangled_theoretical_chain_score1(gamma, n),
+        uniform_max_entangled_theoretical_chain_score2(gamma, n),
+    )
+
+
+def single_max_entangled_theoretical_star_score(gamma, n):
+    return np.power(np.sqrt(2) ** (n - 1) * np.sqrt(2 * (1 - gamma)), 1 / n)
+
+
+def lambda_star_score(gamma):
+    lambda_star = 0
+    if gamma >= 0.5:
+        lambda_star = 1
+    else:
+        lambda_star = (
+            1
+            - (gamma ** 2 + (1 - gamma) ** 2)
+            * (2 * gamma * (1 - gamma))
+            / ((2 * gamma * (1 - gamma)) ** 2 - (1 - gamma) ** 2)
+        ) / 2
+
+    return min(1, lambda_star)
+
+
+def _nonmax_entangled_score(gamma, lambda_star):
+    a = 4 * (1 - gamma) ** 2 * lambda_star * (1 - lambda_star)
+    b = (gamma ** 2 + (1 - gamma) ** 2 + (2 * lambda_star - 1) * (2 * gamma * (1 - gamma))) ** 2
+    return np.sqrt(a + b)
+
+
+def uniform_nonmax_entangled_theoretical_star_score(gamma):
+    lambda_star = lambda_star_score(gamma)
+    return max(
+        uniform_max_entangled_theoretical_star_score1(gamma),
+        _nonmax_entangled_score(gamma, lambda_star),
+    )
+
+
+def single_nonmax_entangled_theoretical_star_score(gamma, n):
+    return max(
+        np.power(np.sqrt(2), (n - 1) / n),
+        np.power(np.sqrt(2), (n - 1) / n) * np.power(np.sqrt(2 * (1 - gamma)), 1 / n),
+    )
+
+
+gamma_range = np.arange(0, 1.01, 0.05)
+
 if __name__ == "__main__":
     num_samples = 21
 
@@ -94,12 +168,28 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
+    # theoretical_bell_state_uniform_chsh = [
+    #     src.chsh_max_violation(state) / 2 for state in bell_state_uniform_noise_states
+    # ]
+
+    # theoretical_bell_state_single_chsh = [
+    #     src.chsh_max_violation(state) / 2 for state in bell_state_single_noise_states
+    # ]
+
     theoretical_bell_state_uniform_chsh = [
-        src.chsh_max_violation(state) / 2 for state in bell_state_uniform_noise_states
+        uniform_max_entangled_theoretical_star_score(gamma) for gamma in gamma_range
     ]
 
     theoretical_bell_state_single_chsh = [
-        src.chsh_max_violation(state) / 2 for state in bell_state_single_noise_states
+        single_max_entangled_theoretical_star_score(gamma, n=1) for gamma in gamma_range
+    ]
+
+    theoretical_nonmax_uniform_chsh = [
+        uniform_nonmax_entangled_theoretical_star_score(gamma) for gamma in gamma_range
+    ]
+
+    theoretical_nonmax_single_chsh = [
+        single_nonmax_entangled_theoretical_star_score(gamma, n=1) for gamma in gamma_range
     ]
 
     """
@@ -165,12 +255,28 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
+    # theoretical_bell_state_uniform_bilocal = [
+    #     src.bilocal_max_violation(state, state) for state in bell_state_uniform_noise_states
+    # ]
+
+    # theoretical_bell_state_single_bilocal = [
+    #     src.bilocal_max_violation(state, bell_state) for state in bell_state_single_noise_states
+    # ]
+
     theoretical_bell_state_uniform_bilocal = [
-        src.bilocal_max_violation(state, state) for state in bell_state_uniform_noise_states
+        uniform_max_entangled_theoretical_star_score(gamma) for gamma in gamma_range
     ]
 
     theoretical_bell_state_single_bilocal = [
-        src.bilocal_max_violation(state, bell_state) for state in bell_state_single_noise_states
+        single_max_entangled_theoretical_star_score(gamma, n=2) for gamma in gamma_range
+    ]
+
+    theoretical_nonmax_uniform_bilocal = [
+        uniform_nonmax_entangled_theoretical_star_score(gamma) for gamma in gamma_range
+    ]
+
+    theoretical_nonmax_single_bilocal = [
+        single_nonmax_entangled_theoretical_star_score(gamma, n=2) for gamma in gamma_range
     ]
 
     """
@@ -311,22 +417,35 @@ if __name__ == "__main__":
     ]
 
     theoretical_bell_state_uniform_n3_chain = [
-        src.chain_max_violation([state, state, state]) for state in bell_state_uniform_noise_states
+        uniform_max_entangled_theoretical_chain_score(gamma, n=3) for gamma in gamma_range
     ]
 
     theoretical_bell_state_single_n3_chain = [
-        src.chain_max_violation([state, bell_state, bell_state])
-        for state in bell_state_single_noise_states
+        single_max_entangled_theoretical_star_score(gamma, n=2) for gamma in gamma_range
+    ]
+
+    theoretical_nonmax_uniform_n3_chain = [
+        uniform_nonmax_entangled_theoretical_star_score(gamma) for gamma in gamma_range
+    ]
+
+    theoretical_nonmax_single_n3_chain = [
+        single_nonmax_entangled_theoretical_star_score(gamma, n=2) for gamma in gamma_range
     ]
 
     theoretical_bell_state_uniform_n4_chain = [
-        src.chain_max_violation([state, state, state, state])
-        for state in bell_state_uniform_noise_states
+        uniform_max_entangled_theoretical_chain_score(gamma, n=4) for gamma in gamma_range
     ]
 
     theoretical_bell_state_single_n4_chain = [
-        src.chain_max_violation([state, bell_state, bell_state, bell_state])
-        for state in bell_state_single_noise_states
+        single_max_entangled_theoretical_star_score(gamma, n=2) for gamma in gamma_range
+    ]
+
+    theoretical_nonmax_uniform_n4_chain = [
+        uniform_nonmax_entangled_theoretical_star_score(gamma) for gamma in gamma_range
+    ]
+
+    theoretical_nonmax_single_n4_chain = [
+        single_nonmax_entangled_theoretical_star_score(gamma, n=2) for gamma in gamma_range
     ]
 
     """
@@ -468,23 +587,86 @@ if __name__ == "__main__":
     ]
 
     theoretical_bell_state_uniform_n3_star = [
-        src.star_max_violation([state, state, state]) for state in bell_state_uniform_noise_states
+        uniform_max_entangled_theoretical_star_score(gamma) for gamma in gamma_range
     ]
 
     theoretical_bell_state_single_n3_star = [
-        src.star_max_violation([state, bell_state, bell_state])
-        for state in bell_state_single_noise_states
+        single_max_entangled_theoretical_star_score(gamma, n=3) for gamma in gamma_range
+    ]
+
+    theoretical_nonmax_uniform_n3_star = [
+        uniform_nonmax_entangled_theoretical_star_score(gamma) for gamma in gamma_range
+    ]
+
+    theoretical_nonmax_single_n3_star = [
+        single_nonmax_entangled_theoretical_star_score(gamma, n=3) for gamma in gamma_range
     ]
 
     theoretical_bell_state_uniform_n4_star = [
-        src.star_max_violation([state, state, state, state])
-        for state in bell_state_uniform_noise_states
+        uniform_max_entangled_theoretical_star_score(gamma) for gamma in gamma_range
     ]
 
     theoretical_bell_state_single_n4_star = [
-        src.star_max_violation([state, bell_state, bell_state, bell_state])
-        for state in bell_state_single_noise_states
+        single_max_entangled_theoretical_star_score(gamma, n=4) for gamma in gamma_range
     ]
+
+    theoretical_nonmax_uniform_n4_star = [
+        uniform_nonmax_entangled_theoretical_star_score(gamma) for gamma in gamma_range
+    ]
+
+    theoretical_nonmax_single_n4_star = [
+        single_nonmax_entangled_theoretical_star_score(gamma, n=4) for gamma in gamma_range
+    ]
+
+    """
+    Verifying Data
+    """
+
+    def verify_data(theoretical_score, vqo_score, atol=1e-8):
+        return theoretical_score >= vqo_score or np.isclose(theoretical_score, vqo_score, atol=atol)
+
+    for u in range(21):
+        assert verify_data(theoretical_bell_state_single_chsh[u], ent_max_chsh_single_ad[u])
+        assert verify_data(
+            theoretical_bell_state_single_bilocal[u], ent_max_bilocal_single_ad[u], atol=1e-7
+        )
+        assert verify_data(
+            theoretical_bell_state_single_n3_chain[u], ent_max_n3_chain_single_ad[u], atol=1e-6
+        )
+        assert verify_data(
+            theoretical_bell_state_single_n4_chain[u], ent_max_n4_chain_single_ad[u], atol=1e-5
+        )
+        assert verify_data(
+            theoretical_bell_state_single_n3_star[u], ent_max_n3_star_single_ad[u], atol=1e-5
+        )
+        assert verify_data(
+            theoretical_bell_state_single_n4_star[u], ent_max_n4_star_single_ad[u], atol=1e-3
+        )
+
+        assert verify_data(theoretical_bell_state_uniform_chsh[u], ent_max_chsh_uniform_ad[u])
+        assert verify_data(theoretical_bell_state_uniform_bilocal[u], ent_max_bilocal_uniform_ad[u])
+        assert verify_data(
+            theoretical_bell_state_uniform_n3_chain[u], ent_max_n3_chain_uniform_ad[u]
+        )
+        assert verify_data(
+            theoretical_bell_state_uniform_n4_chain[u], ent_max_n4_chain_uniform_ad[u]
+        )
+        assert verify_data(theoretical_bell_state_uniform_n3_star[u], ent_max_n3_star_uniform_ad[u])
+        assert verify_data(theoretical_bell_state_uniform_n4_star[u], ent_max_n4_star_uniform_ad[u])
+
+        assert verify_data(theoretical_nonmax_single_chsh[u], arb_max_chsh_single_ad[u])
+        assert verify_data(theoretical_nonmax_single_bilocal[u], arb_max_bilocal_single_ad[u])
+        assert verify_data(theoretical_nonmax_single_n3_chain[u], arb_max_n3_chain_single_ad[u])
+        assert verify_data(theoretical_nonmax_single_n4_chain[u], arb_max_n4_chain_single_ad[u])
+        assert verify_data(theoretical_nonmax_single_n3_star[u], arb_max_n3_star_single_ad[u])
+        assert verify_data(theoretical_nonmax_single_n4_star[u], arb_max_n4_star_single_ad[u])
+
+        assert verify_data(theoretical_nonmax_uniform_chsh[u], arb_max_chsh_uniform_ad[u])
+        assert verify_data(theoretical_nonmax_uniform_bilocal[u], arb_max_bilocal_uniform_ad[u])
+        assert verify_data(theoretical_nonmax_uniform_n3_chain[u], arb_max_n3_chain_uniform_ad[u])
+        assert verify_data(theoretical_nonmax_uniform_n4_chain[u], arb_max_n4_chain_uniform_ad[u])
+        assert verify_data(theoretical_nonmax_uniform_n3_star[u], arb_max_n3_star_uniform_ad[u])
+        assert verify_data(theoretical_nonmax_uniform_n4_star[u], arb_max_n4_star_uniform_ad[u])
 
     """
     Plotting Data
@@ -537,30 +719,12 @@ if __name__ == "__main__":
             arb_max_n4_star_single_ad,
         ],
         row2_single_theoretical_scores=[
-            [
-                max(score, np.power(np.sqrt(2), 0 / 1))
-                for score in theoretical_bell_state_single_chsh
-            ],
-            [
-                max(score, np.power(np.sqrt(2), 1 / 2))
-                for score in theoretical_bell_state_single_bilocal
-            ],
-            [
-                max(score, np.power(np.sqrt(2), 1 / 2))
-                for score in theoretical_bell_state_single_n3_chain
-            ],
-            [
-                max(score, np.power(np.sqrt(2), 1 / 2))
-                for score in theoretical_bell_state_single_n4_chain
-            ],
-            [
-                max(score, np.power(np.sqrt(2), 2 / 3))
-                for score in theoretical_bell_state_single_n3_star
-            ],
-            [
-                max(score, np.power(np.sqrt(2), 3 / 4))
-                for score in theoretical_bell_state_single_n4_star
-            ],
+            theoretical_nonmax_single_chsh,
+            theoretical_nonmax_single_bilocal,
+            theoretical_nonmax_single_n3_chain,
+            theoretical_nonmax_single_n4_chain,
+            theoretical_nonmax_single_n3_star,
+            theoretical_nonmax_single_n4_star,
         ],
         row2_uniform_max_scores=[
             arb_max_chsh_uniform_ad,
@@ -571,12 +735,12 @@ if __name__ == "__main__":
             arb_max_n4_star_uniform_ad,
         ],
         row2_uniform_theoretical_scores=[
-            [max(score, 1) for score in theoretical_bell_state_uniform_chsh],
-            [max(score, 1) for score in theoretical_bell_state_uniform_bilocal],
-            [max(score, 1) for score in theoretical_bell_state_uniform_n3_chain],
-            [max(score, 1) for score in theoretical_bell_state_uniform_n4_chain],
-            [max(score, 1) for score in theoretical_bell_state_uniform_n3_star],
-            [max(score, 1) for score in theoretical_bell_state_uniform_n4_star],
+            theoretical_nonmax_uniform_chsh,
+            theoretical_nonmax_uniform_bilocal,
+            theoretical_nonmax_uniform_n3_chain,
+            theoretical_nonmax_uniform_n4_chain,
+            theoretical_nonmax_uniform_n3_star,
+            theoretical_nonmax_uniform_n4_star,
         ],
         data_labels=[
             "CHSH",
@@ -588,5 +752,6 @@ if __name__ == "__main__":
         ],
         row_labels=["Max Entangled", "General"],
         plot_dir="./data/plots/qubit_amplitude_damping_noise_robustness/",
-        bottom_padding=0.25,
+        bottom_padding=0.2,
+        ncol_legend=4,
     )

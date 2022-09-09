@@ -599,9 +599,9 @@ def plot_unital_single_and_uniform_max_scores_data(
     data_labels,
     plot_dir,
     legend_labels=["VQO", "Theory", "Match"],
-    bottom_padding=0.45,
-    fig_height=6,
-    ncol_legend=3,
+    bottom_padding=0.3,
+    fig_height=5,
+    ncol_legend=4,
 ):
     """Plots the noise robustness for single and uniform qubit/source/measurement
     noise models. This method is intended for plotting the max score across many
@@ -651,7 +651,7 @@ def plot_unital_single_and_uniform_max_scores_data(
     ax_titles_fontsize = 22
     data_set_markers = ["s", "o", "^", "v", "P", "*"]
     line_colors = ["C2", "C3", "C4", "C5", "C6", "C7"]
-    marker_sizes = [8, 7.75, 7.5, 7.25, 7, 6.75, 6.5, 6.25]
+    marker_sizes = [8, 7.75, 7.5, 7.25, 7, 6.75, 6.5, 6.5]
     # line_widths = [5.5,5,4.5,4,3.5,3,2.5,2]
     dashes_list = [2, 3, 4, 5, 6, 7, 8, 9]
 
@@ -663,17 +663,21 @@ def plot_unital_single_and_uniform_max_scores_data(
 
         ax = axes[i]
 
-        ax.plot(noise_params, qbound, linestyle="-", color="C0", linewidth=3, label="Quantum Bound")
-        ax.plot(
+        (qbound_plot,) = ax.plot(
+            noise_params, qbound, linestyle="-", color="C0", linewidth=3, label="Quantum Bound"
+        )
+        (cbound_plot,) = ax.plot(
             noise_params, cbound, linestyle="-.", color="C1", linewidth=3, label="Classical Bound"
         )
 
+        data_plots = []
+        theory_plots = []
         for j in range(len(ax_data_sets[i])):
             theory_set = ax_theory_sets[i][j] if len(ax_theory_sets[i]) != 0 else []
 
             data_set = ax_data_sets[i][j]
 
-            ax.plot(
+            (data_plt,) = ax.plot(
                 noise_params,
                 data_set,
                 color=line_colors[j],
@@ -684,9 +688,10 @@ def plot_unital_single_and_uniform_max_scores_data(
                 markersize=marker_sizes[j],
                 label=data_labels[j] + " " + legend_labels[0],
             )
+            data_plots.append(data_plt)
 
             if len(theory_set) != 0:
-                ax.plot(
+                (theory_plt,) = ax.plot(
                     noise_params,
                     theory_set,
                     color=line_colors[j],
@@ -697,6 +702,7 @@ def plot_unital_single_and_uniform_max_scores_data(
                     markersize=8,
                     label=data_labels[j] + " " + legend_labels[1],
                 )
+                theory_plots.append(theory_plt)
 
             match_set = ax_match_sets[i][j] if len(ax_match_sets[i]) != 0 else []
 
@@ -719,7 +725,14 @@ def plot_unital_single_and_uniform_max_scores_data(
         if i == 0:
             ax.set_ylabel(r"Bell Score ($S_{\mathrm{Bell}}$)", size=ax_labels_fontsize)
             plt.figlegend(
-                ncol=ncol_legend, loc="lower center", fontsize=16, bbox_to_anchor=(0, -0.01, 1, 1,)
+                [qbound_plot, cbound_plot]
+                + [(data_plots[j], theory_plots[j]) for j in range(len(ax_data_sets[i]))],
+                ["Quantum Bound", "Classical Bound"]
+                + [data_labels[j] for j in range(len(ax_data_sets[i]))],
+                ncol=ncol_legend,
+                loc="lower center",
+                fontsize=16,
+                bbox_to_anchor=(0, -0.01, 1, 1,),
             )
 
         for j in range(len(ax_data_sets[i])):
@@ -761,6 +774,7 @@ def plot_nonunital_single_and_uniform_max_scores_data(
     plot_dir,
     legend_labels=["VQO", "Theory"],
     bottom_padding=0.25,
+    ncol_legend=3,
 ):
     """Plots the noise robustness for single and uniform qubit/source/measurement
     noise models. This method is intended for plotting the max score across many
@@ -796,8 +810,11 @@ def plot_nonunital_single_and_uniform_max_scores_data(
 
     :param plot_dir: The directory to which the data will be plotted.
     :type plt_dir: String
+
+    :param ncol_legend: The number of columns in the legend.
+    :type ncol_legend: Int
     """
-    fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+    fig, axes = plt.subplots(2, 2, figsize=(10, 8))
     fig.suptitle(fig_title, fontsize=24, fontweight="bold")
     datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
     filename = fig_title + "_max_scores_single_and_uniform_" + datetime_ext
@@ -830,10 +847,10 @@ def plot_nonunital_single_and_uniform_max_scores_data(
 
             ax = axes[row_id][i]
 
-            ax.plot(
+            (qbound_plt,) = ax.plot(
                 noise_params, qbound, linestyle="-", color="C0", linewidth=3, label="Quantum Bound"
             )
-            ax.plot(
+            (cbound_plt,) = ax.plot(
                 noise_params,
                 cbound,
                 linestyle="-.",
@@ -842,9 +859,11 @@ def plot_nonunital_single_and_uniform_max_scores_data(
                 label="Classical Bound",
             )
 
+            data_plts = []
+            theory_plts = []
             for j in range(len(ax_data_sets[row_id][i])):
                 data_set = ax_data_sets[row_id][i][j]
-                ax.plot(
+                (data_plt,) = ax.plot(
                     noise_params,
                     data_set,
                     color=line_colors[j],
@@ -856,11 +875,13 @@ def plot_nonunital_single_and_uniform_max_scores_data(
                     label=data_labels[j] + " " + legend_labels[0],
                 )
 
+                data_plts.append(data_plt)
+
                 theory_set = (
                     ax_theory_sets[row_id][i][j] if len(ax_theory_sets[row_id][i]) != 0 else []
                 )
 
-                ax.plot(
+                (theory_plt,) = ax.plot(
                     noise_params,
                     theory_set,
                     color=line_colors[j],
@@ -870,6 +891,8 @@ def plot_nonunital_single_and_uniform_max_scores_data(
                     alpha=0.6,
                     label=data_labels[j] + " " + legend_labels[1],
                 )
+
+                theory_plts.append(theory_plt)
 
             if row_id == 0:
                 ax.set_title(ax_titles[i], size=ax_titles_fontsize)
@@ -896,7 +919,14 @@ def plot_nonunital_single_and_uniform_max_scores_data(
 
                 if row_id == 0:
                     plt.figlegend(
-                        ncol=3, loc="lower center", fontsize=16, bbox_to_anchor=(0, -0.01, 1, 1,)
+                        [qbound_plt, cbound_plt]
+                        + [(data_plts[k], theory_plts[k]) for k in range(len(data_plts))],
+                        ["Quantum Bound", "Classical Bound"]
+                        + [data_labels[k] for k in range(len(data_plts))],
+                        ncol=ncol_legend,
+                        loc="lower center",
+                        fontsize=16,
+                        bbox_to_anchor=(0, -0.01, 1, 1,),
                     )
 
             for j in range(len(ax_data_sets[row_id][i])):

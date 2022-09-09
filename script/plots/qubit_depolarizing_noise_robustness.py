@@ -32,8 +32,25 @@ def bell_state_single_noise(gamma):
     return qml.state()
 
 
+def theoretical_uniform_nlocal_star_score(n, gamma):
+    return np.sqrt(2) * (1 - 4 * gamma / 3) ** 2
+
+
+def theoretical_single_nlocal_star_score(n, gamma):
+    return np.sqrt(2) * np.power(np.abs(1 - 4 * gamma / 3), 1 / n)
+
+
+def theoretical_uniform_nlocal_chain_score(n, gamma):
+    return np.sqrt(2) * np.abs(1 - 4 * gamma / 3) ** n
+
+
+def theoretical_single_nlocal_chain_score(n, gamma):
+    return np.sqrt(2) * np.sqrt(np.abs(1 - 4 * gamma / 3))
+
+
 if __name__ == "__main__":
     num_samples = 21
+    gamma_range = np.arange(0, 1.01, 0.05)
 
     bell_state_uniform_noise_states = [
         bell_state_uniform_noise(gamma) for gamma in np.arange(0, 1.01, 0.05)
@@ -72,12 +89,12 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
-    theoretical_bell_state_uniform_chsh = [
-        src.chsh_max_violation(state) / 2 for state in bell_state_uniform_noise_states
+    theoretical_max_uniform_chsh = [
+        theoretical_uniform_nlocal_star_score(1, gamma) for gamma in gamma_range
     ]
 
-    theoretical_bell_state_single_chsh = [
-        src.chsh_max_violation(state) / 2 for state in bell_state_single_noise_states
+    theoretical_max_single_chsh = [
+        theoretical_single_nlocal_star_score(1, gamma) for gamma in gamma_range
     ]
 
     """
@@ -102,7 +119,7 @@ if __name__ == "__main__":
         r"max_ent_local_rot_out.*",
         r"ghz_local_ry_out_.*",
         r"max_ent_arb_out_.*",
-    ]  # , r"arb_arb_.*"]
+    ]
     bilocal_single_dep_data = [
         src.analyze_data_one_param_scan(src.get_data_files(bilocal_single_dep_dir, regex))
         for regex in bilocal_dep_regexes
@@ -113,12 +130,12 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
-    theoretical_bell_state_uniform_bilocal = [
-        src.bilocal_max_violation(state, state) for state in bell_state_uniform_noise_states
+    theoretical_max_uniform_bilocal = [
+        theoretical_uniform_nlocal_star_score(2, gamma) for gamma in gamma_range
     ]
 
-    theoretical_bell_state_single_bilocal = [
-        src.bilocal_max_violation(state, bell_state) for state in bell_state_single_noise_states
+    theoretical_max_single_bilocal = [
+        theoretical_single_nlocal_star_score(2, gamma) for gamma in gamma_range
     ]
 
     """
@@ -177,23 +194,20 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
-    theoretical_bell_state_uniform_n3_chain = [
-        src.chain_max_violation([state, state, state]) for state in bell_state_uniform_noise_states
+    theoretical_max_uniform_n3_chain = [
+        theoretical_uniform_nlocal_chain_score(3, gamma) for gamma in gamma_range
     ]
 
-    theoretical_bell_state_single_n3_chain = [
-        src.chain_max_violation([state, bell_state, bell_state])
-        for state in bell_state_single_noise_states
+    theoretical_max_single_n3_chain = [
+        theoretical_single_nlocal_chain_score(3, gamma) for gamma in gamma_range
     ]
 
-    theoretical_bell_state_uniform_n4_chain = [
-        src.chain_max_violation([state, state, state, state])
-        for state in bell_state_uniform_noise_states
+    theoretical_max_uniform_n4_chain = [
+        theoretical_uniform_nlocal_chain_score(4, gamma) for gamma in gamma_range
     ]
 
-    theoretical_bell_state_single_n4_chain = [
-        src.chain_max_violation([state, bell_state, bell_state, bell_state])
-        for state in bell_state_single_noise_states
+    theoretical_max_single_n4_chain = [
+        theoretical_single_nlocal_chain_score(4, gamma) for gamma in gamma_range
     ]
     """
     Loading n-Star Data
@@ -251,24 +265,43 @@ if __name__ == "__main__":
         for i in range(num_samples)
     ]
 
-    theoretical_bell_state_uniform_n3_star = [
-        src.star_max_violation([state, state, state]) for state in bell_state_uniform_noise_states
+    theoretical_max_uniform_n3_star = [
+        theoretical_uniform_nlocal_star_score(3, gamma) for gamma in gamma_range
     ]
 
-    theoretical_bell_state_single_n3_star = [
-        src.star_max_violation([state, bell_state, bell_state])
-        for state in bell_state_single_noise_states
+    theoretical_max_single_n3_star = [
+        theoretical_single_nlocal_star_score(3, gamma) for gamma in gamma_range
     ]
 
-    theoretical_bell_state_uniform_n4_star = [
-        src.star_max_violation([state, state, state, state])
-        for state in bell_state_uniform_noise_states
+    theoretical_max_uniform_n4_star = [
+        theoretical_uniform_nlocal_star_score(4, gamma) for gamma in gamma_range
     ]
 
-    theoretical_bell_state_single_n4_star = [
-        src.star_max_violation([state, bell_state, bell_state, bell_state])
-        for state in bell_state_single_noise_states
+    theoretical_max_single_n4_star = [
+        theoretical_single_nlocal_star_score(4, gamma) for gamma in gamma_range
     ]
+
+    """
+    Verifying Data
+    """
+
+    def verify_data(theoretical_score, vqo_score, atol=1e-8):
+        return theoretical_score >= vqo_score or np.isclose(theoretical_score, vqo_score, atol=atol)
+
+    for u in range(21):
+        assert verify_data(theoretical_max_uniform_chsh[u], max_chsh_uniform_dep[u])
+        assert verify_data(theoretical_max_uniform_bilocal[u], max_bilocal_uniform_dep[u])
+        assert verify_data(theoretical_max_uniform_n3_chain[u], max_n3_chain_uniform_dep[u])
+        assert verify_data(theoretical_max_uniform_n4_chain[u], max_n4_chain_uniform_dep[u])
+        assert verify_data(theoretical_max_uniform_n3_star[u], max_n3_star_uniform_dep[u])
+        assert verify_data(theoretical_max_uniform_n4_star[u], max_n4_star_uniform_dep[u])
+
+        assert verify_data(theoretical_max_single_chsh[u], max_chsh_single_dep[u])
+        assert verify_data(theoretical_max_single_bilocal[u], max_bilocal_single_dep[u])
+        assert verify_data(theoretical_max_single_n3_chain[u], max_n3_chain_single_dep[u])
+        assert verify_data(theoretical_max_single_n4_chain[u], max_n4_chain_single_dep[u])
+        assert verify_data(theoretical_max_single_n3_star[u], max_n3_star_single_dep[u])
+        assert verify_data(theoretical_max_single_n4_star[u], max_n4_star_single_dep[u])
 
     """
     Plotting Data
@@ -289,12 +322,12 @@ if __name__ == "__main__":
             max_n4_star_single_dep,
         ],
         single_theoretical_scores=[
-            theoretical_bell_state_single_chsh,
-            theoretical_bell_state_single_bilocal,
-            theoretical_bell_state_single_n3_chain,
-            theoretical_bell_state_single_n4_chain,
-            theoretical_bell_state_single_n3_star,
-            theoretical_bell_state_single_n4_star,
+            theoretical_max_single_chsh,
+            theoretical_max_single_bilocal,
+            theoretical_max_single_n3_chain,
+            theoretical_max_single_n4_chain,
+            theoretical_max_single_n3_star,
+            theoretical_max_single_n4_star,
         ],
         single_match_scores=[],
         uniform_max_scores=[
@@ -306,12 +339,12 @@ if __name__ == "__main__":
             max_n4_star_uniform_dep,
         ],
         uniform_theoretical_scores=[
-            theoretical_bell_state_uniform_chsh,
-            theoretical_bell_state_uniform_bilocal,
-            theoretical_bell_state_uniform_n3_chain,
-            theoretical_bell_state_uniform_n4_chain,
-            theoretical_bell_state_uniform_n3_star,
-            theoretical_bell_state_uniform_n4_star,
+            theoretical_max_uniform_chsh,
+            theoretical_max_uniform_bilocal,
+            theoretical_max_uniform_n3_chain,
+            theoretical_max_uniform_n4_chain,
+            theoretical_max_uniform_n3_star,
+            theoretical_max_uniform_n4_star,
         ],
         uniform_match_scores=[],
         data_labels=[
@@ -323,4 +356,7 @@ if __name__ == "__main__":
             "4-Local Star",
         ],
         plot_dir="./data/plots/qubit_depolarizing_noise_robustness/",
+        ncol_legend=4,
+        bottom_padding=0.3,
+        fig_height=5,
     )

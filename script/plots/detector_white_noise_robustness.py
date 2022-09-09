@@ -247,6 +247,35 @@ if __name__ == "__main__":
     ]
 
     """
+    Verifying Data
+    """
+
+    def verify_data(theoretical_score, vqo_score, atol=1e-8):
+        return theoretical_score >= vqo_score or np.isclose(theoretical_score, vqo_score, atol=atol)
+
+    for u in range(21):
+        assert verify_data(theoretical_max_chsh_uniform_score[u], max_chsh_uniform_dep[u])
+        assert verify_data(theoretical_max_bilocal_uniform_score[u], max_bilocal_uniform_dep[u])
+        assert verify_data(theoretical_max_n3_chain_uniform_score[u], max_n3_chain_uniform_dep[u])
+        assert verify_data(theoretical_max_n4_chain_uniform_score[u], max_n4_chain_uniform_dep[u])
+        assert verify_data(theoretical_max_n3_star_uniform_score[u], max_n3_star_uniform_dep[u])
+        assert verify_data(theoretical_max_n4_star_uniform_score[u], max_n4_star_uniform_dep[u])
+
+        assert verify_data(theoretical_max_chsh_single_score[u], max_chsh_single_dep[u])
+        assert verify_data(theoretical_max_bilocal_single_score[u], max_bilocal_single_dep[u])
+        assert verify_data(theoretical_max_n3_chain_single_score[u], max_n3_chain_single_dep[u])
+        assert verify_data(theoretical_max_n4_chain_single_score[u], max_n4_chain_single_dep[u])
+        assert verify_data(theoretical_max_n3_star_single_score[u], max_n3_star_single_dep[u])
+
+        # numerical error on close-to-zero comparison
+        if u == 20:
+            assert verify_data(
+                theoretical_max_n4_star_single_score[u], max_n4_star_single_dep[u], atol=1e-4
+            )
+        else:
+            assert verify_data(theoretical_max_n4_star_single_score[u], max_n4_star_single_dep[u])
+
+    """
     Plotting Data
     """
 

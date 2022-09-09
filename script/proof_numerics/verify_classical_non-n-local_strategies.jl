@@ -11,6 +11,7 @@ To run script:
 
         julia> include("script/proof_numerics/verify_classical_non-n-local_strategies.jl")
 """
+
 using QBase
 using LinearAlgebra
 using Test
@@ -157,5 +158,136 @@ end
 
         S_4star = I22^(1/4) + J22^(1/4)
         @test S_4star ≈ sqrt(2)^(3/4)
+    end
+end
+
+@testset "Qubit Dephasing Factors as CHSH Product" for γ in 0:0.1:1
+
+    ρ = State([1 0 0 sqrt(1-γ);0 0 0 0;0 0 0 0;sqrt(1-γ) 0 0 1]/2)
+
+    A_deph_0 = σz
+    A_deph_1 = σx
+
+    B_deph_0 = Unitary((σz + sqrt(1-γ) * σx) / sqrt(1 + 1 - γ))
+    B_deph_1 = Unitary((σz - sqrt(1-γ) * σx) / sqrt(1 + 1 - γ))
+
+    @testset "bilocal network" for γ2 in 0:0.1:1
+        ρ2 = State([1 0 0 sqrt(1-γ2);0 0 0 0;0 0 0 0;sqrt(1-γ2) 0 0 1]/2)
+        B2_deph_0 = Unitary((σz + sqrt(1-γ2) * σx) / sqrt(1 + 1 - γ2))
+        B2_deph_1 = Unitary((σz - sqrt(1-γ2) * σx) / sqrt(1 + 1 - γ2))
+
+        I22 = sum([
+            tr(kron(A_deph_0,B_deph_0,A_deph_0,B2_deph_0) * kron(ρ, ρ2)),
+            tr(kron(A_deph_0,B_deph_0,A_deph_1,B2_deph_0) * kron(ρ, ρ2)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_0,B2_deph_0) * kron(ρ, ρ2)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_1,B2_deph_0) * kron(ρ, ρ2)),
+        ])/2^2
+
+        J22 = sum([
+            tr(kron(A_deph_0,B_deph_1,A_deph_0,B2_deph_1) * kron(ρ, ρ2)),
+            -tr(kron(A_deph_0,B_deph_1,A_deph_1,B2_deph_1) * kron(ρ, ρ2)),
+            -tr(kron(A_deph_1,B_deph_1,A_deph_0,B2_deph_1) * kron(ρ, ρ2)),
+            tr(kron(A_deph_1,B_deph_1,A_deph_1,B2_deph_1) * kron(ρ, ρ2)),
+        ])/2^2
+
+        S_2star = sqrt(I22) + sqrt(J22)
+        lower_bound = sqrt(1 + ((1-γ)*(1-γ2))^(1/2))
+        @test S_2star ≥ lower_bound || S_2star ≈ lower_bound
+        @test S_2star ≈ (sqrt(1 + 1 - γ) * sqrt(1 + 1 - γ2))^(1/2)
+    end
+
+    @testset "trilocal star network" for γ2 in 0:0.2:1, γ3 in 0:0.2:1
+        ρ2 = State([1 0 0 sqrt(1-γ2);0 0 0 0;0 0 0 0;sqrt(1-γ2) 0 0 1]/2)
+        B2_deph_0 = Unitary((σz + sqrt(1-γ2) * σx) / sqrt(1 + 1 - γ2))
+        B2_deph_1 = Unitary((σz - sqrt(1-γ2) * σx) / sqrt(1 + 1 - γ2))
+
+        ρ3 = State([1 0 0 sqrt(1-γ3);0 0 0 0;0 0 0 0;sqrt(1-γ3) 0 0 1]/2)
+        B3_deph_0 = Unitary((σz + sqrt(1-γ3) * σx) / sqrt(1 + 1 - γ3))
+        B3_deph_1 = Unitary((σz - sqrt(1-γ3) * σx) / sqrt(1 + 1 - γ3))
+
+        I22 = sum([
+            tr(kron(A_deph_0,B_deph_0,A_deph_0,B2_deph_0,A_deph_0,B3_deph_0) * kron(ρ, ρ2, ρ3)),
+            tr(kron(A_deph_0,B_deph_0,A_deph_0,B2_deph_0,A_deph_1,B3_deph_0) * kron(ρ, ρ2, ρ3)),
+            tr(kron(A_deph_0,B_deph_0,A_deph_1,B2_deph_0,A_deph_0,B3_deph_0) * kron(ρ, ρ2, ρ3)),
+            tr(kron(A_deph_0,B_deph_0,A_deph_1,B2_deph_0,A_deph_1,B3_deph_0) * kron(ρ, ρ2, ρ3)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_0,B2_deph_0,A_deph_0,B3_deph_0) * kron(ρ, ρ2, ρ3)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_0,B2_deph_0,A_deph_1,B3_deph_0) * kron(ρ, ρ2, ρ3)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_1,B2_deph_0,A_deph_0,B3_deph_0) * kron(ρ, ρ2, ρ3)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_1,B2_deph_0,A_deph_1,B3_deph_0) * kron(ρ, ρ2, ρ3)),
+        ])/2^3
+
+        J22 = sum([
+            tr(kron(A_deph_0,B_deph_1,A_deph_0,B2_deph_1,A_deph_0,B3_deph_1) * kron(ρ, ρ2, ρ3)),
+            -tr(kron(A_deph_0,B_deph_1,A_deph_0,B2_deph_1,A_deph_1,B3_deph_1) * kron(ρ, ρ2, ρ3)),
+            -tr(kron(A_deph_0,B_deph_1,A_deph_1,B2_deph_1,A_deph_0,B3_deph_1) * kron(ρ, ρ2, ρ3)),
+            tr(kron(A_deph_0,B_deph_1,A_deph_1,B2_deph_1,A_deph_1,B3_deph_1) * kron(ρ, ρ2, ρ3)),
+            -tr(kron(A_deph_1,B_deph_1,A_deph_0,B2_deph_1,A_deph_0,B3_deph_1) * kron(ρ, ρ2, ρ3)),
+            tr(kron(A_deph_1,B_deph_1,A_deph_0,B2_deph_1,A_deph_1,B3_deph_1) * kron(ρ, ρ2, ρ3)),
+            tr(kron(A_deph_1,B_deph_1,A_deph_1,B2_deph_1,A_deph_0,B3_deph_1) * kron(ρ, ρ2, ρ3)),
+            -tr(kron(A_deph_1,B_deph_1,A_deph_1,B2_deph_1,A_deph_1,B3_deph_1) * kron(ρ, ρ2, ρ3)),
+        ])/2^3
+
+        S_3star = I22^(1/3) + J22^(1/3)
+        lower_bound = sqrt(1 + ((1-γ)*(1-γ2)*(1-γ3))^(1/3))
+        @test S_3star ≥ lower_bound || S_3star ≈ lower_bound
+        @test S_3star ≈ (sqrt(1 + 1 - γ) * sqrt(1 + 1 - γ2) * sqrt(1 + 1 - γ3) )^(1/3)
+    end
+
+    @testset "4-local star network" for γ2 in 0:0.25:1, γ3 in 0:0.25:1, γ4 in 0:0.25:1
+        ρ2 = State([1 0 0 sqrt(1-γ2);0 0 0 0;0 0 0 0;sqrt(1-γ2) 0 0 1]/2)
+        B2_deph_0 = Unitary((σz + sqrt(1-γ2) * σx) / sqrt(1 + 1 - γ2))
+        B2_deph_1 = Unitary((σz - sqrt(1-γ2) * σx) / sqrt(1 + 1 - γ2))
+
+        ρ3 = State([1 0 0 sqrt(1-γ3);0 0 0 0;0 0 0 0;sqrt(1-γ3) 0 0 1]/2)
+        B3_deph_0 = Unitary((σz + sqrt(1-γ3) * σx) / sqrt(1 + 1 - γ3))
+        B3_deph_1 = Unitary((σz - sqrt(1-γ3) * σx) / sqrt(1 + 1 - γ3))
+
+        ρ4 = State([1 0 0 sqrt(1-γ4);0 0 0 0;0 0 0 0;sqrt(1-γ4) 0 0 1]/2)
+        B4_deph_0 = Unitary((σz + sqrt(1-γ4) * σx) / sqrt(1 + 1 - γ4))
+        B4_deph_1 = Unitary((σz - sqrt(1-γ4) * σx) / sqrt(1 + 1 - γ4))
+
+        I22 = sum([
+            tr(kron(A_deph_0,B_deph_0,A_deph_0,B2_deph_0,A_deph_0,B3_deph_0,A_deph_0,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_0,B_deph_0,A_deph_0,B2_deph_0,A_deph_0,B3_deph_0,A_deph_1,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_0,B_deph_0,A_deph_0,B2_deph_0,A_deph_1,B3_deph_0,A_deph_0,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_0,B_deph_0,A_deph_0,B2_deph_0,A_deph_1,B3_deph_0,A_deph_1,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_0,B_deph_0,A_deph_1,B2_deph_0,A_deph_0,B3_deph_0,A_deph_0,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_0,B_deph_0,A_deph_1,B2_deph_0,A_deph_0,B3_deph_0,A_deph_1,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_0,B_deph_0,A_deph_1,B2_deph_0,A_deph_1,B3_deph_0,A_deph_0,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_0,B_deph_0,A_deph_1,B2_deph_0,A_deph_1,B3_deph_0,A_deph_1,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_0,B2_deph_0,A_deph_0,B3_deph_0,A_deph_0,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_0,B2_deph_0,A_deph_0,B3_deph_0,A_deph_1,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_0,B2_deph_0,A_deph_1,B3_deph_0,A_deph_0,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_0,B2_deph_0,A_deph_1,B3_deph_0,A_deph_1,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_1,B2_deph_0,A_deph_0,B3_deph_0,A_deph_0,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_1,B2_deph_0,A_deph_0,B3_deph_0,A_deph_1,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_1,B2_deph_0,A_deph_1,B3_deph_0,A_deph_0,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_1,B_deph_0,A_deph_1,B2_deph_0,A_deph_1,B3_deph_0,A_deph_1,B4_deph_0) * kron(ρ,ρ2,ρ3,ρ4)),
+        ])/2^4
+
+        J22 = sum([
+            tr(kron(A_deph_0,B_deph_1,A_deph_0,B2_deph_1,A_deph_0,B3_deph_1,A_deph_0,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            -tr(kron(A_deph_0,B_deph_1,A_deph_0,B2_deph_1,A_deph_0,B3_deph_1,A_deph_1,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            -tr(kron(A_deph_0,B_deph_1,A_deph_0,B2_deph_1,A_deph_1,B3_deph_1,A_deph_0,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_0,B_deph_1,A_deph_0,B2_deph_1,A_deph_1,B3_deph_1,A_deph_1,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            -tr(kron(A_deph_0,B_deph_1,A_deph_1,B2_deph_1,A_deph_0,B3_deph_1,A_deph_0,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_0,B_deph_1,A_deph_1,B2_deph_1,A_deph_0,B3_deph_1,A_deph_1,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_0,B_deph_1,A_deph_1,B2_deph_1,A_deph_1,B3_deph_1,A_deph_0,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            -tr(kron(A_deph_0,B_deph_1,A_deph_1,B2_deph_1,A_deph_1,B3_deph_1,A_deph_1,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            -tr(kron(A_deph_1,B_deph_1,A_deph_0,B2_deph_1,A_deph_0,B3_deph_1,A_deph_0,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_1,B_deph_1,A_deph_0,B2_deph_1,A_deph_0,B3_deph_1,A_deph_1,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_1,B_deph_1,A_deph_0,B2_deph_1,A_deph_1,B3_deph_1,A_deph_0,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            -tr(kron(A_deph_1,B_deph_1,A_deph_0,B2_deph_1,A_deph_1,B3_deph_1,A_deph_1,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_1,B_deph_1,A_deph_1,B2_deph_1,A_deph_0,B3_deph_1,A_deph_0,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            -tr(kron(A_deph_1,B_deph_1,A_deph_1,B2_deph_1,A_deph_0,B3_deph_1,A_deph_1,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            -tr(kron(A_deph_1,B_deph_1,A_deph_1,B2_deph_1,A_deph_1,B3_deph_1,A_deph_0,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+            tr(kron(A_deph_1,B_deph_1,A_deph_1,B2_deph_1,A_deph_1,B3_deph_1,A_deph_1,B4_deph_1) * kron(ρ,ρ2,ρ3,ρ4)),
+        ])/2^4
+
+        S_4star = I22^(1/4) + J22^(1/4)
+
+        lower_bound = sqrt(1 + ((1-γ)*(1-γ2)*(1-γ3)*(1-γ4))^(1/4))
+        @test S_4star ≥ lower_bound || S_4star ≈ lower_bound
+        @test S_4star ≈ (sqrt(1+1-γ)*sqrt(1+1-γ2)*sqrt(1+1-γ3)*sqrt(1+1-γ4))^(1/4)
     end
 end

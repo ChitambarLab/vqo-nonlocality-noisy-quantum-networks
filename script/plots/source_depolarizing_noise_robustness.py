@@ -54,7 +54,7 @@ if __name__ == "__main__":
     #     for state in bell_state_noise_states
     # ]
 
-    theoretical_bell_state_chsh = [
+    theoretical_max_chsh = [
         np.sqrt(2) * np.abs((1 - gamma * 16 / 15)) for gamma in np.arange(0, 1.01, 0.05)
     ]
 
@@ -102,12 +102,12 @@ if __name__ == "__main__":
     #     for state in bell_state_noise_states
     # ]
 
-    theoretical_bell_state_uniform_bilocal = [
+    theoretical_max_uniform_bilocal = [
         np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15) ** 2))
         for gamma in np.arange(0, 1.01, 0.05)
     ]
 
-    theoretical_bell_state_single_bilocal = [
+    theoretical_max_single_bilocal = [
         np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15))) for gamma in np.arange(0, 1.01, 0.05)
     ]
 
@@ -151,12 +151,12 @@ if __name__ == "__main__":
     #     for state in bell_state_noise_states
     # ]
 
-    theoretical_bell_state_uniform_n3_chain = [
+    theoretical_max_uniform_n3_chain = [
         np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15) ** 3))
         for gamma in np.arange(0, 1.01, 0.05)
     ]
 
-    theoretical_bell_state_single_n3_chain = [
+    theoretical_max_single_n3_chain = [
         np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15))) for gamma in np.arange(0, 1.01, 0.05)
     ]
 
@@ -200,15 +200,33 @@ if __name__ == "__main__":
     #     for state in bell_state_noise_states
     # ]
 
-    theoretical_bell_state_single_n3_star = [
+    theoretical_max_single_n3_star = [
         np.sqrt(2) * np.power(np.abs((1 - gamma * 16 / 15)), 1 / 3)
         for gamma in np.arange(0, 1.01, 0.05)
     ]
 
-    theoretical_bell_state_uniform_n3_star = [
+    theoretical_max_uniform_n3_star = [
         np.sqrt(2) * np.power(np.abs((1 - gamma * 16 / 15) ** 3), 1 / 3)
         for gamma in np.arange(0, 1.01, 0.05)
     ]
+
+    """
+    Verifying Data
+    """
+
+    def verify_data(theoretical_score, vqo_score):
+        return theoretical_score >= vqo_score or np.isclose(theoretical_score, vqo_score)
+
+    for u in range(21):
+        assert verify_data(theoretical_max_chsh[u], max_chsh_dep[u])
+        assert verify_data(theoretical_max_uniform_bilocal[u], max_bilocal_uniform_dep[u])
+        assert verify_data(theoretical_max_uniform_n3_chain[u], max_n3_chain_uniform_dep[u])
+        assert verify_data(theoretical_max_uniform_n3_star[u], max_n3_star_uniform_dep[u])
+
+        assert verify_data(theoretical_max_chsh[u], max_chsh_dep[u])
+        assert verify_data(theoretical_max_single_bilocal[u], max_bilocal_single_dep[u])
+        assert verify_data(theoretical_max_single_n3_chain[u], max_n3_chain_single_dep[u])
+        assert verify_data(theoretical_max_single_n3_star[u], max_n3_star_single_dep[u])
 
     """
     Plotting Data
@@ -227,10 +245,10 @@ if __name__ == "__main__":
             max_n3_star_single_dep,
         ],
         single_theoretical_scores=[
-            theoretical_bell_state_chsh,
-            theoretical_bell_state_single_bilocal,
-            theoretical_bell_state_single_n3_chain,
-            theoretical_bell_state_single_n3_star,
+            theoretical_max_chsh,
+            theoretical_max_single_bilocal,
+            theoretical_max_single_n3_chain,
+            theoretical_max_single_n3_star,
         ],
         single_match_scores=[],
         uniform_max_scores=[
@@ -240,13 +258,14 @@ if __name__ == "__main__":
             max_n3_star_uniform_dep,
         ],
         uniform_theoretical_scores=[
-            theoretical_bell_state_chsh,
-            theoretical_bell_state_uniform_bilocal,
-            theoretical_bell_state_uniform_n3_chain,
-            theoretical_bell_state_uniform_n3_star,
+            theoretical_max_chsh,
+            theoretical_max_uniform_bilocal,
+            theoretical_max_uniform_n3_chain,
+            theoretical_max_uniform_n3_star,
         ],
         uniform_match_scores=[],
         data_labels=["CHSH", "Bilocal", "3-Local Chain", "3-Local Star"],
         plot_dir="./data/plots/source_depolarizing_noise_robustness/",
-        bottom_padding=0.4,
+        # bottom_padding=0.4,
+        ncol_legend=3,
     )

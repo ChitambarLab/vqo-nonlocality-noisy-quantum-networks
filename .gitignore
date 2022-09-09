@@ -2,6 +2,8 @@
 */**/__pycache__
 */**/\.ipynb_checkpoints
 
+\.ipynb_checkpoints
+
 dask-worker-space/*
 script/data/**/tmp/*
 env/*

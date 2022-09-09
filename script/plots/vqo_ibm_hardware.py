@@ -131,7 +131,12 @@ if __name__ == "__main__":
     fig.suptitle(r"VQO of Non-$n$-Locality on IBM Quantum Computers", size=24, fontweight="bold")
 
     axes = [ax1, ax2, ax3, ax4]
-    titles = ["CHSH Network", "Bilocal Network", "\nTrilocal Chain Network", "\nTrilocal Star Network"]
+    titles = [
+        "CHSH Network",
+        "Bilocal Network",
+        "\nTrilocal Chain Network",
+        "\nTrilocal Star Network",
+    ]
     ylabels = [
         r"Bell Score ($S_{\mathrm{CHSH}}$)",
         r"Bell Score ($S_{\mathrm{Bilocal}}$)",
@@ -170,19 +175,19 @@ if __name__ == "__main__":
         )
         ax.plot(
             range(num_steps),
-            [data_sets[i]["mean_theoretical_score"]] * num_steps,
-            "-.",
-            label="Theoretical\nMean Score",
-            linewidth=3,
-            color="C5",
-        )
-        ax.plot(
-            range(num_steps),
             [data_sets[i]["max_theoretical_score"]] * num_steps,
             linestyle=(0, (3, 2, 1, 2, 1, 2)),
             linewidth=3,
             label="Theoretical\nMax Score",
             color="C6",
+        )
+        ax.plot(
+            range(num_steps),
+            [data_sets[i]["mean_theoretical_score"]] * num_steps,
+            "-.",
+            label="Theoretical\nMean Score",
+            linewidth=3,
+            color="C5",
         )
         ax.plot(
             range(num_steps),
@@ -219,9 +224,15 @@ if __name__ == "__main__":
         ax.set_ylabel(ylabels[i], size=18)
 
         if i == 0:
-            plt.figlegend(ncol=1, loc="center right", fontsize=18, bbox_to_anchor=(0,0,1,1)) #, bbox_to_anchor=(0, 0,1,1,))
+            plt.figlegend(
+                ncol=1,
+                loc="center right",
+                fontsize=18,
+                bbox_to_anchor=(0, 0, 1, 1),
+                labelspacing=1.1,
+            )  # , bbox_to_anchor=(0, 0,1,1,))
 
-    fig.subplots_adjust(left=0.05,right=0.82)
+    fig.subplots_adjust(left=0.05, right=0.82)
 
     datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
     filename = "simple_ansatzes_" + datetime_ext

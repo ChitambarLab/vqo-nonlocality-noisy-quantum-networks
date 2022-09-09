@@ -100,50 +100,139 @@ if __name__ == "__main__":
     ]
 
     """
+    Theoretical Scores
+    """
+
+    def max_entangled_score(gamma):
+        return 2 * np.sqrt(2 * (1 - gamma) ** 2)
+
+    def max_entangled_score2(gamma):
+        return 2 * np.sqrt((1 - gamma) ** 2 + (gamma ** 2 + (1 - gamma) ** 2) ** 2)
+
+    def lambda_star_score(gamma):
+        lambda_star = 0
+        if gamma >= 0.5:
+            lambda_star = 1
+        else:
+            lambda_star = (
+                1
+                - (gamma ** 2 + (1 - gamma) ** 2)
+                * (2 * gamma * (1 - gamma))
+                / ((2 * gamma * (1 - gamma)) ** 2 - (1 - gamma) ** 2)
+            ) / 2
+
+        return min(1, lambda_star)
+
+    def _nonmax_entangled_score(gamma, lambda_star):
+        a = 4 * (1 - gamma) ** 2 * lambda_star * (1 - lambda_star)
+        b = (gamma ** 2 + (1 - gamma) ** 2 + (2 * lambda_star - 1) * (2 * gamma * (1 - gamma))) ** 2
+        return 2 * np.sqrt(a + b)
+
+    def nonmax_entangled_score(gamma):
+        lambda_star = lambda_star_score(gamma)
+        return _nonmax_entangled_score(gamma, lambda_star)
+
+    max_entangled_theory = [max_entangled_score(gamma) for gamma in noise_params]
+    max_entangled_theory2 = [max_entangled_score2(gamma) for gamma in noise_params]
+
+    nonmax_entangled_theory = [nonmax_entangled_score(gamma) for gamma in noise_params]
+
+    max_entangled_theory_inset = [max_entangled_score(gamma) for gamma in noise_params_inset]
+    nonmax_entangled_theory_inset = [nonmax_entangled_score(gamma) for gamma in noise_params_inset]
+
+    # crossover of max entangled and nonmax entangled optimality
+    crit_gamma = (
+        4
+        + (3 * np.sqrt(114) - 32) ** (1 / 3) / (2 ** (2 / 3))
+        - 1 / (6 * np.sqrt(114) - 64) ** (1 / 3)
+    ) / 6
+
+    """
     Plotting Data
     """
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 7))
 
     fig.suptitle(
-        "CHSH Violations in the Presence of\nUniform Qubit Amplitude Damping Noise",
+        "Maximal CHSH Scores in the Presence of\nUniform Qubit Amplitude Damping Noise",
         size=24,
         fontweight="bold",
     )
 
-    ylabel = r"Bell Score ($S_{\mathrm{CHSH}}$)"
+    ylabel = r"Max CHSH Score ($S^\star_{\mathrm{CHSH}}(\tilde{\rho}_\lambda)$)"
 
     ax1.plot(noise_params, [np.sqrt(2) * 2] * num_samples, "-", linewidth=2, label="Quantum Bound")
     ax1.plot(noise_params, [2] * num_samples, "-.", linewidth=2, label="Classical Bound")
     ax1.plot(
         noise_params,
-        ghz_max_chsh_uniform_ad,
+        max_entangled_theory,
         "-",
+        color="C2",
+        linewidth=2,
+        label="Max Entangled " + r"($\sqrt{\mu_x + \mu_y}$)",
+    )
+    ax1.plot(
+        noise_params,
+        max_entangled_theory2,
+        "--",
+        color="C2",
+        linewidth=2,
+        label="Max Entangled " + r"($\sqrt{\mu_x + \mu_z}$)",
+    )
+    ax1.plot(
+        noise_params,
+        nonmax_entangled_theory,
+        "-.",
+        color="C3",
+        linewidth=2,
+        label="Nonmax Entangled " + r"($\sqrt{\mu_x + \mu_z}$)",
+    )
+    ax1.plot(
+        [crit_gamma, crit_gamma],
+        [0, 2 * np.sqrt(2)],
+        ":",
+        linewidth=2,
+        color="magenta",
+        label="Optimal State Crossover",
+    )
+    ax1.plot(
+        [1 - 1 / np.sqrt(2), 1 - 1 / np.sqrt(2)],
+        [0, 2 * np.sqrt(2)],
+        ":",
+        linewidth=2,
+        color="C2",
+        label="Max Entangled\nNonlocality Broken",
+    )
+    ax1.plot(
+        [1 / 3, 1 / 3],
+        [0, 2 * np.sqrt(2)],
+        ":",
+        linewidth=2,
+        color="C3",
+        label="Nonmax Entangled\nNonlocality Broken",
+    )
+    ax1.plot(
+        noise_params,
+        ghz_max_chsh_uniform_ad,
         marker="d",
-        markersize=4,
+        color="C2",
+        markersize=5,
         markerfacecolor="None",
-        linewidth=1,
-        label=r"Bell State Preparation ($|\Phi^+\rangle$)",
-        alpha=0.8,
+        linewidth=2,
+        linestyle="None",
+        label="VQO Max Entangled",
+        alpha=0.6,
     )
     ax1.plot(
         noise_params,
         ryrz_cnot_max_chsh_uniform_ad,
-        "-",
+        color="C3",
         marker="o",
-        markersize=4,
+        markersize=5,
         markerfacecolor="None",
-        linewidth=1,
-        label="Nonmaximally Entangled\nState Preparation",
-        alpha=0.8,
-    )
-    ax1.plot(
-        [1 - 1 / np.sqrt(2)],
-        [2],
-        marker="*",
-        markersize=6,
+        linewidth=2,
         linestyle="None",
-        color="b",
-        label="CHSH Breaking Threshold",
+        label="VQO Nonmax Entangled",
+        alpha=0.6,
     )
 
     ax1.set_xlabel(r"Noise Parameter ($\gamma$)", size=18)
@@ -161,35 +250,71 @@ if __name__ == "__main__":
     )
     ax2.plot(
         noise_params_inset,
-        ghz_max_chsh_uniform_ad_inset,
+        max_entangled_theory_inset,
         "-",
         color="C2",
-        marker="d",
-        markersize=4,
-        markerfacecolor="None",
-        linewidth=1,
+        linewidth=2,
         label=r"Bell State Preparation ($|\Phi^+\rangle$)",
-        alpha=0.8,
+    )
+    ax2.plot(
+        noise_params_inset,
+        nonmax_entangled_theory_inset,
+        "-.",
+        color="C3",
+        linewidth=2,
+        label="Nonmaximally Entangled\nState Preparation",
+    )
+    ax2.plot(
+        [1 - 1 / np.sqrt(2), 1 - 1 / np.sqrt(2)],
+        [1.84, 2.12],
+        ":",
+        color="C2",
+        label="Max Entangled\nNonlocality Broken",
+        linewidth=2,
+    )
+    ax2.plot(
+        [1 / 3, 1 / 3],
+        [1.84, 2.12],
+        ":",
+        color="C3",
+        label="Nonmax Entanglement\nNonlocality Broken",
+        linewidth=2,
+    )
+    ax2.plot(
+        [crit_gamma, crit_gamma],
+        [1.84, 2.12],
+        ":",
+        color="magenta",
+        label="Nonmax Entanglement\nNonlocality Broken",
+        linewidth=2,
+    )
+    ax2.plot(
+        noise_params_inset,
+        ghz_max_chsh_uniform_ad_inset,
+        color="C2",
+        marker="d",
+        markersize=5,
+        markerfacecolor="None",
+        label=r"Bell State Preparation ($|\Phi^+\rangle$)",
+        alpha=0.6,
     )
     ax2.plot(
         noise_params_inset,
         ryrz_cnot_max_chsh_uniform_ad_inset,
-        "-",
         color="C3",
         marker="o",
-        markersize=4,
+        markersize=5,
         markerfacecolor="None",
         linewidth=1,
         label="Nonmaximally Entangled\nState Preparation",
-        alpha=0.8,
+        alpha=0.6,
     )
-    ax2.plot([1 - 1 / np.sqrt(2)], [2], marker="*", markersize=6, color="b")
 
     ax2.set_xlabel(r"Noise Parameter ($\gamma$)", size=18)
     ax2.set_xticks([0.25, 0.27, 0.29, 0.31, 0.33, 0.35])
 
     plt.tight_layout()
-    fig.subplots_adjust(bottom=0.35)
+    fig.subplots_adjust(bottom=0.45)
 
     datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
     filename = "chsh_uniform_qubit_amplitude_damping_high_res_" + datetime_ext
