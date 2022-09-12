@@ -775,6 +775,7 @@ def plot_nonunital_single_and_uniform_max_scores_data(
     legend_labels=["VQO", "Theory"],
     bottom_padding=0.25,
     ncol_legend=3,
+    theory_params=[],
 ):
     """Plots the noise robustness for single and uniform qubit/source/measurement
     noise models. This method is intended for plotting the max score across many
@@ -813,6 +814,9 @@ def plot_nonunital_single_and_uniform_max_scores_data(
 
     :param ncol_legend: The number of columns in the legend.
     :type ncol_legend: Int
+
+    :param theory_params: Noise params for theoretical data.
+    :type theory_params: List
     """
     fig, axes = plt.subplots(2, 2, figsize=(10, 8))
     fig.suptitle(fig_title, fontsize=24, fontweight="bold")
@@ -836,6 +840,9 @@ def plot_nonunital_single_and_uniform_max_scores_data(
         [row1_single_theoretical_scores, row1_uniform_theoretical_scores],
         [row2_single_theoretical_scores, row2_uniform_theoretical_scores],
     ]
+
+    if len(theory_params) == 0:
+        theory_params = noise_params
 
     marker_sizes = [8, 7.75, 7.5, 7.25, 7, 6.75, 6.5, 6.25]
     # line_widths = [5.5,5,4.5,4,3.5,3,2.5,2]
@@ -882,7 +889,7 @@ def plot_nonunital_single_and_uniform_max_scores_data(
                 )
 
                 (theory_plt,) = ax.plot(
-                    noise_params,
+                    theory_params,
                     theory_set,
                     color=line_colors[j],
                     linestyle=":",

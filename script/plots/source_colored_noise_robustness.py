@@ -32,8 +32,37 @@ def phi_plus_state_noise(gamma):
     return qml.state()
 
 
+def uniform_psi_plus_star(gamma):
+    return np.sqrt(1 + (1 - gamma) ** 2)
+
+
+def single_psi_plus_star(gamma, n):
+    return np.power(np.sqrt(2) ** (n - 1) * np.sqrt(1 + (1 - gamma) ** 2), 1 / n)
+
+
+def uniform_phi_plus_star(gamma):
+    return max(np.sqrt(2 * (1 - gamma) ** 2), np.sqrt((1 - gamma) ** 2 + (1 - 2 * gamma) ** 2))
+
+
+def uniform_phi_plus_chain(gamma, n):
+    return max(
+        np.sqrt(2 * (1 - gamma) ** 2) * np.sqrt(1 - gamma) ** (n - 2),
+        np.sqrt((1 - gamma) ** 2 + (1 - 2 * gamma) ** 2)
+        * np.sqrt(np.abs(1 - 2 * gamma)) ** (n - 2),
+    )
+
+
+def single_phi_plus_star(gamma, n):
+    return max(
+        np.power(np.sqrt(2) ** (n - 1) * np.sqrt(2 * (1 - gamma) ** 2), 1 / n),
+        np.power(np.sqrt(2) ** (n - 1) * np.sqrt((1 - gamma) ** 2 + (1 - 2 * gamma) ** 2), 1 / n),
+    )
+
+
 if __name__ == "__main__":
     num_samples = 21
+
+    noise_params = np.arange(0, 1.001, 0.01)
 
     psi_plus_noise_states = [psi_plus_state_noise(gamma) for gamma in np.arange(0, 1.01, 0.05)]
     phi_plus_noise_states = [phi_plus_state_noise(gamma) for gamma in np.arange(0, 1.01, 0.05)]
@@ -78,6 +107,9 @@ if __name__ == "__main__":
     psi_plus_theoretical_bell_state_chsh = [
         src.chsh_max_violation(state) / 2 for state in psi_plus_noise_states
     ]
+
+    phi_plus_theoretical_chsh = [uniform_phi_plus_star(gamma) for gamma in noise_params]
+    psi_plus_theoretical_chsh = [uniform_psi_plus_star(gamma) for gamma in noise_params]
 
     """
     Loading Bilocal Data
@@ -152,6 +184,11 @@ if __name__ == "__main__":
         src.bilocal_max_violation_chsh_prod(state, psi_plus_state)
         for state in psi_plus_noise_states
     ]
+
+    phi_plus_theoretical_uniform_bilocal = [uniform_phi_plus_star(gamma) for gamma in noise_params]
+    phi_plus_theoretical_single_bilocal = [single_phi_plus_star(gamma, 2) for gamma in noise_params]
+    psi_plus_theoretical_uniform_bilocal = [uniform_psi_plus_star(gamma) for gamma in noise_params]
+    psi_plus_theoretical_single_bilocal = [single_psi_plus_star(gamma, 2) for gamma in noise_params]
 
     """
     Loading n-Chain Data
@@ -289,6 +326,28 @@ if __name__ == "__main__":
         for state in psi_plus_noise_states
     ]
 
+    phi_plus_theoretical_uniform_n3_chain = [
+        uniform_phi_plus_chain(gamma, 3) for gamma in noise_params
+    ]
+    phi_plus_theoretical_single_n3_chain = [
+        single_phi_plus_star(gamma, 2) for gamma in noise_params
+    ]
+    psi_plus_theoretical_uniform_n3_chain = [uniform_psi_plus_star(gamma) for gamma in noise_params]
+    psi_plus_theoretical_single_n3_chain = [
+        single_psi_plus_star(gamma, 2) for gamma in noise_params
+    ]
+
+    phi_plus_theoretical_uniform_n4_chain = [
+        uniform_phi_plus_chain(gamma, 4) for gamma in noise_params
+    ]
+    phi_plus_theoretical_single_n4_chain = [
+        single_phi_plus_star(gamma, 2) for gamma in noise_params
+    ]
+    psi_plus_theoretical_uniform_n4_chain = [uniform_psi_plus_star(gamma) for gamma in noise_params]
+    psi_plus_theoretical_single_n4_chain = [
+        single_psi_plus_star(gamma, 2) for gamma in noise_params
+    ]
+
     """
     Loading n-Star Data
     """
@@ -358,6 +417,67 @@ if __name__ == "__main__":
         src.star_max_violation_chsh_prod([state, state, state]) for state in phi_plus_noise_states
     ]
 
+    phi_plus_theoretical_uniform_n3_star = [uniform_phi_plus_star(gamma) for gamma in noise_params]
+    phi_plus_theoretical_single_n3_star = [single_phi_plus_star(gamma, 3) for gamma in noise_params]
+    psi_plus_theoretical_uniform_n3_star = [uniform_psi_plus_star(gamma) for gamma in noise_params]
+    psi_plus_theoretical_single_n3_star = [single_psi_plus_star(gamma, 3) for gamma in noise_params]
+
+    """
+    Verifying Data
+    """
+
+    def verify_data(theoretical_score, vqo_score, atol=1e-8):
+        return theoretical_score >= vqo_score or np.isclose(theoretical_score, vqo_score, atol=atol)
+
+    for u in range(21):
+        assert verify_data(phi_plus_theoretical_chsh, phi_plus_max_chsh_colored)
+        assert verify_data(phi_plus_theoretical_single_bilocal, phi_plus_max_bilocal_single_colored)
+        assert verify_data(
+            phi_plus_theoretical_single_n3_chain, phi_plus_max_bilocal_single_colored
+        )
+        assert verify_data(
+            phi_plus_theoretical_single_n4_chain, phi_plus_max_n4_chain_single_colored
+        )
+        assert verify_data(phi_plus_theoretical_single_n3_star, phi_plus_max_n3_star_single_colored)
+
+        assert verify_data(psi_plus_theoretical_chsh, psi_plus_max_chsh_colored)
+        assert verify_data(psi_plus_theoretical_single_bilocal, psi_plus_max_bilocal_single_colored)
+        assert verify_data(
+            psi_plus_theoretical_single_n3_chain, psi_plus_max_bilocal_single_colored
+        )
+        assert verify_data(
+            psi_plus_theoretical_single_n4_chain, psi_plus_max_n4_chain_single_colored
+        )
+        assert verify_data(psi_plus_theoretical_single_n3_star, psi_plus_max_n3_star_single_colored)
+
+        assert verify_data(phi_plus_theoretical_chsh, phi_plus_max_chsh_colored)
+        assert verify_data(
+            phi_plus_theoretical_uniform_bilocal, phi_plus_max_bilocal_uniform_colored
+        )
+        assert verify_data(
+            phi_plus_theoretical_uniform_n3_chain, phi_plus_max_bilocal_uniform_colored
+        )
+        assert verify_data(
+            phi_plus_theoretical_uniform_n4_chain, phi_plus_max_n4_chain_uniform_colored
+        )
+        assert verify_data(
+            phi_plus_theoretical_uniform_n3_star, phi_plus_max_n3_star_uniform_colored
+        )
+
+        assert verify_data(psi_plus_theoretical_chsh, psi_plus_max_chsh_colored)
+        assert verify_data(
+            psi_plus_theoretical_uniform_bilocal, psi_plus_max_bilocal_uniform_colored
+        )
+        assert verify_data(
+            psi_plus_theoretical_uniform_n3_chain, psi_plus_max_bilocal_uniform_colored
+        )
+        assert verify_data(
+            psi_plus_theoretical_uniform_n4_chain, psi_plus_max_n4_chain_uniform_colored
+        )
+        assert verify_data(
+            psi_plus_theoretical_uniform_n3_star, psi_plus_max_n3_star_uniform_colored
+        )
+
     """
     Plotting Data
     """
@@ -376,11 +496,11 @@ if __name__ == "__main__":
             phi_plus_max_n3_star_single_colored,
         ],
         row1_single_theoretical_scores=[
-            phi_plus_theoretical_bell_state_chsh,
-            phi_plus_theoretical_bell_state_single_bilocal,
-            phi_plus_theoretical_bell_state_single_n3_chain,
-            phi_plus_theoretical_bell_state_single_n4_chain,
-            phi_plus_theoretical_bell_state_single_n3_star,
+            phi_plus_theoretical_chsh,
+            phi_plus_theoretical_single_bilocal,
+            phi_plus_theoretical_single_n3_chain,
+            phi_plus_theoretical_single_n4_chain,
+            phi_plus_theoretical_single_n3_star,
         ],
         row1_uniform_max_scores=[
             phi_plus_max_chsh_colored,
@@ -390,11 +510,11 @@ if __name__ == "__main__":
             phi_plus_max_n3_star_uniform_colored,
         ],
         row1_uniform_theoretical_scores=[
-            phi_plus_theoretical_bell_state_chsh,
-            phi_plus_theoretical_bell_state_uniform_bilocal,
-            phi_plus_theoretical_bell_state_uniform_n3_chain,
-            phi_plus_theoretical_bell_state_uniform_n4_chain,
-            phi_plus_theoretical_bell_state_uniform_n3_star,
+            phi_plus_theoretical_chsh,
+            phi_plus_theoretical_uniform_bilocal,
+            phi_plus_theoretical_uniform_n3_chain,
+            phi_plus_theoretical_uniform_n4_chain,
+            phi_plus_theoretical_uniform_n3_star,
         ],
         row2_single_max_scores=[
             psi_plus_max_chsh_colored,
@@ -404,11 +524,11 @@ if __name__ == "__main__":
             psi_plus_max_n3_star_single_colored,
         ],
         row2_single_theoretical_scores=[
-            psi_plus_theoretical_bell_state_chsh,
-            psi_plus_theoretical_bell_state_single_bilocal,
-            psi_plus_theoretical_bell_state_single_n3_chain,
-            psi_plus_theoretical_bell_state_single_n4_chain,
-            psi_plus_theoretical_bell_state_single_n3_star,
+            psi_plus_theoretical_chsh,
+            psi_plus_theoretical_single_bilocal,
+            psi_plus_theoretical_single_n3_chain,
+            psi_plus_theoretical_single_n4_chain,
+            psi_plus_theoretical_single_n3_star,
         ],
         row2_uniform_max_scores=[
             psi_plus_max_chsh_colored,
@@ -418,13 +538,16 @@ if __name__ == "__main__":
             psi_plus_max_n3_star_uniform_colored,
         ],
         row2_uniform_theoretical_scores=[
-            psi_plus_theoretical_bell_state_chsh,
-            psi_plus_theoretical_bell_state_uniform_bilocal,
-            psi_plus_theoretical_bell_state_uniform_n3_chain,
-            psi_plus_theoretical_bell_state_uniform_n4_chain,
-            psi_plus_theoretical_bell_state_uniform_n3_star,
+            psi_plus_theoretical_chsh,
+            psi_plus_theoretical_uniform_bilocal,
+            psi_plus_theoretical_uniform_n3_chain,
+            psi_plus_theoretical_uniform_n4_chain,
+            psi_plus_theoretical_uniform_n3_star,
         ],
         data_labels=["CHSH", "Bilocal", "3-Local Chain", "4-Local Chain", "3-Local Star"],
         row_labels=[r"$|\Phi^+\rangle$ State", r"$|\Psi^+\rangle$ State"],
         plot_dir="./data/plots/source_colored_noise_robustness/",
+        theory_params=noise_params,
+        ncol_legend=4,
+        bottom_padding=0.2,
     )
