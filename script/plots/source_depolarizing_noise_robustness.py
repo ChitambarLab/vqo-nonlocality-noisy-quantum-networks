@@ -24,6 +24,8 @@ def bell_state_noise(gamma):
 if __name__ == "__main__":
     num_samples = 21
 
+    theory_noise_params = np.arange(0, 1.0001, 0.001)
+
     bell_state_noise_states = [bell_state_noise(gamma) for gamma in np.arange(0, 1.01, 0.05)]
 
     bell_state = np.array([[1, 0, 0, 1], [0, 0, 0, 0], [0, 0, 0, 0], [1, 0, 0, 1]]) / 2
@@ -55,7 +57,7 @@ if __name__ == "__main__":
     # ]
 
     theoretical_max_chsh = [
-        np.sqrt(2) * np.abs((1 - gamma * 16 / 15)) for gamma in np.arange(0, 1.01, 0.05)
+        np.sqrt(2) * np.abs((1 - gamma * 16 / 15)) for gamma in theory_noise_params
     ]
 
     """
@@ -103,12 +105,11 @@ if __name__ == "__main__":
     # ]
 
     theoretical_max_uniform_bilocal = [
-        np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15) ** 2))
-        for gamma in np.arange(0, 1.01, 0.05)
+        np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15) ** 2)) for gamma in theory_noise_params
     ]
 
     theoretical_max_single_bilocal = [
-        np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15))) for gamma in np.arange(0, 1.01, 0.05)
+        np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15))) for gamma in theory_noise_params
     ]
 
     """
@@ -152,12 +153,11 @@ if __name__ == "__main__":
     # ]
 
     theoretical_max_uniform_n3_chain = [
-        np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15) ** 3))
-        for gamma in np.arange(0, 1.01, 0.05)
+        np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15) ** 3)) for gamma in theory_noise_params
     ]
 
     theoretical_max_single_n3_chain = [
-        np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15))) for gamma in np.arange(0, 1.01, 0.05)
+        np.sqrt(2) * np.sqrt(np.abs((1 - gamma * 16 / 15))) for gamma in theory_noise_params
     ]
 
     """
@@ -201,13 +201,12 @@ if __name__ == "__main__":
     # ]
 
     theoretical_max_single_n3_star = [
-        np.sqrt(2) * np.power(np.abs((1 - gamma * 16 / 15)), 1 / 3)
-        for gamma in np.arange(0, 1.01, 0.05)
+        np.sqrt(2) * np.power(np.abs((1 - gamma * 16 / 15)), 1 / 3) for gamma in theory_noise_params
     ]
 
     theoretical_max_uniform_n3_star = [
         np.sqrt(2) * np.power(np.abs((1 - gamma * 16 / 15) ** 3), 1 / 3)
-        for gamma in np.arange(0, 1.01, 0.05)
+        for gamma in theory_noise_params
     ]
 
     """
@@ -218,15 +217,15 @@ if __name__ == "__main__":
         return theoretical_score >= vqo_score or np.isclose(theoretical_score, vqo_score)
 
     for u in range(21):
-        assert verify_data(theoretical_max_chsh[u], max_chsh_dep[u])
-        assert verify_data(theoretical_max_uniform_bilocal[u], max_bilocal_uniform_dep[u])
-        assert verify_data(theoretical_max_uniform_n3_chain[u], max_n3_chain_uniform_dep[u])
-        assert verify_data(theoretical_max_uniform_n3_star[u], max_n3_star_uniform_dep[u])
+        assert verify_data(theoretical_max_chsh[50 * u], max_chsh_dep[u])
+        assert verify_data(theoretical_max_uniform_bilocal[50 * u], max_bilocal_uniform_dep[u])
+        assert verify_data(theoretical_max_uniform_n3_chain[50 * u], max_n3_chain_uniform_dep[u])
+        assert verify_data(theoretical_max_uniform_n3_star[50 * u], max_n3_star_uniform_dep[u])
 
-        assert verify_data(theoretical_max_chsh[u], max_chsh_dep[u])
-        assert verify_data(theoretical_max_single_bilocal[u], max_bilocal_single_dep[u])
-        assert verify_data(theoretical_max_single_n3_chain[u], max_n3_chain_single_dep[u])
-        assert verify_data(theoretical_max_single_n3_star[u], max_n3_star_single_dep[u])
+        assert verify_data(theoretical_max_chsh[50 * u], max_chsh_dep[u])
+        assert verify_data(theoretical_max_single_bilocal[50 * u], max_bilocal_single_dep[u])
+        assert verify_data(theoretical_max_single_n3_chain[50 * u], max_n3_chain_single_dep[u])
+        assert verify_data(theoretical_max_single_n3_star[50 * u], max_n3_star_single_dep[u])
 
     """
     Plotting Data
@@ -268,4 +267,5 @@ if __name__ == "__main__":
         plot_dir="./data/plots/source_depolarizing_noise_robustness/",
         # bottom_padding=0.4,
         ncol_legend=3,
+        theory_params=theory_noise_params,
     )

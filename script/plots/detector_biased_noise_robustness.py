@@ -384,7 +384,7 @@ if __name__ == "__main__":
         ],
         plot_dir="./data/plots/detector_biased_noise_robustness/",
         legend_labels=["Arbitrary VQO", "Max Entangled VQO"],
-        ncol_legend=2,
-        bottom_padding=0.45,
-        fig_height=7,
+        ncol_legend=4,
+        bottom_padding=0.3,
+        fig_height=5,
     )

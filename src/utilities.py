@@ -602,6 +602,7 @@ def plot_unital_single_and_uniform_max_scores_data(
     bottom_padding=0.3,
     fig_height=5,
     ncol_legend=4,
+    theory_params=[],
 ):
     """Plots the noise robustness for single and uniform qubit/source/measurement
     noise models. This method is intended for plotting the max score across many
@@ -637,6 +638,9 @@ def plot_unital_single_and_uniform_max_scores_data(
 
     :param plot_dir: The directory to which the data will be plotted.
     :type plt_dir: String
+
+    :param theory_params: Noise params for theoretical data.
+    :type theory_params: List
     """
     fig, axes = plt.subplots(1, 2, figsize=(10, fig_height))
     fig.suptitle(fig_title, fontsize=24, fontweight="bold")
@@ -654,6 +658,9 @@ def plot_unital_single_and_uniform_max_scores_data(
     marker_sizes = [8, 7.75, 7.5, 7.25, 7, 6.75, 6.5, 6.5]
     # line_widths = [5.5,5,4.5,4,3.5,3,2.5,2]
     dashes_list = [2, 3, 4, 5, 6, 7, 8, 9]
+
+    if len(theory_params) == 0:
+        theory_params = noise_params
 
     ax_data_sets = [single_max_scores, uniform_max_scores]
     ax_theory_sets = [single_theoretical_scores, uniform_theoretical_scores]
@@ -692,7 +699,7 @@ def plot_unital_single_and_uniform_max_scores_data(
 
             if len(theory_set) != 0:
                 (theory_plt,) = ax.plot(
-                    noise_params,
+                    theory_params,
                     theory_set,
                     color=line_colors[j],
                     linestyle=":",

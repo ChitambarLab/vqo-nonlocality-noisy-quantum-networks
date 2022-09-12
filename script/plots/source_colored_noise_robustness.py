@@ -430,52 +430,60 @@ if __name__ == "__main__":
         return theoretical_score >= vqo_score or np.isclose(theoretical_score, vqo_score, atol=atol)
 
     for u in range(21):
-        assert verify_data(phi_plus_theoretical_chsh, phi_plus_max_chsh_colored)
-        assert verify_data(phi_plus_theoretical_single_bilocal, phi_plus_max_bilocal_single_colored)
+        assert verify_data(phi_plus_theoretical_chsh[5 * u], phi_plus_max_chsh_colored[u])
         assert verify_data(
-            phi_plus_theoretical_single_n3_chain, phi_plus_max_bilocal_single_colored
+            phi_plus_theoretical_single_bilocal[5 * u], phi_plus_max_bilocal_single_colored[u]
         )
         assert verify_data(
-            phi_plus_theoretical_single_n4_chain, phi_plus_max_n4_chain_single_colored
-        )
-        assert verify_data(phi_plus_theoretical_single_n3_star, phi_plus_max_n3_star_single_colored)
-
-        assert verify_data(psi_plus_theoretical_chsh, psi_plus_max_chsh_colored)
-        assert verify_data(psi_plus_theoretical_single_bilocal, psi_plus_max_bilocal_single_colored)
-        assert verify_data(
-            psi_plus_theoretical_single_n3_chain, psi_plus_max_bilocal_single_colored
+            phi_plus_theoretical_single_n3_chain[5 * u], phi_plus_max_n3_chain_single_colored[u]
         )
         assert verify_data(
-            psi_plus_theoretical_single_n4_chain, psi_plus_max_n4_chain_single_colored
-        )
-        assert verify_data(psi_plus_theoretical_single_n3_star, psi_plus_max_n3_star_single_colored)
-
-        assert verify_data(phi_plus_theoretical_chsh, phi_plus_max_chsh_colored)
-        assert verify_data(
-            phi_plus_theoretical_uniform_bilocal, phi_plus_max_bilocal_uniform_colored
+            phi_plus_theoretical_single_n4_chain[5 * u], phi_plus_max_n4_chain_single_colored[u]
         )
         assert verify_data(
-            phi_plus_theoretical_uniform_n3_chain, phi_plus_max_bilocal_uniform_colored
-        )
-        assert verify_data(
-            phi_plus_theoretical_uniform_n4_chain, phi_plus_max_n4_chain_uniform_colored
-        )
-        assert verify_data(
-            phi_plus_theoretical_uniform_n3_star, phi_plus_max_n3_star_uniform_colored
+            phi_plus_theoretical_single_n3_star[5 * u], phi_plus_max_n3_star_single_colored[u]
         )
 
-        assert verify_data(psi_plus_theoretical_chsh, psi_plus_max_chsh_colored)
+        assert verify_data(psi_plus_theoretical_chsh[5 * u], psi_plus_max_chsh_colored[u])
         assert verify_data(
-            psi_plus_theoretical_uniform_bilocal, psi_plus_max_bilocal_uniform_colored
+            psi_plus_theoretical_single_bilocal[5 * u], psi_plus_max_bilocal_single_colored[u]
         )
         assert verify_data(
-            psi_plus_theoretical_uniform_n3_chain, psi_plus_max_bilocal_uniform_colored
+            psi_plus_theoretical_single_n3_chain[5 * u], psi_plus_max_n3_chain_single_colored[u]
         )
         assert verify_data(
-            psi_plus_theoretical_uniform_n4_chain, psi_plus_max_n4_chain_uniform_colored
+            psi_plus_theoretical_single_n4_chain[5 * u], psi_plus_max_n4_chain_single_colored[u]
         )
         assert verify_data(
-            psi_plus_theoretical_uniform_n3_star, psi_plus_max_n3_star_uniform_colored
+            psi_plus_theoretical_single_n3_star[5 * u], psi_plus_max_n3_star_single_colored[u]
+        )
+
+        assert verify_data(phi_plus_theoretical_chsh[5 * u], phi_plus_max_chsh_colored[u])
+        assert verify_data(
+            phi_plus_theoretical_uniform_bilocal[5 * u], phi_plus_max_bilocal_uniform_colored[u]
+        )
+        assert verify_data(
+            phi_plus_theoretical_uniform_n3_chain[5 * u], phi_plus_max_n3_chain_uniform_colored[u]
+        )
+        assert verify_data(
+            phi_plus_theoretical_uniform_n4_chain[5 * u], phi_plus_max_n4_chain_uniform_colored[u]
+        )
+        assert verify_data(
+            phi_plus_theoretical_uniform_n3_star[5 * u], phi_plus_max_n3_star_uniform_colored[u]
+        )
+
+        assert verify_data(psi_plus_theoretical_chsh[5 * u], psi_plus_max_chsh_colored[u])
+        assert verify_data(
+            psi_plus_theoretical_uniform_bilocal[5 * u], psi_plus_max_bilocal_uniform_colored[u]
+        )
+        assert verify_data(
+            psi_plus_theoretical_uniform_n3_chain[5 * u], psi_plus_max_n3_chain_uniform_colored[u]
+        )
+        assert verify_data(
+            psi_plus_theoretical_uniform_n4_chain[5 * u], psi_plus_max_n4_chain_uniform_colored[u]
+        )
+        assert verify_data(
+            psi_plus_theoretical_uniform_n3_star[5 * u], psi_plus_max_n3_star_uniform_colored[u]
         )
 
     """
