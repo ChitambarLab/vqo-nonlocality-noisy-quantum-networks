@@ -128,194 +128,195 @@ if __name__ == "__main__":
     """
 	Plotting Data
 	"""
-    # fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 8))
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 8))
 
-    # fig.suptitle(r"VQO of Non-$n$-Locality on IBM Quantum Computers", size=24, fontweight="bold")
+    fig.suptitle(r"VQO of Non-$n$-Locality on IBM Quantum Computers", size=24, fontweight="bold")
 
-    # axes = [ax1, ax2, ax3, ax4]
-    # titles = [
-    #     "CHSH Network",
-    #     "Bilocal Network",
-    #     "\nTrilocal Chain Network",
-    #     "\nTrilocal Star Network",
-    # ]
-    # ylabels = [
-    #     r"Bell Score ($S_{\mathrm{CHSH}}$)",
-    #     r"Bell Score ($S_{\mathrm{Bilocal}}$)",
-    #     r"Bell Score ($S_{3\mathrm{-Chain}}$)",
-    #     r"Bell Score ($S_{3\mathrm{-Star}}$)",
-    # ]
-    # num_steps_list = [num_chsh_steps, num_bilocal_steps, num_chain_steps, num_star_steps]
-    # quantum_bounds = [2 * np.sqrt(2), np.sqrt(2), np.sqrt(2), np.sqrt(2)]
-    # classical_bounds = [2, 1, 1, 1]
-    # ideal_data_sets = [
-    #     chsh_ideal_scores,
-    #     bilocal_ideal_scores,
-    #     chain_ideal_scores,
-    #     star_ideal_scores,
-    # ]
-    # data_sets = [chsh_data, bilocal_data, chain_data, star_data]
-    # for i in range(4):
-    #     ax = axes[i]
-    #     num_steps = num_steps_list[i]
+    axes = [ax1, ax2, ax3, ax4]
+    titles = [
+        "CHSH Network",
+        "Bilocal Network",
+        "\nTrilocal Chain Network",
+        "\nTrilocal Star Network",
+    ]
+    ylabels = [
+        r"Bell Score ($S_{\mathrm{CHSH}}$)",
+        r"Bell Score ($S_{\mathrm{Bilocal}}$)",
+        r"Bell Score ($S_{3\mathrm{-Chain}}$)",
+        r"Bell Score ($S_{3\mathrm{-Star}}$)",
+    ]
+    num_steps_list = [num_chsh_steps, num_bilocal_steps, num_chain_steps, num_star_steps]
+    quantum_bounds = [2 * np.sqrt(2), np.sqrt(2), np.sqrt(2), np.sqrt(2)]
+    classical_bounds = [2, 1, 1, 1]
+    ideal_data_sets = [
+        chsh_ideal_scores,
+        bilocal_ideal_scores,
+        chain_ideal_scores,
+        star_ideal_scores,
+    ]
+    data_sets = [chsh_data, bilocal_data, chain_data, star_data]
+    for i in range(4):
+        ax = axes[i]
+        num_steps = num_steps_list[i]
 
-    #     ax.plot(
-    #         range(num_steps),
-    #         [quantum_bounds[i]] * num_steps,
-    #         "-",
-    #         linewidth=3,
-    #         label="Quantum\nBound",
-    #         color="C0",
-    #     )
-    #     ax.plot(
-    #         range(num_steps),
-    #         [classical_bounds[i]] * num_steps,
-    #         "--",
-    #         linewidth=3,
-    #         label="Classical\nBound",
-    #         color="C1",
-    #     )
-    #     ax.plot(
-    #         range(num_steps),
-    #         [data_sets[i]["max_theoretical_score"]] * num_steps,
-    #         linestyle=(0, (3, 2, 1, 2, 1, 2)),
-    #         linewidth=3,
-    #         label="Theoretical\nMax Score",
-    #         color="C6",
-    #     )
-    #     ax.plot(
-    #         range(num_steps),
-    #         [data_sets[i]["mean_theoretical_score"]] * num_steps,
-    #         "-.",
-    #         label="Theoretical\nMean Score",
-    #         linewidth=3,
-    #         color="C5",
-    #     )
-    #     ax.plot(
-    #         range(num_steps),
-    #         ideal_data_sets[i],
-    #         ":d",
-    #         markersize=8,
-    #         linewidth=3,
-    #         label="Noiseless\nOptimized\nMax Score",
-    #         color="C2",
-    #     )
-    #     ax.plot(
-    #         range(num_steps),
-    #         data_sets[i]["max_scores"],
-    #         ":o",
-    #         markersize=7,
-    #         linewidth=3,
-    #         label="Optimized\nMax Score",
-    #         color="C3",
-    #     )
-    #     ax.errorbar(
-    #         range(num_steps),
-    #         data_sets[i]["mean_scores"],
-    #         data_sets[i]["stderr_scores"],
-    #         linestyle=":",
-    #         linewidth=3,
-    #         label="Optimized\nMean Score",
-    #         color="C4",
-    #     )
+        ax.plot(
+            range(num_steps),
+            [quantum_bounds[i]] * num_steps,
+            "-",
+            linewidth=3,
+            label="Quantum\nBound",
+            color="C0",
+        )
+        ax.plot(
+            range(num_steps),
+            [classical_bounds[i]] * num_steps,
+            "--",
+            linewidth=3,
+            label="Classical\nBound",
+            color="C1",
+        )
+        ax.plot(
+            range(num_steps),
+            [data_sets[i]["max_theoretical_score"]] * num_steps,
+            linestyle=(0, (3, 2, 1, 2, 1, 2)),
+            linewidth=3,
+            label="Theoretical\nMax Score",
+            color="C6",
+        )
+        ax.plot(
+            range(num_steps),
+            [data_sets[i]["mean_theoretical_score"]] * num_steps,
+            "-.",
+            label="Theoretical\nMean Score",
+            linewidth=3,
+            color="C5",
+        )
+        ax.plot(
+            range(num_steps),
+            ideal_data_sets[i],
+            ":d",
+            markersize=8,
+            linewidth=3,
+            label="Noiseless\nOptimized\nMax Score",
+            color="C2",
+        )
+        ax.plot(
+            range(num_steps),
+            data_sets[i]["max_scores"],
+            ":o",
+            markersize=7,
+            linewidth=3,
+            label="Optimized\nMax Score",
+            color="C3",
+        )
+        ax.errorbar(
+            range(num_steps),
+            data_sets[i]["mean_scores"],
+            data_sets[i]["stderr_scores"],
+            linestyle=":",
+            linewidth=3,
+            label="Optimized\nMean Score",
+            color="C4",
+        )
 
-    #     ax.set_title(titles[i], size=20)
-    #     if i >= 2:
-    #         ax.set_xlabel("Gradient Descent Step", size=18)
+        ax.set_title(titles[i], size=20)
+        if i >= 2:
+            ax.set_xlabel("Gradient Descent Step", size=18)
 
-    #     ax.set_ylabel(ylabels[i], size=18)
+        ax.set_ylabel(ylabels[i], size=18)
 
-    #     if i == 0:
-    #         plt.figlegend(
-    #             ncol=1,
-    #             loc="center right",
-    #             fontsize=18,
-    #             bbox_to_anchor=(0, 0, 1, 1),
-    #             labelspacing=1.1,
-    #         )  # , bbox_to_anchor=(0, 0,1,1,))
+        if i == 0:
+            plt.figlegend(
+                ncol=1,
+                loc="center right",
+                fontsize=18,
+                bbox_to_anchor=(0, 0, 1, 1),
+                labelspacing=1.1,
+            )  # , bbox_to_anchor=(0, 0,1,1,))
 
-    # fig.subplots_adjust(left=0.05, right=0.82)
-
-    # datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
-    # filename = "simple_ansatzes_" + datetime_ext
-    # plot_dir = "data/plots/vqo_ibm_hardware/"
-
-    fig, (ax2) = plt.subplots(1, 1, figsize=(25, 18))
-
-    fig.suptitle("VQO of Star Network Nonlocality on\nNoisy IBM Quantum Computers", size=80, fontweight="bold")
-
-    num_steps = num_star_steps
-    quantum_bound = np.sqrt(2)
-    classical_bound = 1
-    ideal_data_set = star_ideal_scores
-    data_set = star_data
-
-    ax2.semilogy(
-        range(num_steps),
-        np.sqrt(2) - data_set["mean_scores"],
-        linestyle=":",
-        marker="s",
-        markersize=32,
-        linewidth=8,
-        label="VQO Mean",
-        color="C4",
-    )
-    ax2.semilogy(
-        range(num_steps),
-        np.sqrt(2) - data_set["max_scores"],
-        ":o",
-        markersize=32,
-        linewidth=10,
-        label="VQO Max",
-        color="C3",
-    )
-    ax2.semilogy(
-        range(num_steps),
-        np.sqrt(2) - ideal_data_set,
-        ":d",
-        markersize=32,
-        linewidth=10,
-        label="Noiseless VQO Max",
-        color="C2",
-    )
-
-    ax2.semilogy(
-        range(num_steps),
-        np.sqrt(2) - [classical_bound] * num_steps,
-        "--",
-        linewidth=10,
-        label="Classical Bound",
-        color="C0",
-    )
-    ax2.semilogy(
-        range(num_steps),
-        np.sqrt(2) - [data_set["mean_theoretical_score"]] * num_steps,
-        "-.",
-        label="Noisy Quantum Bound",
-        linewidth=10,
-        color="C1",
-    )
-    ax2.legend(
-        ncol=1,
-        fontsize=56,
-        loc="lower left",
-    )
-
-    # ax1.tick_params(axis='both', which='major', labelsize=52)
-    ax2.tick_params(axis='both', which='major', labelsize=56)
-
-    # ax1.set_xlabel("Gradient Descent Step", fontsize=52)
-    ax2.set_xlabel("Gradient Descent Step", fontsize=72)
-
-    # ax1.set_ylabel("Nonlocal Star Score", fontsize=52)
-    ax2.set_ylabel("Distance to Max Bell Violation", fontsize=72)
-
-    plt.grid(linewidth=4)
-    fig.tight_layout(pad=2)
-
+    fig.subplots_adjust(left=0.05, right=0.82)
 
     datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
     filename = "simple_ansatzes_" + datetime_ext
     plot_dir = "data/plots/vqo_ibm_hardware/"
 
-    plt.savefig(plot_dir + filename)
+
+    # """
+    # semilog plot of data
+    # """
+
+    # fig, (ax2) = plt.subplots(1, 1, figsize=(25, 18))
+
+    # fig.suptitle("VQO of Star Network Nonlocality on\nNoisy IBM Quantum Computers", size=80, fontweight="bold")
+
+    # num_steps = num_star_steps
+    # quantum_bound = np.sqrt(2)
+    # classical_bound = 1
+    # ideal_data_set = star_ideal_scores
+    # data_set = star_data
+
+    # ax2.semilogy(
+    #     range(num_steps),
+    #     np.sqrt(2) - data_set["mean_scores"],
+    #     linestyle=":",
+    #     marker="s",
+    #     markersize=32,
+    #     linewidth=8,
+    #     label="VQO Mean",
+    #     color="C4",
+    # )
+    # ax2.semilogy(
+    #     range(num_steps),
+    #     np.sqrt(2) - data_set["max_scores"],
+    #     ":o",
+    #     markersize=32,
+    #     linewidth=10,
+    #     label="VQO Max",
+    #     color="C3",
+    # )
+    # ax2.semilogy(
+    #     range(num_steps),
+    #     np.sqrt(2) - ideal_data_set,
+    #     ":d",
+    #     markersize=32,
+    #     linewidth=10,
+    #     label="Noiseless VQO Max",
+    #     color="C2",
+    # )
+
+    # ax2.semilogy(
+    #     range(num_steps),
+    #     np.sqrt(2) - [classical_bound] * num_steps,
+    #     "--",
+    #     linewidth=10,
+    #     label="Classical Bound",
+    #     color="C0",
+    # )
+    # ax2.semilogy(
+    #     range(num_steps),
+    #     np.sqrt(2) - [data_set["mean_theoretical_score"]] * num_steps,
+    #     "-.",
+    #     label="Noisy Quantum Bound",
+    #     linewidth=10,
+    #     color="C1",
+    # )
+    # ax2.legend(
+    #     ncol=1,
+    #     fontsize=56,
+    #     loc="lower left",
+    # )
+    # ax2.tick_params(axis='both', which='major', labelsize=56)
+
+    # ax2.set_xlabel("Gradient Descent Step", fontsize=72)
+
+    # ax2.set_ylabel("Distance to Max Bell Violation", fontsize=72)
+
+    # plt.grid(linewidth=4)
+    # fig.tight_layout(pad=2)
+
+
+    # datetime_ext = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
+    # filename = "simple_ansatzes_" + datetime_ext
+    # plot_dir = "data/plots/vqo_ibm_hardware/"
+
+    # plt.savefig(plot_dir + filename)
