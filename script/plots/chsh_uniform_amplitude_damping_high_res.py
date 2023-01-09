@@ -103,8 +103,14 @@ if __name__ == "__main__":
     Theoretical Scores
     """
 
+    # def max_entangled_score(gamma):
+    #     return 2 * np.sqrt(2 * (1 - gamma) ** 2)
+
     def max_entangled_score(gamma):
-        return 2 * np.sqrt(2 * (1 - gamma) ** 2)
+        return max(
+            2 * np.sqrt(2 * (1 - gamma) ** 2),
+            2 * np.sqrt((1 - gamma) ** 2 + (gamma ** 2 + (1 - gamma) ** 2) ** 2)
+        )
 
     def max_entangled_score2(gamma):
         return 2 * np.sqrt((1 - gamma) ** 2 + (gamma ** 2 + (1 - gamma) ** 2) ** 2)
@@ -130,10 +136,12 @@ if __name__ == "__main__":
 
     def nonmax_entangled_score(gamma):
         lambda_star = lambda_star_score(gamma)
-        return _nonmax_entangled_score(gamma, lambda_star)
+        # return _nonmax_entangled_score(gamma, lambda_star)
+        return max(max_entangled_score(gamma), _nonmax_entangled_score(gamma, lambda_star))
+
 
     max_entangled_theory = [max_entangled_score(gamma) for gamma in noise_params]
-    max_entangled_theory2 = [max_entangled_score2(gamma) for gamma in noise_params]
+    # max_entangled_theory2 = [max_entangled_score2(gamma) for gamma in noise_params]
 
     nonmax_entangled_theory = [nonmax_entangled_score(gamma) for gamma in noise_params]
 
@@ -158,76 +166,84 @@ if __name__ == "__main__":
         fontweight="bold",
     )
 
-    ylabel = r"Max CHSH Score ($S^\star_{\mathrm{CHSH}}(\tilde{\rho}_\lambda)$)"
+    ylabel = r"$S^\star_{\mathrm{CHSH}}(\tilde{\rho}_{\lambda,\gamma})$"
 
-    ax1.plot(noise_params, [np.sqrt(2) * 2] * num_samples, "-", linewidth=2, label="Quantum Bound")
-    ax1.plot(noise_params, [2] * num_samples, "-.", linewidth=2, label="Classical Bound")
-    ax1.plot(
+    (qbound_plot,) = ax1.plot(noise_params, [np.sqrt(2) * 2] * num_samples, "-", linewidth=2, label="Quantum Bound")
+    (cbound_plot,) = ax1.plot(noise_params, [2] * num_samples, "-.", linewidth=2, label="Classical Bound")
+    (max_ent_theory_plot,) = ax1.plot(
         noise_params,
         max_entangled_theory,
         "-",
         color="C2",
         linewidth=2,
-        label="Max Entangled " + r"($\sqrt{\mu_x + \mu_y}$)",
+        label=r"$S^\star_{\mathrm{CHSH}}(\tilde{\rho}_{\frac{1}{2},\gamma})$",
     )
-    ax1.plot(
-        noise_params,
-        max_entangled_theory2,
-        "--",
-        color="C2",
-        linewidth=2,
-        label="Max Entangled " + r"($\sqrt{\mu_x + \mu_z}$)",
-    )
-    ax1.plot(
+    # ax1.plot(
+    #     noise_params,
+    #     max_entangled_theory2,
+    #     "--",
+    #     color="C2",
+    #     linewidth=2,
+    #     label="Max Entangled " + r"($\sqrt{\tau^2_x + \tau^2_z}$)",
+    # )
+    (nonmax_ent_theory_plot,) = ax1.plot(
         noise_params,
         nonmax_entangled_theory,
-        "-.",
+        "-",
         color="C3",
         linewidth=2,
-        label="Nonmax Entangled " + r"($\sqrt{\mu_x + \mu_z}$)",
+        label=r"$S^\star_{\mathrm{CHSH}}(\tilde{\rho}_{\lambda^\star,\gamma})$",
     )
-    ax1.plot(
+    (gamma_c_nonmax_ent_plot,) = ax1.plot(
         [crit_gamma, crit_gamma],
-        [0, 2 * np.sqrt(2)],
+        [1, 2 * np.sqrt(2)],
         ":",
         linewidth=2,
-        color="magenta",
-        label="Optimal State Crossover",
+        color="C3",
+        label=r"$\gamma_{c,\lambda^\star}$",
     )
-    ax1.plot(
+    (gamma_0_max_ent_plot,) = ax1.plot(
         [1 - 1 / np.sqrt(2), 1 - 1 / np.sqrt(2)],
-        [0, 2 * np.sqrt(2)],
+        [1, 2 * np.sqrt(2)],
+        "-.",
+        linewidth=2,
+        color="C2",
+        label=r"$\gamma_{0,\frac{1}{2}}$",
+    )
+    (gamma_0_non_max_ent_plot,) = ax1.plot(
+        [1 / 3, 1 / 3],
+        [1, 2 * np.sqrt(2)],
+        "-.",
+        linewidth=2,
+        color="C3",
+        label=r"$\gamma_{0,\lambda^\star}$",
+    )
+    (gamma_c_max_ent_plot,) = ax1.plot(
+        [1 / 2, 1 / 2],
+        [1, 2 * np.sqrt(2)],
         ":",
         linewidth=2,
         color="C2",
-        label="Max Entangled\nNonlocality Broken",
+        label=r"$\gamma_{c,\frac{1}{2}}$",
     )
-    ax1.plot(
-        [1 / 3, 1 / 3],
-        [0, 2 * np.sqrt(2)],
-        ":",
-        linewidth=2,
-        color="C3",
-        label="Nonmax Entangled\nNonlocality Broken",
-    )
-    ax1.plot(
+    (vqo_max_ent_plot,) = ax1.plot(
         noise_params,
         ghz_max_chsh_uniform_ad,
         marker="d",
         color="C2",
-        markersize=5,
+        markersize=6,
         markerfacecolor="None",
         linewidth=2,
         linestyle="None",
         label="VQO Max Entangled",
         alpha=0.6,
     )
-    ax1.plot(
+    (vqo_nonmax_ent_plot,) = ax1.plot(
         noise_params,
         ryrz_cnot_max_chsh_uniform_ad,
         color="C3",
         marker="o",
-        markersize=5,
+        markersize=6,
         markerfacecolor="None",
         linewidth=2,
         linestyle="None",
@@ -238,7 +254,28 @@ if __name__ == "__main__":
     ax1.set_xlabel(r"Noise Parameter ($\gamma$)", size=18)
     ax1.set_ylabel(ylabel, size=18)
 
-    plt.figlegend(ncol=2, loc="lower center", fontsize=16, bbox_to_anchor=(0, -0.01, 1, 1,))
+    plt.figlegend(
+        [
+            qbound_plot,
+            cbound_plot,
+            (max_ent_theory_plot, vqo_max_ent_plot),
+            (nonmax_ent_theory_plot, vqo_nonmax_ent_plot),
+            gamma_c_max_ent_plot,
+            gamma_c_nonmax_ent_plot,
+            gamma_0_max_ent_plot,
+            gamma_0_non_max_ent_plot,
+        ],
+        [
+            "Quantum Bound", "Classical Bound",
+            r"Max CHSH Score $S^\star_{\mathrm{CHSH}}(\tilde{\rho}_{\frac{1}{2},\gamma})$",
+            r"Max CHSH Score $S^\star_{\mathrm{CHSH}}(\tilde{\rho}_{\lambda^\star,\gamma})$",
+            r"Crossover Parameter $\gamma_{c,\frac{1}{2}}$",
+            r"Crossover Parameter $\gamma_{c,\lambda^\star}$",
+            r"Nonlocality Broken $\gamma_{0,\frac{1}{2}}$",
+            r"Nonlocality Broken $\gamma_{0,\lambda^\star}$",
+        ],
+        ncol=2, loc="lower center", fontsize=18, bbox_to_anchor=(0, 0.05, 1, 1,)
+    )
 
     ax2.plot(
         noise_params_inset,
@@ -259,7 +296,7 @@ if __name__ == "__main__":
     ax2.plot(
         noise_params_inset,
         nonmax_entangled_theory_inset,
-        "-.",
+        "-",
         color="C3",
         linewidth=2,
         label="Nonmaximally Entangled\nState Preparation",
@@ -267,7 +304,7 @@ if __name__ == "__main__":
     ax2.plot(
         [1 - 1 / np.sqrt(2), 1 - 1 / np.sqrt(2)],
         [1.84, 2.12],
-        ":",
+        "-.",
         color="C2",
         label="Max Entangled\nNonlocality Broken",
         linewidth=2,
@@ -275,7 +312,7 @@ if __name__ == "__main__":
     ax2.plot(
         [1 / 3, 1 / 3],
         [1.84, 2.12],
-        ":",
+        "-.",
         color="C3",
         label="Nonmax Entanglement\nNonlocality Broken",
         linewidth=2,
@@ -284,7 +321,7 @@ if __name__ == "__main__":
         [crit_gamma, crit_gamma],
         [1.84, 2.12],
         ":",
-        color="magenta",
+        color="C3",
         label="Nonmax Entanglement\nNonlocality Broken",
         linewidth=2,
     )
@@ -293,7 +330,7 @@ if __name__ == "__main__":
         ghz_max_chsh_uniform_ad_inset,
         color="C2",
         marker="d",
-        markersize=5,
+        markersize=6,
         markerfacecolor="None",
         label=r"Bell State Preparation ($|\Phi^+\rangle$)",
         alpha=0.6,
@@ -303,7 +340,7 @@ if __name__ == "__main__":
         ryrz_cnot_max_chsh_uniform_ad_inset,
         color="C3",
         marker="o",
-        markersize=5,
+        markersize=6,
         markerfacecolor="None",
         linewidth=1,
         label="Nonmaximally Entangled\nState Preparation",
